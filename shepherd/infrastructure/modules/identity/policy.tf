@@ -74,9 +74,9 @@ resource "oci_identity_policy" "splat_policy" {
   statements = [
     "define tenancy boat as ${var.boat_tenancy_ocid}",
     "define group dlcdep-sys-admins as ${var.dlcdep_sys_admins_ocid}",
-    "admit group team of tenancy boat to manage operational-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group team of tenancy boat to manage partner-services in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group team of tenancy boat to manage partner-service-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group team of tenancy boat to manage partner-service-spec-deployments in compartment ${oci_identity_compartment.deployment_splat_beta.name}"
+    "admit group dlcdep-sys-admins of tenancy boat to manage operational-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-services in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-spec-deployments in compartment ${oci_identity_compartment.deployment_splat_beta.name}"
   ]
 }
