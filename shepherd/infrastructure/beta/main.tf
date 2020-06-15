@@ -17,7 +17,7 @@ locals {
   dns_label = "deploy"
   phonebook_name = "dlcdep"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
-  host_class = "deployment-serviceASUS-REFERENCE-APP"
+  host_class = "DLC-DEPLOYMENT-DEV-ODO"
 
   lb_listening_port = 443
   api_host_listening_port = 24443
