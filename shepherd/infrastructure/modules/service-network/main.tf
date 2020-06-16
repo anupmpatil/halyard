@@ -108,7 +108,7 @@ resource "oci_core_security_list" "service_vcn_security_list" {
   //application port
   ingress_security_rules {
       protocol = local.tcp_protocol
-      source = local.anywhere //var.jump_vcn_cidr temporarily enable public ip
+      source = var.jump_vcn_cidr
       stateless = false
       tcp_options {
         min = 22
