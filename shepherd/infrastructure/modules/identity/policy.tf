@@ -22,7 +22,7 @@ resource "oci_identity_policy" "access-managers" {
 
   statements = [
     "define tenancy secinf as ${var.secinf_tenancy_ocid}",
-    "endorse dynamic-group ${oci_identity_dynamic_group.access_managers_dynamic_group.name} to manage object-family in tenancy secinf",
+    "endorse dynamic-group ${oci_identity_dynamic_group.access_managers_dynamic_group.name} to read object-family in tenancy secinf",
   ]
 }
 
