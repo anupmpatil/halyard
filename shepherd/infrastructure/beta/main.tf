@@ -191,3 +191,9 @@ module "dns" {
   region = local.execution_target.region.public_name
   api_service_public_loadbalancer_ip_address = module.service_lb.api_service_public_loadbalancer_ip_address
 }
+
+module "limits" {
+  source = "./modules/limits"
+
+  compartment_ocid = module.identity.deployment_limits_beta.id
+}
