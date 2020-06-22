@@ -1,3 +1,13 @@
+resource "oci_identity_policy" "boat_access_policy" {
+  compartment_id = var.tenancy_ocid
+  description = "BOAT Access Policy"
+  name = "boat_access_policy"
+  statements = [
+    "define tenancy boat as ${var.boat_tenancy_ocid}",
+    "define group dlcdep-sys-admins as ${var.dlcdep_sys_admins_ocid}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage all-resources in tenancy"
+  ]
+}
 resource "oci_identity_policy" "image-tags-namespace-policy" {
   compartment_id = var.tenancy_ocid
   description    = "Allow Compute service to tag namespace in tenancy"
