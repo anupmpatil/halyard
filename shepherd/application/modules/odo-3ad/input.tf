@@ -1,6 +1,11 @@
-variable "compartment_id" {
+variable "deployment_api_compartment_id" {
   type = string
-  description = "Compartment ID for your ODO application."
+  description = "API Compartment ID for deployment service ODO application."
+}
+
+variable "deployment_worker_compartment_id" {
+  type = string
+  description = "Worker Compartment ID for deployment service ODO application."
 }
 
 variable "availability_domains" {

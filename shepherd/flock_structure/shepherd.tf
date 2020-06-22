@@ -17,6 +17,18 @@ resource "shepherd_artifacts" "artifacts" {
     location = "deployment-service-worker"
     description = "The docker container for deployment-service's worker."
   }
+  # artifact {
+  #   name = "application-service-api"
+  #   type = "docker"
+  #   location = "application-service-api"
+  #   description = "The docker container for application-service's api server."
+  # }
+  # artifact {
+  #   name = "application-service-worker"
+  #   type = "docker"
+  #   location = "application-service-worker"
+  #   description = "The docker container for application-service's worker."
+  # }
   artifact {
     name = "odo-system-updater"
     type = "pop"

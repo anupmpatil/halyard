@@ -1,5 +1,5 @@
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_AvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-AvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -16,7 +16,7 @@ ServiceHostReporter.heartbeat description: DeploymentService-Api Heartbeat
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -25,7 +25,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_Chainsaw2AvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-Chainsaw2AvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -42,7 +42,7 @@ chainsaw2.standard.application_log.monitoring description: Heartbeat for a log-g
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -50,7 +50,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_HeapUsageAfterGCAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-HeapUsageAfterGCAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -67,7 +67,7 @@ G1GC.Heap.After description: Heap Memory Usage After a GC
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -75,7 +75,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_JettyThreadPoolUtilizationAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-JettyThreadPoolUtilizationAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -92,7 +92,7 @@ service.org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max descri
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -100,7 +100,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentCreateAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentCreateAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -117,7 +117,7 @@ DeploymentResource.createDeployment.SuccessRate description: Create Deployment S
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -126,7 +126,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentCreateLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentCreateLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -143,7 +143,7 @@ DeploymentResource.createDeployment.Time description: Deployment creation latenc
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -152,7 +152,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentDeleteAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentDeleteAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -169,7 +169,7 @@ DeploymentResource.deleteDeployment.SuccessRate description: Delete Deployment S
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -178,7 +178,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentDeleteLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentDeleteLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -195,7 +195,7 @@ DeploymentResource.deleteDeployment.Time description: Deployment delate latency
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -204,7 +204,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentGetAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentGetAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -221,7 +221,7 @@ DeploymentResource.getDeployment.SuccessRate description: Get Deployment Success
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -230,7 +230,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentGetLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentGetLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -247,7 +247,7 @@ DeploymentResource.getDeployment.Time description: Deployment get latency
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -256,7 +256,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentListAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentListAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -273,7 +273,7 @@ DeploymentResource.listDeployment.SuccessRate description: List Deployment Succe
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -282,7 +282,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentListLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentListLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -299,7 +299,7 @@ DeploymentResource.listDeployment.Time description: Deployment list latency
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -308,7 +308,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentUpdateAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentUpdateAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -325,7 +325,7 @@ DeploymentResource.updateDeployment.SuccessRate description: Update Deployment S
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -334,7 +334,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentService_Api_DeploymentUpdateLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   display_name = "DeploymentService-Api-DeploymentUpdateLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-api"
@@ -351,7 +351,7 @@ DeploymentResource.updateDeployment.Time description: Deployment update latency
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }

@@ -17,8 +17,8 @@ locals {
 module "odo_application" {
   source = "./modules/odo-3ad"
 
-  api_compartment_id = local.api_compartment_id
-  worker_compartment_id = local.worker_compartment_id
+  deployment_api_compartment_id = local.api_compartment_id
+  deployment_worker_compartment_id = local.worker_compartment_id
   availability_domains = local.app_availability_domains
   name_prefix = local.application_name
   release_name = local.execution_target.phase_name
@@ -32,6 +32,7 @@ module "odo_application" {
 
 module "alarms" {
   source = "./modules/alarms"
-  api_compartment_id = local.api_compartment_id
-  worker_compartment_id = local.worker_compartment_id
+  deployment_api_compartment_id = local.api_compartment_id
+  deployment_worker_compartment_id = local.worker_compartment_id
+  jira_sd_queue = "DLCDEP"
 }

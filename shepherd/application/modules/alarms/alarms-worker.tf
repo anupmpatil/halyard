@@ -1,5 +1,5 @@
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_AvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-AvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -16,7 +16,7 @@ ServiceHostReporter.heartbeat description: DeploymentService-Worker Heartbeat
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -25,7 +25,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_Chainsaw2AvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-Chainsaw2AvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -42,7 +42,7 @@ chainsaw2.standard.application_log.monitoring description: Heartbeat for a log-g
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -50,7 +50,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_CreateDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-CreateDeploymentWorkflowAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -67,7 +67,7 @@ createDeployment.1.0.PROVISION.Fault description: Create Deployment Workflow Fau
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -76,7 +76,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_CreateDeploymentWorkflowLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-CreateDeploymentWorkflowLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -93,7 +93,7 @@ createDeployment.1.0.PROVISION.Time description: CreateDeployment Workflow Laten
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -102,7 +102,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_DeleteDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-DeleteDeploymentWorkflowAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -119,7 +119,7 @@ deleteDeployment.2.3.PROVISION.Fault description: Delete Deployment Workflow Fau
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -128,7 +128,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_DeleteDeploymentWorkflowLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-DeleteDeploymentWorkflowLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -145,7 +145,7 @@ deleteDeployment.2.3.PROVISION.Time description: DeleteDeployment Workflow Laten
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -154,7 +154,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_UpdateDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-UpdateDeploymentWorkflowAvailabilityAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -171,7 +171,7 @@ updateDeployment.1.0.PROVISION.Fault description: Update Deployment Workflow Fau
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -180,7 +180,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_UpdateDeploymentWorkflowLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-UpdateDeploymentWorkflowLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -197,7 +197,7 @@ updateDeployment.1.0.PROVISION.Time description: UpdateDeployment Workflow Laten
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -205,7 +205,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_WF_HeapUsageAfterGCAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-WF-HeapUsageAfterGCAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -222,7 +222,7 @@ G1GC.Heap.After description: Heap Memory Usage After a GC
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -230,7 +230,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_WF_JettyThreadPoolUtilizationAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-WF-JettyThreadPoolUtilizationAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -247,7 +247,7 @@ service.org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max descri
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -255,7 +255,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_WorkflowMessageQueuePollFaultRateAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-WorkflowMessageQueuePollFaultRateAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -272,7 +272,7 @@ ReadWorkflowRequestQueue.Fault description: Workflow message queue poll fault ra
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }
@@ -280,7 +280,7 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentService_Worker_WorkflowMessageQueuePollLatencyAlarm" {
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   display_name = "DeploymentService-Worker-WorkflowMessageQueuePollLatencyAlarm"
   project = "DeploymentService"
   fleet = "deployment-service-worker"
@@ -297,7 +297,7 @@ ReadWorkflowRequestQueue.Time description: Workflow message queue polling latenc
 EOT
   destinations {
     jira {
-      project = "deployment-service"
+      project = var.jira_sd_queue
       component = "None"
       item = "None"
     }

@@ -1,14 +1,14 @@
 data "oci_core_instance_pool_instances" "api_instance_pools" {
   for_each = toset(var.availability_domains)
 
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_api_compartment_id
   instance_pool_id = var.api_instance_pools[each.key].id
 }
 
 data "oci_core_instance_pool_instances" "worker_instance_pools" {
   for_each = toset(var.availability_domains)
 
-  compartment_id = var.compartment_id
+  compartment_id = var.deployment_worker_compartment_id
   instance_pool_id = var.worker_instance_pools[each.key].id
 }
 
@@ -17,7 +17,7 @@ resource "odo_pool" "api" {
 
   ad = each.key
   alias = "${var.name_prefix}-api-${var.release_name}"
-  compartment_ocid = var.compartment_id
+  compartment_ocid = var.deployment_api_compartment_id
   managed_by = "ODO"
   default_node_admin_state = "STANDBY"
 
@@ -29,7 +29,7 @@ resource "odo_pool" "worker" {
 
   ad = each.key
   alias = "${var.name_prefix}-worker-${var.release_name}"
-  compartment_ocid = var.compartment_id
+  compartment_ocid = var.deployment_worker_compartment_id
   managed_by = "ODO"
   default_node_admin_state = "STANDBY"
 
@@ -41,7 +41,7 @@ resource "odo_application" "odo_application_api" {
 
   ad = each.key
   alias = "${var.name_prefix}-api-${var.stage}"
-  compartment_ocid = var.compartment_id
+  compartment_ocid = var.deployment_api_compartment_id
   agent = "HOSTAGENT_V2"
   default_artifact_source = "OBJECT_STORE"
   type = var.odo_application_type
@@ -96,7 +96,7 @@ resource "odo_application" "odo_application_worker" {
 
   ad = each.key
   alias = "${var.name_prefix}-worker-${var.stage}"
-  compartment_ocid = var.compartment_id
+  compartment_ocid = var.deployment_worker_compartment_id
   agent = "HOSTAGENT_V2"
   default_artifact_source = "OBJECT_STORE"
   type = var.odo_application_type
@@ -152,7 +152,7 @@ resource "odo_application" "os_updater" {
 
   ad = each.key
   alias = "${var.name_prefix}-os-updater-${var.stage}"
-  compartment_ocid = var.compartment_id
+  compartment_ocid = var.deployment_api_compartment_id
   type = var.odo_application_type
   artifact_set_identifier = "odo-system-updater"
   agent = "HOSTAGENT_V2"
