@@ -1,0 +1,43 @@
+# VCN forwarding rule
+# To SSH to an instance via a bastion use:
+#   ssh <instance fqdn>
+# eg.
+#   ssh inst-v0tll-dply-svc-api-beta-ad1.phx.deploybeta.oraclevcn.com
+# StrictHostKeyChecking disabled because our IPs are not globally unique
+
+Host *.oraclevcn.com
+	CanonicalizeHostname yes
+	CanonicalizeFallbackLocal no
+
+# deployment_api_service_beta
+Host inst-v0tll-dply-svc-api-beta-ad1.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.10.dev-phx-bastion
+
+Host inst-ivm4w-dply-svc-api-beta-ad2.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.12.dev-phx-bastion
+
+Host inst-7tlqm-dply-svc-api-beta-ad3.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.13.dev-phx-bastion
+
+
+# deployment_worker_service_beta
+Host inst-lsi9l-dply-svc-worker-beta-ad1.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.9.dev-phx-bastion
+
+Host inst-uovwr-dply-svc-worker-beta-ad2.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.8.dev-phx-bastion
+
+Host inst-ny0ap-dply-svc-worker-beta-ad3.phx.deploybeta.oraclevcn.com
+  HostName 10.0.0.11.dev-phx-bastion
+
+
+Host 10.*-bastion
+  ProxyCommand ssh -v -W $(echo %h | cut -d. -f1-4):%p $(echo %h | cut -d. -f5)
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+# deployment_bastion_beta
+Host dev-phx-bastion ob3-jump-instance.ob3jump.ob3jump.oraclevcn.com
+  HostName 172.16.105.226
+  ForwardAgent yes
+  ProxyCommand ssh vcn16.ob.us-phoenix-1.oci.oraclecloud.com -W %h:%p
