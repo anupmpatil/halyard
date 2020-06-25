@@ -1,12 +1,14 @@
 // Retrieve all available physical ADs
 data "oci_identity_availability_domains" "service_ads" {
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
 }
 
 locals {
-  api_compartment_id = module.identity.deployment_api_service_beta.id
-  worker_compartment_id = module.identity.deployment_worker_service_beta.id
-  bastion_compartment_id = module.identity.deployment_bastion_beta.id
+  control_plane_api_compartment_id = module.identity.deployment_service_control_plane_api.id
+  management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api.id
+  control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker.id
+  data_plane_worker_compartment_id = module.identity.deployment_service_data_plane_worker.id
+  bastion_compartment_id = module.identity.deployment_bastion.id
   service_availability_domains = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr = "10.0.0.0/16"
   service_name = "deployment-service"
@@ -22,13 +24,13 @@ locals {
   lb_listening_port = 443
   api_host_listening_port = 24443
 
-  /*
-    OverlayBastion3 Configs, for details check: https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
-  */
+
+  // OverlayBastion3 Configs, for details check: https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
   // https://jira.oci.oraclecorp.com/browse/DLCDEP-79
   ob3_bastion_cidr = module.region_config.ob3_bastion_cidr
-  ob3_jump_vcn_cidr = module.region_config.ob3_jump_vcn_cidr 
-  tls_certificate = module.secret_service.tls_certificate
+  ob3_jump_vcn_cidr = module.region_config.ob3_jump_vcn_cidr
+  tls_bundle_control_plane_api = module.secret_service.tls_bundle_control_plane_api
+  tls_bundle_management_plane_api = module.secret_service.tls_bundle_management_plane_api
 }
 
 module "region_config" {
@@ -46,10 +48,11 @@ module "common" {
 # identity module
 module "identity" {
   source = "./modules/identity"
-  # getting tenancy ocid from ET
   tenancy_ocid = local.execution_target.tenancy_ocid
-  deployment_api_compartment_name = "deployment_api_service_beta"
-  worker_compartment_name = "deployment_worker_service_beta"
+  deployment_service_control_plane_api_compartment_name = "deployment_service_conrol_plane_api"
+  deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
+  deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
+  deployment_service_data_plane_worker_compartment_name = "deployment_service_data_plane_worker"
   bastion_compartment_name = "deployment_bastion_beta"
   limits_compartment_name = "deployment_limits_beta"
   splat_compartment_name = "deployment_splat_beta"
@@ -62,15 +65,14 @@ module "identity" {
 
 module "image" {
   source = "./modules/image"
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
 }
 
 // Provision network resources for the service.
 module "service_network" {
   source = "./modules/service-network"
-
   region = local.execution_target.region
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
   service_vcn_cidr = local.service_vcn_cidr
   jump_vcn_cidr = local.ob3_jump_vcn_cidr
   service_name =  "${local.service_short_name}-beta"
@@ -82,8 +84,7 @@ module "service_network" {
 // Provision load balancer related resources.
 module "service_lb" {
   source = "./modules/load-balancer"
-
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
   lb_shape = "100Mbps"
   subnet_id = module.service_network.service_lb_subnet_id
   listener_port = local.lb_listening_port
@@ -94,10 +95,9 @@ module "service_lb" {
 // Provision compute instances for api.
 module "service_instances_api" {
   source = "./modules/instances"
-
   region = local.execution_target.region.public_name
   tenancy_ocid = local.execution_target.tenancy_ocid
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
   service_instance_shape = "VM.Standard.E2.2"
   service_instance_name_prefix = "${local.service_short_name}-api-beta"
   service_instance_image_id = module.image.overlay_image.id
@@ -115,10 +115,9 @@ module "service_instances_api" {
 // Provision compute instances for worker.
 module "service_instances_worker" {
   source = "./modules/instances"
-
   region = local.execution_target.region.public_name
   tenancy_ocid = local.execution_target.tenancy_ocid
-  compartment_id = local.worker_compartment_id
+  compartment_id = local.control_plane_worker_compartment_id
   service_instance_shape = "VM.Standard.E2.2"
   service_instance_name_prefix = "${local.service_short_name}-worker-beta"
   service_instance_image_id = module.image.overlay_image.id
@@ -132,8 +131,7 @@ module "service_instances_worker" {
 
 module "lumberjack" {
   source = "./modules/lumberjack"
-
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
   availability_domains = local.service_availability_domains
   log_namespace = "deployment-service"
   stage = "beta"
@@ -141,35 +139,33 @@ module "lumberjack" {
 
 module "secret_service" {
   source = "./modules/secret-service"
-
-  compartment_id = local.api_compartment_id
-  name_space = "deployment-service-api-beta"
+  control_plane_api_compartment_id = local.control_plane_api_compartment_id
+  management_plane_api_compartment_id = local.management_plane_api_compartment_id
+  control_plane_api_namespace = "deployment-service-control-plane-api-beta"
+  management_plane_api_namespace = "deployment-service-management-plane-api-beta"
   team_queue = local.team_queue
 }
 
 module "kiev" {
   source = "./modules/kiev"
-
-  compartment_id = local.api_compartment_id
+  compartment_id = local.control_plane_api_compartment_id
   service_name = local.service_short_name
   stage = "beta"
 }
 
 module "certificate" {
   source = "./modules/certificate"
-
   tenancy_ocid = local.execution_target.tenancy_ocid
-  compartment_id = local.api_compartment_id
+  control_plane_compartment_id = local.control_plane_api_compartment_id
+  management_plane_compartment_id = local.management_plane_api_compartment_id
   phonebook_name = local.phonebook_name
-  tls_certificate = local.tls_certificate
+  tls_certificate_control_plane_api = local.tls_bundle_control_plane_api
+  tls_certificate_management_plane_api = local.tls_bundle_management_plane_api
 }
 
-// Uncomment this block after finished onboarding OB3:
 // https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
-
 module "ob3_jump" {
   source = "./modules/ob3-jump"
-  
   tenancy_ocid = local.execution_target.tenancy_ocid
   region = local.execution_target.region.public_name
   bastion_compartment_id = local.bastion_compartment_id
@@ -187,13 +183,11 @@ module "ob3_jump" {
 
 module "dns" {
   source = "./modules/dns"
-
   region = local.execution_target.region.public_name
   api_service_public_loadbalancer_ip_address = module.service_lb.api_service_public_loadbalancer_ip_address
 }
 
 module "limits" {
   source = "./modules/limits"
-
-  compartment_ocid = module.identity.deployment_limits_beta.id
+  compartment_ocid = module.identity.deployment_limits.id
 }

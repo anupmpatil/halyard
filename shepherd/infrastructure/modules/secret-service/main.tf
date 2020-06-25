@@ -1,49 +1,50 @@
 // We are using secret service V2 to manage our secrets.
 // Link to SSV2 -https://confluence.oci.oraclecorp.com/display/OCIID/Secret+Service+v2+Overview
 locals {
-  tls_certificate_name = "tls.certificate"
-  tls_intermediate_name = "tls.intermediate"
-  tls_privateKey_name = "tls.privateKey"
+  tls_bundle_name = "tls.bundle"
 }
 
 // Namespace of the secrets.
-resource "sms_namespace" "namespace" {
-  name = var.name_space
-  description = var.name_space
+resource "sms_namespace" "control_plane_api_namespace" {
+  name = var.control_plane_api_namespace
+  description = var.control_plane_api_namespace
   ticket_queue = var.team_queue
+  compartment_id = var.control_plane_api_compartment_id
+}
 
-  compartment_id = var.compartment_id
+resource "sms_namespace" "management_plane_api_namespace" {
+  name = var.management_plane_api_namespace
+  description = var.management_plane_api_namespace
+  ticket_queue = var.team_queue
+  compartment_id = var.management_plane_api_compartment_id
 }
 
 // Secrets access.
-resource "sms_access" "service_access" {
+resource "sms_access" "control_plane_api_service_access" {
   name = "DefaultAccess"
-  description = "Default Access for ${var.name_space}"
-  entity_ocid = sms_namespace.namespace.id
-
-  resource_ocid = var.compartment_id
+  description = "Default Access for ${var.control_plane_api_namespace}"
+  entity_ocid = sms_namespace.control_plane_api_namespace.id
+  resource_ocid = var.control_plane_api_compartment_id
 }
 
-// TLS Certificate.
-resource "sms_secret_definition" "tls_certificate" {
-  name = local.tls_certificate_name
-  description = "TLS Certificate"
-  path = "tls/cert"
-  service_ocid = sms_namespace.namespace.id
+resource "sms_access" "management_plane_api_service_access" {
+  name = "DefaultAccess"
+  description = "Default Access for ${var.management_plane_api_namespace}"
+  entity_ocid = sms_namespace.management_plane_api_namespace.id
+  resource_ocid = var.management_plane_api_compartment_id
 }
 
-// TLS Intermediate Cert.
-resource "sms_secret_definition" "tls_intermediate" {
-  name = local.tls_intermediate_name
-  description = "TLS Intermediate Cert"
-  path = "tls/intermediate"
-  service_ocid = sms_namespace.namespace.id
+// TLS bundle.
+resource "sms_secret_definition" "tls_bundle_control_plane_api" {
+  name = local.tls_bundle_name
+  description = "TLS bundle"
+  path = "tls/bundle"
+  service_ocid = sms_namespace.control_plane_api_namespace.id
 }
 
-// TLS Private Key.
-resource "sms_secret_definition" "tls_private_key" {
-  name = local.tls_privateKey_name
-  description = "TLS Private Key"
-  path = "tls/key"
-  service_ocid = sms_namespace.namespace.id
+resource "sms_secret_definition" "tls_bundle_management_plane_api" {
+  name = local.tls_bundle_name
+  description = "TLS bundle"
+  path = "tls/bundle"
+  service_ocid = sms_namespace.management_plane_api_namespace.id
 }

@@ -1,0 +1,37 @@
+##############################
+# Files/File-pattern to ignore
+##############################
+
+# Intellij project settings folder
+.idea/
+
+# Files and folders for Intellij and other IDEs
+bin/
+out/
+generated-srcs/
+.classpath
+.project
+.settings
+*.ipr
+*.iws
+*.iml
+
+# Build destination for Maven
+target/
+
+abandoned/
+
+# Mac custom attributes file
+.DS_Store
+
+**/local/tls/*
+
+bldenv/
+input_ocibuild/
+output_ocibuild_compilesource/
+output_ocibuild_dockerize_api/
+output_ocibuild_dockerize_worker/
+
+**/.terraform
+**/*.tfstate
+**/*.tfstate.backup

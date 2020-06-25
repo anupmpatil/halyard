@@ -1,9 +1,9 @@
-output "sms_namespace" {
-  value = sms_namespace.namespace
-  description = "The namespace that the secrets are hosted in."
+output "tls_bundle_control_plane_api" {
+  value = sms_secret_definition.tls_bundle_control_plane_api
+  description = "The tls bundle for the deployment-control-plane-api service."
 }
 
-output "tls_certificate" {
-  value = sms_secret_definition.tls_certificate
-  description = "The tls certificate for the api service."
+output "tls_bundle_management_plane_api" {
+  value = sms_secret_definition.tls_bundle_management_plane_api
+  description = "The tls bundle for the deployment-management-plane-api service."
 }

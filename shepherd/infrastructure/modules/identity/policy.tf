@@ -52,7 +52,7 @@ resource "oci_identity_policy" "secret_service_policy" {
   description    = "This policy allows CertNanny serivce to update secret versions"
   name           = "dlc-ss-policy"
   statements     = [
-    "ALLOW service CertNanny TO {SECRET-SERVICE-MANAGE-SECRET-VERSION} IN COMPARTMENT ${oci_identity_compartment.deployment_api_service_beta.name}"
+    "ALLOW service CertNanny TO {SECRET-SERVICE-MANAGE-SECRET-VERSION} IN COMPARTMENT ${oci_identity_compartment.deployment_service_control_plane_api.name}"
   ]
 }
 
@@ -73,7 +73,7 @@ resource "oci_identity_policy" "limits_policy" {
   statements = [
     "define tenancy boat as ${var.boat_tenancy_ocid}",
     "define group limits-dlcdep-admins as ${var.limits_group_ocid}",
-    "admit group limits-dlcdep-admins of tenancy boat to manage LIMITS in compartment ${oci_identity_compartment.deployment_limits_beta.name}"
+    "admit group limits-dlcdep-admins of tenancy boat to manage LIMITS in compartment ${oci_identity_compartment.deployment_limits.name}"
   ]
 }
 
@@ -84,9 +84,9 @@ resource "oci_identity_policy" "splat_policy" {
   statements = [
     "define tenancy boat as ${var.boat_tenancy_ocid}",
     "define group dlcdep-sys-admins as ${var.dlcdep_sys_admins_ocid}",
-    "admit group dlcdep-sys-admins of tenancy boat to manage operational-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group dlcdep-sys-admins of tenancy boat to manage partner-services in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-specs in compartment ${oci_identity_compartment.deployment_splat_beta.name}",
-    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-spec-deployments in compartment ${oci_identity_compartment.deployment_splat_beta.name}"
+    "admit group dlcdep-sys-admins of tenancy boat to manage operational-specs in compartment ${oci_identity_compartment.deployment_splat.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-services in compartment ${oci_identity_compartment.deployment_splat.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-specs in compartment ${oci_identity_compartment.deployment_splat.name}",
+    "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-spec-deployments in compartment ${oci_identity_compartment.deployment_splat.name}"
   ]
 }

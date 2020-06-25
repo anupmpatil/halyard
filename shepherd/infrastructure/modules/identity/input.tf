@@ -3,14 +3,24 @@ variable "tenancy_ocid" {
   description = "REQUIRED: Tenancy OCID"
 }
 
-variable "deployment_api_compartment_name" {
+variable "deployment_service_control_plane_api_compartment_name" {
   type = string
-  description = "REQUIRED: name for the API compartment"
+  description = "REQUIRED: name for the control plane api compartment"
 }
 
-variable "worker_compartment_name" {
+variable "deployment_service_management_plane_api_compartment_name" {
   type = string
-  description = "REQUIRED: name for the Worker compartment"
+  description = "REQUIRED: name for the management plane api compartment"
+}
+
+variable "deployment_service_control_plane_worker_compartment_name" {
+  type = string
+  description = "REQUIRED: name for the control plane worker compartment"
+}
+
+variable "deployment_service_data_plane_worker_compartment_name" {
+  type = string
+  description = "REQUIRED: name for the data plane worker compartment"
 }
 
 variable "bastion_compartment_name" {
