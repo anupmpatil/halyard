@@ -1,4 +1,4 @@
-output "created_instance_pool" {
-  value       = oci_core_instance_pool.service_instance_pool
+output "instance_pools" {
+  value       = oci_core_instance_pool.instance_pools
   description = "List of created service compute instance pools."
 }

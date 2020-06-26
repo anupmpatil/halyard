@@ -3,6 +3,11 @@ variable "tenancy_ocid" {
   description = "Tenancy ID."
 }
 
+variable "environment" {
+  type        = string
+  description = "Environment in which the infrastructure is setup"
+}
+
 variable "control_plane_compartment_id" {
   type        = string
   description = "Compartment ID where the secret belongs to."

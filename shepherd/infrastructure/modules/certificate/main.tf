@@ -27,7 +27,7 @@ resource "certificate" tls_server_cert_deployment_service_control_plane_api {
   #   TOPLEVELDOMAIN (oracleiaas.com, oraclegoviaas.com)
 
   x509_properties {
-    common_name = "beta.control.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
+    common_name = "${var.environment}.control.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
   }
 }
 
@@ -51,7 +51,7 @@ resource "certificate" tls_server_cert_deployment_service_management_plane_api {
   }
 
   x509_properties {
-    common_name = "beta.management.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
+    common_name = "${var.environment}.management.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
   }
 }
 
@@ -63,6 +63,7 @@ resource "certificate_secret_service_binding_resource" server_cert_lb_binding_co
   secret_service_compartment_id = var.control_plane_compartment_id
   availability_domain           = "ad1"
 }
+
 
 resource "certificate_secret_service_binding_resource" server_cert_lb_binding_management_plane_api {
   certificate_ocid              = certificate.tls_server_cert_deployment_service_management_plane_api.id

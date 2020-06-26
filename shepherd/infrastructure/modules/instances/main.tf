@@ -7,7 +7,7 @@ locals {
   logical_ad_pattern = "\\w*-ad-(\\d*)"
 }
 
-resource "oci_core_instance_configuration" "service_instance_configuration" {
+resource "oci_core_instance_configuration" "instance_configuration" {
   for_each = toset(var.service_instance_availability_domains)
 
   compartment_id = var.compartment_id
@@ -40,12 +40,12 @@ resource "oci_core_instance_configuration" "service_instance_configuration" {
 }
 
 // Create instance pools that manage compute instances
-resource "oci_core_instance_pool" "service_instance_pool" {
+resource "oci_core_instance_pool" "instance_pools" {
   for_each = toset(var.service_instance_availability_domains)
 
   compartment_id            = var.compartment_id
   display_name              = "${var.service_instance_name_prefix}-ad${regex(local.logical_ad_pattern, each.value)[0]}"
-  instance_configuration_id = oci_core_instance_configuration.service_instance_configuration[each.key].id
+  instance_configuration_id = oci_core_instance_configuration.instance_configuration[each.key].id
   placement_configurations {
     availability_domain = local.ad_map[each.value]
     primary_subnet_id   = var.service_subnet_id
