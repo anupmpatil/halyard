@@ -1,20 +1,20 @@
 variable "tenancy_ocid" {
-  type = string
+  type        = string
   description = "Tenancy ID."
 }
 
 variable "control_plane_compartment_id" {
-  type = string
+  type        = string
   description = "Compartment ID where the secret belongs to."
 }
 
 variable "management_plane_compartment_id" {
-  type = string
+  type        = string
   description = "Compartment ID where the secret belongs to."
 }
 
 variable "phonebook_name" {
-  type = string
+  type        = string
   description = "Phonebook name for the service."
 }
 

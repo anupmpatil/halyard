@@ -1,4 +1,4 @@
 variable "realm" {
-  type = string
+  type        = string
   description = "REQUIRED: Realm for deployment."
 }

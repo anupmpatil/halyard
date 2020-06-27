@@ -1,30 +1,30 @@
 variable "deployment_api_compartment_id" {
-  type = string
+  type        = string
   description = "API Compartment ID for deployment service ODO application."
 }
 
 variable "deployment_worker_compartment_id" {
-  type = string
+  type        = string
   description = "Worker Compartment ID for deployment service ODO application."
 }
 
 variable "availability_domains" {
-  type = list(string)
+  type        = list(string)
   description = "List of availability domains to deploy to."
 }
 
 variable "name_prefix" {
-  type = string
+  type        = string
   description = "Prefix for names(ODO and odo pool)."
 }
 
 variable "release_name" {
-  type = string
+  type        = string
   description = "Name of the shepherd release."
 }
 
 variable "stage" {
-  type = string
+  type        = string
   description = "Stage of the application."
 }
 
@@ -33,7 +33,7 @@ variable "odo_application_type" {
 }
 
 variable "deployment_parallelism_percentage" {
-  type = number
+  type        = number
   description = "The maximum percentage of the hosts being deployed. Valid range is (0, 100]."
 }
 

@@ -6,15 +6,15 @@
 // Source of artifacts that would be deployed to each target.
 resource "shepherd_artifacts" "artifacts" {
   artifact {
-    name = "deployment-service-api"
-    type = "docker"
-    location = "deployment-service-api"
+    name        = "deployment-service-api"
+    type        = "docker"
+    location    = "deployment-service-api"
     description = "The docker container for deployment-service's api server."
   }
   artifact {
-    name = "deployment-service-worker"
-    type = "docker"
-    location = "deployment-service-worker"
+    name        = "deployment-service-worker"
+    type        = "docker"
+    location    = "deployment-service-worker"
     description = "The docker container for deployment-service's worker."
   }
   # artifact {
@@ -30,40 +30,83 @@ resource "shepherd_artifacts" "artifacts" {
   #   description = "The docker container for application-service's worker."
   # }
   artifact {
-    name = "odo-system-updater"
-    type = "pop"
-    location = "odo-system-updater"
+    name        = "odo-system-updater"
+    type        = "pop"
+    location    = "odo-system-updater"
     description = "ODO's security updater binaries."
   }
 }
 
 locals {
+  tenancy_ocid_map = {
+    "beta" = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
+    //    "oc1" = ""
+    //    "oc2" = ""
+    //    "oc3" = ""
+    //    "oc4" = ""
+    //    "oc5" = ""
+  }
   // Helper local configs to define release phases.
   release_phase_config = {
     "beta" = {
-      "production" = false
-      "realm" = "oc1"
-      "regions" = ["us-phoenix-1"]
-      "home_region" = "us-phoenix-1"
-      "tenancy_ocid" = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
+      "production"   = false
+      "realm"        = "oc1"
+      "regions"      = ["us-phoenix-1"]
+      "home_region"  = "us-phoenix-1"
       "predecessors" = []
     }
     // todo: env variable
-    // env - beta, prod,
-#    "prod1" = {
-#      "production" = true
-#      "realm" = "oc1"
-#      "regions" = ["uk-london-1"]
-#      "home_region" = "us-phoenix-1"
-#      "predecessors" = ["beta"]
-#    }
-#    "prod2" = {
-#      "production" = true
-#      "realm" = "oc1"
-#      "regions" = ["us-ashburn-1"]
-#      "home_region" = "us-phoenix-1"
-#      "predecessors" = ["prod1"]
-#    }
+    // env - beta, prod
+    //    "oc1-groupA" = {
+    //      "production" = true
+    //      "realm" = "oc1"
+    //      "regions" = ["us-ashburn-1", "ap-seoul-1", "ap-hyderabad-1", "ap-melbourne-1", "eu-zurich-1", "sa-saopaulo-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["beta"]
+    //    }
+    //    "oc1-groupB" = {
+    //      "production" = true
+    //      "realm" = "oc1"
+    //      "regions" = ["uk-london-1", "ap-osaka-1", "ap-mumbai-1", "eu-amsterdam-1", "us-phoenix-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc1-groupA"]
+    //    }
+    //    "oc1-groupC" = {
+    //      "production" = true
+    //      "realm" = "oc1"
+    //      "regions" = ["ca-toronto-1", "ap-tokyo-1", "ap-sydney-1", "eu-frankfurt-1", "me-jeddah-1", "ca-montreal-1", "ap-chuncheon-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc1-groupB"]
+    //    }
+    //    "oc2-prod" = {
+    //      "production" = true
+    //      "realm" = "oc2"
+    //      "regions" = ["us-langley-1", "us-luke-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc1-groupC"]
+    //    }
+    //    "oc3-prod" = {
+    //      "production" = true
+    //      "realm" = "oc3"
+    //      "regions" = ["us-gov-ashburn-1", "us-gov-chicago-1", "us-gov-phoenix-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc2-prod"]
+    //    }
+    //    "oc4-prod" = {
+    //      "production" = true
+    //      "realm" = "oc4"
+    //      "regions" = ["uk-gov-london-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc3-prod"]
+    //    }
+    //    "oc5-prod" = {
+    //      "production" = true
+    //      "realm" = "oc5"
+    //      "regions" = ["us-tacoma-1"]
+    //      "home_region" = ""
+    //      "predecessors" = ["oc4-prod"]
+    //    }
+
   }
 }
 
@@ -71,8 +114,8 @@ locals {
 resource "shepherd_release_phase" "release_phases" {
   for_each = local.release_phase_config
 
-  name = each.key
-  realm = each.value["realm"]
+  name       = each.key
+  realm      = each.value["realm"]
   production = each.value["production"]
 
   predecessors = each.value["predecessors"]
@@ -81,59 +124,105 @@ resource "shepherd_release_phase" "release_phases" {
 // Release targets for each release phase.
 resource "shepherd_execution_target" "beta" {
   for_each = toset(local.release_phase_config["beta"]["regions"])
-  name = "beta-${each.key}"
-  tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
-  region = each.key
-  phase = shepherd_release_phase.release_phases["beta"].name
 
-  is_home_region_target = (each.key == local.release_phase_config["beta"]["home_region"])
+  name                      = "beta-${each.key}"
+  tenancy_ocid              = local.tenancy_ocid_map["beta"]
+  region                    = each.key
+  phase                     = shepherd_release_phase.release_phases["beta"].name
+  is_home_region_target     = (each.key == local.release_phase_config["beta"]["home_region"])
   snowflake_config_location = "beta"
 
-  # alarms_to_watch {
-  #   compartment_name = "deployment-service"
-  #   labels = ["shepherd-monitor"]
-  # }
-
-  # Deploy all execution_targets in this release in parallel.
   predecessors = []
 }
 
-# resource "shepherd_execution_target" "prod1" {
-#   for_each = toset(local.release_phase_config["prod1"]["regions"])
+// resource "shepherd_execution_target" "oc1-groupA" {
+//   for_each = toset(local.release_phase_config["oc1-groupA"]["regions"])
 
-#   name = "prod1-${each.key}"
-#   # It's recommended to use a tenancy different from your test environment.
-#   tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaa26mceal7cypzsefhbm2l73xtb3yreplacemereplacemereplaceme"
-#   region = each.key
-#   phase = shepherd_release_phase.release_phases["prod1"].name
+//   name = "oc1-groupA-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc1"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc1-groupA"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc1-groupA"]["home_region"])
+//   snowflake_config_location = "oc1-prod"
 
-#   alarms_to_watch {
-#     compartment_name = "deployment-service"
-#     labels = ["shepherd-monitor"]
-#   }
+//   predecessors = []
+// }
 
-#   is_home_region_target = (each.key == local.release_phase_config["prod1"]["home_region"])
+// resource "shepherd_execution_target" "oc1-groupB" {
+//   for_each = toset(local.release_phase_config["oc1-groupB"]["regions"])
+//
+//   name = "oc1-groupB-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc1"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc1-groupB"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc1-groupB"]["home_region"])
+//   snowflake_config_location = "oc1-prod"
 
-#   # Deploy all execution_targets in this release in parallel.
-#   predecessors = []
-# }
+//   predecessors = []
+// }
 
-# resource "shepherd_execution_target" "prod2" {
-#   for_each = toset(local.release_phase_config["prod2"]["regions"])
+// resource "shepherd_execution_target" "oc1-groupC" {
+//   for_each = toset(local.release_phase_config["oc1-groupC"]["regions"])
+//
+//   name = "oc1-groupC-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc1"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc1-groupC"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc1-groupC"]["home_region"])
+//   snowflake_config_location = "oc1-prod"
 
-#   name = "prod2-${each.key}"
-#   # It's recommended to use a tenancy different from your test environment.
-#   tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaa26mceal7cypzsefhbm2l73xtb3yreplacemereplacemereplaceme"
-#   region = each.key
-#   phase = shepherd_release_phase.release_phases["prod2"].name
+//   predecessors = []
+// }
 
-#   alarms_to_watch {
-#     compartment_name = "deployment-service"
-#     labels = ["shepherd-monitor"]
-#   }
+// resource "shepherd_execution_target" "oc2-prod" {
+//   for_each = toset(local.release_phase_config["oc2-prod"]["regions"])
+//
+//   name = "oc2-prod-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc2"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc2-prod"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc2-prod"]["home_region"])
+//   snowflake_config_location = "oc2-prod"
 
-#   is_home_region_target = (each.key == local.release_phase_config["prod2"]["home_region"])
+//   predecessors = []
+// }
 
-#   # Deploy all execution_targets in this release in parallel.
-#   predecessors = []
-# }
+// resource "shepherd_execution_target" "oc3-prod" {
+//   for_each = toset(local.release_phase_config["oc3-prod"]["regions"])
+//
+//   name = "oc3-prod-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc3"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc3-prod"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc3-prod"]["home_region"])
+//   snowflake_config_location = "oc3-prod"
+//
+//   predecessors = []
+// }
+
+// resource "shepherd_execution_target" "oc4-prod" {
+//   for_each = toset(local.release_phase_config["oc4-prod"]["regions"])
+//
+//   name = "oc4-prod-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc4"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc4-prod"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc4-prod"]["home_region"])
+//   snowflake_config_location = "oc4-prod"
+//
+//   predecessors = []
+// }
+
+// resource "shepherd_execution_target" "oc5-prod" {
+//   for_each = toset(local.release_phase_config["oc5-prod"]["regions"])
+//
+//   name = "oc5-prod-${each.key}"
+//   tenancy_ocid = local.tenancy_ocid_map["oc5"]
+//   region = each.key
+//   phase = shepherd_release_phase.release_phases["oc5-prod"].name
+//   is_home_region_target = (each.key == local.release_phase_config["oc5-prod"]["home_region"])
+//   snowflake_config_location = "oc5-prod"
+//
+//   predecessors = []
+// }
+

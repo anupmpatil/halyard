@@ -1,70 +1,70 @@
 variable "bastion_compartment_id" {
-  type = string
+  type        = string
   description = "Compartment ID where the OB3 jump VCN belongs to."
 }
 
 variable "ob3_bastion_cidr" {
-  type = string
+  type        = string
   description = "The CIDR of the OverlayBastion3(OB3) VCN. Should be provided by SecEdge team."
 }
 
 variable "jump_vcn_cidr" {
-  type = string
+  type        = string
   description = "The CIDR block for the jump VCN. Should be assigned by the SecEdge team."
 }
 
 variable "jump_instance_shape" {
-  type = string
-  default = "VM.Standard2.1"
+  type        = string
+  default     = "VM.Standard2.1"
   description = "The shape of the jump instance."
 }
 
 variable "jump_instance_image_id" {
-  type = string
+  type        = string
   description = "The image id for the jump instance. Note: it must be chef enabled."
 }
 
 variable "jump_instance_ad" {
-  type = string
+  type        = string
   description = "The availability zone where you want to run the jump instance."
 }
 
 variable "jump_instance_hostclass" {
-  type = string
+  type        = string
   description = "The overlay hostclass that your jump instance belongs to."
 }
 
 variable "service_vcn_cidr" {
-  type = string
+  type        = string
   description = "The CIDR block for your service VCN."
 }
 
 variable "service_vcn_lpg_id" {
-  type = string
+  type        = string
   description = "The service VCN's LPG ID that jump VCN should pair to."
 }
 
 variable "jump_instance_display_name" {
-  type = string
+  type    = string
   default = "ob3_jump_instance."
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "The region for this service."
 }
 
 variable "bastion_lpg_requestor_tenancy_ocid" {
-  type = string
+  type        = string
   description = "REQUIRED: OCID for SECEDGE tenancy requesting peering for bastion lpg"
 }
 
 variable "bastion_lpg_requestor_group_ocid" {
-  type = string
+  type        = string
   description = "REQUIRED: OCID for SECEDGE group requesting peering for bastion lpg"
 }
 
 variable "tenancy_ocid" {
-  type = string
+  type        = string
   description = "REQUIRED: Tenancy OCID"
 }

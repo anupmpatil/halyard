@@ -1,4 +1,4 @@
 variable "compartment_id" {
-  type = string
+  type        = string
   description = "Compartment OCID"
 }

@@ -11,21 +11,21 @@ data "oci_core_services" "all_oci_services" {
 }
 
 locals {
-  dns_label = var.dns_label == "" ? var.service_name : var.dns_label
+  dns_label           = var.dns_label == "" ? var.service_name : var.dns_label
   service_subnet_cidr = cidrsubnet(var.service_vcn_cidr, var.service_subnet_cidr_offset, 0)
-  tcp_protocol = "6"
-  udp_protocol = "17"
-  icmp_protocol = "1"
-  all_protocols = "all"
-  anywhere = "0.0.0.0/0"
+  tcp_protocol        = "6"
+  udp_protocol        = "17"
+  icmp_protocol       = "1"
+  all_protocols       = "all"
+  anywhere            = "0.0.0.0/0"
 }
 
 //The VCN where your applicaiton will run.
 resource "oci_core_vcn" "service_vcn" {
-  cidr_block = var.service_vcn_cidr
+  cidr_block     = var.service_vcn_cidr
   compartment_id = var.compartment_id
-  display_name = "vcn_${var.service_name}"
-  dns_label = local.dns_label
+  display_name   = "vcn_${var.service_name}"
+  dns_label      = local.dns_label
 }
 
 /*
@@ -34,21 +34,21 @@ resource "oci_core_vcn" "service_vcn" {
 */
 resource "oci_core_nat_gateway" "service_vcn_nat" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "nat_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "nat_${oci_core_vcn.service_vcn.display_name}"
 }
 
 // Local Peering Gateway (LPG) that connects to your jump vcn.
 resource "oci_core_local_peering_gateway" "service_jump_lpg" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "lpg_ob3jump_to_service"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "lpg_ob3jump_to_service"
 }
 
 resource "oci_core_service_gateway" "service_vcn_service_gateway" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "service_gateway_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "service_gateway_${oci_core_vcn.service_vcn.display_name}"
   services {
     service_id = lookup(data.oci_core_services.all_oci_services.services[0], "id")
   }
@@ -62,17 +62,17 @@ resource "oci_core_service_gateway" "service_vcn_service_gateway" {
  */
 resource "oci_core_route_table" "service_vcn_route_table" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "route_table_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "route_table_${oci_core_vcn.service_vcn.display_name}"
   route_rules {
-      destination = local.anywhere
-      destination_type = "CIDR_BLOCK"
-      network_entity_id = oci_core_nat_gateway.service_vcn_nat.id
+    destination       = local.anywhere
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.service_vcn_nat.id
   }
   route_rules {
-      destination = var.jump_vcn_cidr
-      destination_type = "CIDR_BLOCK"
-      network_entity_id = oci_core_local_peering_gateway.service_jump_lpg.id
+    destination       = var.jump_vcn_cidr
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_local_peering_gateway.service_jump_lpg.id
   }
   route_rules {
     destination       = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
@@ -89,46 +89,46 @@ resource "oci_core_route_table" "service_vcn_route_table" {
 */
 resource "oci_core_security_list" "service_vcn_security_list" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "security_list_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "security_list_${oci_core_vcn.service_vcn.display_name}"
 
   // Allows all TCP outbound traffic
   egress_security_rules {
     destination = local.anywhere
-    protocol = local.tcp_protocol
-    stateless = false
+    protocol    = local.tcp_protocol
+    stateless   = false
   }
   // Allows all UDP outbound traffic
   egress_security_rules {
     destination = local.anywhere
-    protocol = local.udp_protocol
-    stateless = false
+    protocol    = local.udp_protocol
+    stateless   = false
   }
   //Only allow ssh ingress traffic at port 22 and the default referenceApp's
   //application port
   ingress_security_rules {
-      protocol = local.tcp_protocol
-      source = var.jump_vcn_cidr
-      stateless = false
-      tcp_options {
-        min = 22
-        max = 22
-      }
+    protocol  = local.tcp_protocol
+    source    = var.jump_vcn_cidr
+    stateless = false
+    tcp_options {
+      min = 22
+      max = 22
+    }
   }
   ingress_security_rules {
-      protocol = local.tcp_protocol
-      source = var.service_vcn_cidr
-      stateless = false
+    protocol  = local.tcp_protocol
+    source    = var.service_vcn_cidr
+    stateless = false
 
-      tcp_options {
-        min = var.host_listening_port
-        max = var.host_listening_port
-      }
+    tcp_options {
+      min = var.host_listening_port
+      max = var.host_listening_port
+    }
   }
   // allow ICMP inbound traffic
   ingress_security_rules {
-    protocol = local.icmp_protocol
-    source = local.anywhere
+    protocol  = local.icmp_protocol
+    source    = local.anywhere
     stateless = true
 
     icmp_options {
@@ -141,28 +141,28 @@ resource "oci_core_security_list" "service_vcn_security_list" {
 // Route outbound traffic to internet gateway. Also required to make public LB work.
 resource "oci_core_route_table" "lb_subnet_route_table" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "route_table_lb_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "route_table_lb_${oci_core_vcn.service_vcn.display_name}"
   route_rules {
-      destination = local.anywhere
-      destination_type = "CIDR_BLOCK"
-      network_entity_id = oci_core_internet_gateway.lb_subnet_internet_gateway.id
+    destination       = local.anywhere
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_internet_gateway.lb_subnet_internet_gateway.id
   }
 }
 
 //Route table for the scan platform subnet.
 resource "oci_core_route_table" "scan_platform_subnet_route_table" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "route_table_scan_platform_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "route_table_scan_platform_${oci_core_vcn.service_vcn.display_name}"
   route_rules {
-    destination = local.anywhere
-    destination_type = "CIDR_BLOCK"
+    destination       = local.anywhere
+    destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_nat_gateway.service_vcn_nat.id
   }
   route_rules {
-    destination = var.jump_vcn_cidr
-    destination_type = "CIDR_BLOCK"
+    destination       = var.jump_vcn_cidr
+    destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_local_peering_gateway.service_jump_lpg.id
   }
 }
@@ -170,12 +170,12 @@ resource "oci_core_route_table" "scan_platform_subnet_route_table" {
 // Allowing outbound traffic to service VCN.
 resource "oci_core_security_list" "lb_subnet_security_list" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "security_list_lb_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "security_list_lb_${oci_core_vcn.service_vcn.display_name}"
   egress_security_rules {
     destination = oci_core_vcn.service_vcn.cidr_block
-    protocol = local.tcp_protocol
-    stateless = false
+    protocol    = local.tcp_protocol
+    stateless   = false
     tcp_options {
       min = var.host_listening_port
       max = var.host_listening_port
@@ -183,80 +183,80 @@ resource "oci_core_security_list" "lb_subnet_security_list" {
   }
 
   ingress_security_rules {
-      protocol = local.tcp_protocol
-      source = local.anywhere
-      stateless = false
-      tcp_options {
-        min = var.lb_listener_port
-        max = var.lb_listener_port
-      }
+    protocol  = local.tcp_protocol
+    source    = local.anywhere
+    stateless = false
+    tcp_options {
+      min = var.lb_listener_port
+      max = var.lb_listener_port
+    }
   }
 }
 
 // The security list for scan platform.
 resource "oci_core_security_list" "scan_platform_subnet_security_list" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "security_list_scan_platform_${oci_core_vcn.service_vcn.display_name}"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "security_list_scan_platform_${oci_core_vcn.service_vcn.display_name}"
   egress_security_rules {
     destination = oci_core_vcn.service_vcn.cidr_block
-    protocol = local.tcp_protocol
-    stateless = false
+    protocol    = local.tcp_protocol
+    stateless   = false
   }
   egress_security_rules {
     destination = oci_core_vcn.service_vcn.cidr_block
-    protocol = local.icmp_protocol
-    stateless = false
+    protocol    = local.icmp_protocol
+    stateless   = false
   }
   egress_security_rules {
     destination = var.jump_vcn_cidr
-    protocol = local.tcp_protocol
-    stateless = false
+    protocol    = local.tcp_protocol
+    stateless   = false
   }
   egress_security_rules {
     destination = var.jump_vcn_cidr
-    protocol = local.icmp_protocol
-    stateless = false
+    protocol    = local.icmp_protocol
+    stateless   = false
   }
 }
 
 // An Internet gateway is required for public load balancers to work.
 resource "oci_core_internet_gateway" "lb_subnet_internet_gateway" {
   compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  display_name = "lb_internet_gateway"
+  vcn_id         = oci_core_vcn.service_vcn.id
+  display_name   = "lb_internet_gateway"
 }
 
 // A regional subnet where application runs
 resource "oci_core_subnet" "service_subnet" {
-  compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  cidr_block = local.service_subnet_cidr
+  compartment_id             = var.compartment_id
+  vcn_id                     = oci_core_vcn.service_vcn.id
+  cidr_block                 = local.service_subnet_cidr
   prohibit_public_ip_on_vnic = true
-  route_table_id = oci_core_route_table.service_vcn_route_table.id
-  security_list_ids = [oci_core_security_list.service_vcn_security_list.id]
-  display_name = "service_subnet_${oci_core_vcn.service_vcn.display_name}"
-  dns_label = var.region.name
+  route_table_id             = oci_core_route_table.service_vcn_route_table.id
+  security_list_ids          = [oci_core_security_list.service_vcn_security_list.id]
+  display_name               = "service_subnet_${oci_core_vcn.service_vcn.display_name}"
+  dns_label                  = var.region.name
 }
 
 // Subnet for public loadbalancer.
 resource "oci_core_subnet" "lb_subnet" {
-  compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  cidr_block = cidrsubnet(cidrsubnet(var.service_vcn_cidr, 1, 1), 7, 0)
-  route_table_id = oci_core_route_table.lb_subnet_route_table.id
+  compartment_id    = var.compartment_id
+  vcn_id            = oci_core_vcn.service_vcn.id
+  cidr_block        = cidrsubnet(cidrsubnet(var.service_vcn_cidr, 1, 1), 7, 0)
+  route_table_id    = oci_core_route_table.lb_subnet_route_table.id
   security_list_ids = [oci_core_security_list.lb_subnet_security_list.id]
-  display_name = "subnet_lb_${oci_core_vcn.service_vcn.display_name}"
-  dns_label = "lb"
+  display_name      = "subnet_lb_${oci_core_vcn.service_vcn.display_name}"
+  dns_label         = "lb"
 }
 
 // Subnet for scan platform.
 resource "oci_core_subnet" "scan_platform_subnet" {
-  cidr_block = cidrsubnet(cidrsubnet(var.service_vcn_cidr, 1, 1), 7, 1)
-  compartment_id = var.compartment_id
-  vcn_id = oci_core_vcn.service_vcn.id
-  route_table_id = oci_core_route_table.scan_platform_subnet_route_table.id
+  cidr_block        = cidrsubnet(cidrsubnet(var.service_vcn_cidr, 1, 1), 7, 1)
+  compartment_id    = var.compartment_id
+  vcn_id            = oci_core_vcn.service_vcn.id
+  route_table_id    = oci_core_route_table.scan_platform_subnet_route_table.id
   security_list_ids = [oci_core_security_list.scan_platform_subnet_security_list.id]
-  display_name = "subnet_scan_platform_${oci_core_vcn.service_vcn.display_name}"
-  dns_label = "scanplatform"
+  display_name      = "subnet_scan_platform_${oci_core_vcn.service_vcn.display_name}"
+  dns_label         = "scanplatform"
 }

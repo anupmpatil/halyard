@@ -2,9 +2,9 @@
 
 resource "certificate" tls_server_cert_deployment_service_control_plane_api {
   compartment_id = var.control_plane_compartment_id
-  name = "deployment_service_control_plane_api_tls_server_cert"
-  description =  "deployment_service_control_plane_api tls server certificate"
-  phonebook_name =  var.phonebook_name
+  name           = "deployment_service_control_plane_api_tls_server_cert"
+  description    = "deployment_service_control_plane_api tls server certificate"
+  phonebook_name = var.phonebook_name
 
   # One of "TLS_SERVER", "TLS_CLIENT", "SERVICE_PRINCIPAL"
   type = "TLS_SERVER"
@@ -33,9 +33,9 @@ resource "certificate" tls_server_cert_deployment_service_control_plane_api {
 
 resource "certificate" tls_server_cert_deployment_service_management_plane_api {
   compartment_id = var.management_plane_compartment_id
-  name = "deployment_service_management_plane_api_tls_server_cert"
-  description =  "deployment_service_management_plane_api tls server certificate"
-  phonebook_name =  var.phonebook_name
+  name           = "deployment_service_management_plane_api_tls_server_cert"
+  description    = "deployment_service_management_plane_api tls server certificate"
+  phonebook_name = var.phonebook_name
 
   # One of "TLS_SERVER", "TLS_CLIENT", "SERVICE_PRINCIPAL"
   type = "TLS_SERVER"
@@ -58,15 +58,15 @@ resource "certificate" tls_server_cert_deployment_service_management_plane_api {
 ####### Certificate Bindings #######
 
 resource "certificate_secret_service_binding_resource" server_cert_lb_binding_control_plane_api {
-  certificate_ocid = certificate.tls_server_cert_deployment_service_control_plane_api.id
-  secret_definition_ocid = var.tls_certificate_control_plane_api.id
+  certificate_ocid              = certificate.tls_server_cert_deployment_service_control_plane_api.id
+  secret_definition_ocid        = var.tls_certificate_control_plane_api.id
   secret_service_compartment_id = var.control_plane_compartment_id
-  availability_domain = "ad1"
+  availability_domain           = "ad1"
 }
 
 resource "certificate_secret_service_binding_resource" server_cert_lb_binding_management_plane_api {
-  certificate_ocid = certificate.tls_server_cert_deployment_service_management_plane_api.id
-  secret_definition_ocid = var.tls_certificate_management_plane_api.id
+  certificate_ocid              = certificate.tls_server_cert_deployment_service_management_plane_api.id
+  secret_definition_ocid        = var.tls_certificate_management_plane_api.id
   secret_service_compartment_id = var.management_plane_compartment_id
-  availability_domain = "ad1"
+  availability_domain           = "ad1"
 }

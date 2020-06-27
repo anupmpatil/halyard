@@ -1,14 +1,14 @@
 variable "service_name" {
-  type = string
+  type        = string
   description = "Service name, mostly used for naming purposes."
 }
 
 variable "compartment_id" {
-  type = string
+  type        = string
   description = "Compartment ID for the kiev instance related resources."
 }
 
 variable "stage" {
-  type = string
+  type        = string
   description = "Stage of the log space."
 }
