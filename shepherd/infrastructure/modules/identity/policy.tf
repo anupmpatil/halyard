@@ -52,7 +52,8 @@ resource "oci_identity_policy" "secret_service_policy" {
   description    = "This policy allows CertNanny serivce to update secret versions"
   name           = "dlc-ss-policy"
   statements = [
-    "ALLOW service CertNanny TO {SECRET-SERVICE-MANAGE-SECRET-VERSION} IN COMPARTMENT ${oci_identity_compartment.deployment_service_control_plane_api.name}"
+    "ALLOW service CertNanny TO {SECRET-SERVICE-MANAGE-SECRET-VERSION} IN COMPARTMENT ${oci_identity_compartment.deployment_service_control_plane_api.name}",
+    "ALLOW service CertNanny TO {SECRET-SERVICE-MANAGE-SECRET-VERSION} IN COMPARTMENT ${oci_identity_compartment.deployment_service_management_plane_api.name}"
   ]
 }
 
