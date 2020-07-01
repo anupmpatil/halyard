@@ -4,7 +4,7 @@ data "oci_identity_availability_domains" "service_ads" {
 }
 
 locals {
-  environment                         = local.execution_target.name == "beta" ? "beta" : "prod"
+  environment                         = local.execution_target.name == "beta-us-phoenix-1" ? "beta" : "prod"
   control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api.id
   management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api.id
   control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker.id
@@ -16,6 +16,8 @@ locals {
   service_short_name                  = "dply-svc"
   control_plane_api_fleet_name        = "deployment-service-control-plane-api-${local.environment}"
   control_plane_worker_fleet_name     = "deployment-service-control-plane-worker-${local.environment}"
+  management_plane_api_fleet_name     = "deployment-service-management-plane-api-${local.environment}"
+  data_plane_worker_fleet_name        = "deployment-service-data-plane-worker-${local.environment}"
   team_queue                          = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
   dns_label                           = "deploy"
   phonebook_name                      = "dlcdep"
@@ -68,28 +70,48 @@ module "image" {
   compartment_id = local.control_plane_api_compartment_id
 }
 
-// Provision network resources for the service.
-module "service_network" {
+module "service_network_control_plane" {
   source              = "./modules/service-network"
   region              = local.execution_target.region
   compartment_id      = local.control_plane_api_compartment_id
   service_vcn_cidr    = local.service_vcn_cidr
   jump_vcn_cidr       = local.ob3_jump_vcn_cidr
-  service_name        = "${local.service_short_name}-${local.environment}"
+  service_name        = "${local.service_short_name}-ctrl-plane-${local.environment}"
   dns_label           = "${local.dns_label}${local.environment}"
   host_listening_port = local.api_host_listening_port
   lb_listener_port    = local.lb_listening_port
 }
 
-// Provision load balancer related resources.
-module "service_lb" {
+module "service_network_management_plane" {
+  source              = "./modules/service-network"
+  region              = local.execution_target.region
+  compartment_id      = local.management_plane_api_compartment_id
+  service_vcn_cidr    = local.service_vcn_cidr
+  jump_vcn_cidr       = local.ob3_jump_vcn_cidr
+  service_name        = "${local.service_short_name}-mgmt-plane-${local.environment}"
+  dns_label           = "${local.dns_label}${local.environment}"
+  host_listening_port = local.api_host_listening_port
+  lb_listener_port    = local.lb_listening_port
+}
+
+module "service_lb_control_plane" {
   source              = "./modules/load-balancer"
   compartment_id      = local.control_plane_api_compartment_id
   lb_shape            = "100Mbps"
-  subnet_id           = module.service_network.service_lb_subnet_id
+  subnet_id           = module.service_network_control_plane.service_lb_subnet_id
   listener_port       = local.lb_listening_port
   host_listening_port = local.api_host_listening_port
-  display_name        = "lb_${local.service_short_name}_${local.environment}"
+  display_name        = "lb_${local.service_short_name}_ctrl_plane_${local.environment}"
+}
+
+module "service_lb_management_plane" {
+  source              = "./modules/load-balancer"
+  compartment_id      = local.management_plane_api_compartment_id
+  lb_shape            = "100Mbps"
+  subnet_id           = module.service_network_management_plane.service_lb_subnet_id
+  listener_port       = local.lb_listening_port
+  host_listening_port = local.api_host_listening_port
+  display_name        = "lb_${local.service_short_name}_mgmt_plane_${local.environment}"
 }
 
 // Provision compute instances for control plane api.
@@ -105,10 +127,10 @@ module "service_instances_control_plane_api" {
   service_instances_oci_fleet           = local.control_plane_api_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network.service_subnet_id
+  service_subnet_id                     = module.service_network_control_plane.service_subnet_id
   attach_to_lb                          = true
-  lb_backend_set_name                   = module.service_lb.service_lb_backend_set_name
-  load_balancer_id                      = module.service_lb.service_lb_id
+  lb_backend_set_name                   = module.service_lb_control_plane.service_lb_backend_set_name
+  load_balancer_id                      = module.service_lb_control_plane.service_lb_id
   application_port                      = local.api_host_listening_port
 }
 
@@ -125,16 +147,61 @@ module "service_instances_control_plane_worker" {
   service_instances_oci_fleet           = local.control_plane_worker_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network.service_subnet_id
+  service_subnet_id                     = module.service_network_control_plane.service_subnet_id
   attach_to_lb                          = false
 }
 
-module "lumberjack" {
+// Provision compute instances for management plane api.
+module "service_instances_management_plane_api" {
+  source                                = "./modules/instances"
+  region                                = local.execution_target.region.public_name
+  tenancy_ocid                          = local.execution_target.tenancy_ocid
+  compartment_id                        = local.management_plane_api_compartment_id
+  service_instance_shape                = "VM.Standard.E2.1"
+  service_instance_name_prefix          = "${local.service_short_name}-mgmt-plne-api-${local.environment}"
+  service_instance_image_id             = module.image.overlay_image.id
+  service_instances_hostclass_name      = local.host_class
+  service_instances_oci_fleet           = local.management_plane_api_fleet_name
+  service_instance_availability_domains = local.service_availability_domains
+  instance_count_per_ad                 = 1
+  service_subnet_id                     = module.service_network_management_plane.service_subnet_id
+  attach_to_lb                          = true
+  lb_backend_set_name                   = module.service_lb_management_plane.service_lb_backend_set_name
+  load_balancer_id                      = module.service_lb_management_plane.service_lb_id
+  application_port                      = local.api_host_listening_port
+}
+
+// Provision compute instances for data plane worker.
+module "service_instances_data_plane_worker" {
+  source                                = "./modules/instances"
+  region                                = local.execution_target.region.public_name
+  tenancy_ocid                          = local.execution_target.tenancy_ocid
+  compartment_id                        = local.data_plane_worker_compartment_id
+  service_instance_shape                = "VM.Standard.E2.1"
+  service_instance_name_prefix          = "${local.service_short_name}-data-plne-wrkr-${local.environment}"
+  service_instance_image_id             = module.image.overlay_image.id
+  service_instances_hostclass_name      = local.host_class
+  service_instances_oci_fleet           = local.data_plane_worker_fleet_name
+  service_instance_availability_domains = local.service_availability_domains
+  instance_count_per_ad                 = 1
+  service_subnet_id                     = module.service_network_management_plane.service_subnet_id
+  attach_to_lb                          = false
+}
+
+module "lumberjack_control_plane" {
   source               = "./modules/lumberjack"
   compartment_id       = local.control_plane_api_compartment_id
   availability_domains = local.service_availability_domains
-  log_namespace        = "deployment-service"
-  stage                = local.environment
+  log_namespace        = "deployment-service-ctrl-plane"
+  environment          = local.environment
+}
+
+module "lumberjack_management_plane" {
+  source               = "./modules/lumberjack"
+  compartment_id       = local.management_plane_api_compartment_id
+  availability_domains = local.service_availability_domains
+  log_namespace        = "deployment-service-mgmt-plane"
+  environment          = local.environment
 }
 
 module "secret_service" {
@@ -146,11 +213,18 @@ module "secret_service" {
   team_queue                          = local.team_queue
 }
 
-module "kiev" {
+module "kiev_control_plane" {
   source         = "./modules/kiev"
   compartment_id = local.control_plane_api_compartment_id
-  service_name   = local.service_short_name
-  stage          = local.environment
+  service_name   = "${local.service_short_name}-control-plane"
+  environment    = local.environment
+}
+
+module "kiev_data_plane" {
+  source         = "./modules/kiev"
+  compartment_id = local.control_plane_api_compartment_id
+  service_name   = "${local.service_short_name}-data-plane"
+  environment    = local.environment
 }
 
 module "certificate" {
@@ -177,7 +251,7 @@ module "ob3_jump" {
   jump_instance_ad                   = data.oci_identity_availability_domains.service_ads.availability_domains[0].name
   jump_instance_hostclass            = local.host_class
   service_vcn_cidr                   = local.service_vcn_cidr
-  service_vcn_lpg_id                 = module.service_network.service_jump_lpg_id
+  service_vcn_lpg_id                 = module.service_network_control_plane.service_jump_lpg_id
   bastion_lpg_requestor_tenancy_ocid = module.region_config.bastion_lpg_requestor_tenancy_ocid
   bastion_lpg_requestor_group_ocid   = module.region_config.bastion_lpg_requestor_group_ocid
 }
@@ -186,7 +260,7 @@ module "dns" {
   source                                           = "./modules/dns"
   environment                                      = local.environment
   region                                           = local.execution_target.region.public_name
-  control_plane_api_public_loadbalancer_ip_address = module.service_lb.service_public_loadbalancer_ip_address
+  control_plane_api_public_loadbalancer_ip_address = module.service_lb_control_plane.service_public_loadbalancer_ip_address
 }
 
 module "limits" {

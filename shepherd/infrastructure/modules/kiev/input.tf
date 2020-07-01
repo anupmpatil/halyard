@@ -8,7 +8,7 @@ variable "compartment_id" {
   description = "Compartment ID for the kiev instance related resources."
 }
 
-variable "stage" {
+variable "environment" {
   type        = string
-  description = "Stage of the log space."
+  description = "Environment of the log space. (beta/prod)"
 }

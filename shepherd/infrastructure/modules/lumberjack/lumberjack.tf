@@ -3,7 +3,7 @@ resource "lumberjack" "lumberjack_api" {
 
   ad          = each.key
   compartment = var.compartment_id
-  namespace   = "${var.log_namespace}-api-${var.stage}"
+  namespace   = "${var.log_namespace}-api-${var.environment}"
   log_type    = "standard"
   config {
     log_group_configs {
@@ -12,7 +12,7 @@ resource "lumberjack" "lumberjack_api" {
       agent {
         enabled = true
         single_log_rotation_schema {
-          directory                = "/logs/deployment-service-api"
+          directory                = "/logs/${var.log_namespace}-api"
           current_log_filename     = "application.log"
           rotated_filename_pattern = "application.*log.gz"
         }
@@ -26,7 +26,7 @@ resource "lumberjack" "lumberjack_worker" {
 
   ad          = each.key
   compartment = var.compartment_id
-  namespace   = "${var.log_namespace}-worker-${var.stage}"
+  namespace   = "${var.log_namespace}-worker-${var.environment}"
   log_type    = "standard"
   config {
     log_group_configs {
@@ -35,7 +35,7 @@ resource "lumberjack" "lumberjack_worker" {
       agent {
         enabled = true
         single_log_rotation_schema {
-          directory                = "/logs/deployment-service-worker"
+          directory                = "/logs/${var.log_namespace}-worker"
           current_log_filename     = "application.log"
           rotated_filename_pattern = "application.*log.gz"
         }

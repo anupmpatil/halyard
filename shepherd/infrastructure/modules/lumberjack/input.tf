@@ -13,7 +13,7 @@ variable "log_namespace" {
   description = "Lumberjack's registered namespace."
 }
 
-variable "stage" {
+variable "environment" {
   type        = string
-  description = "Stage of the log space."
+  description = "Environment of the log space. (beta/prod)"
 }
