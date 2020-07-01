@@ -64,7 +64,6 @@ resource "certificate_secret_service_binding_resource" server_cert_lb_binding_co
   availability_domain           = "ad1"
 }
 
-
 resource "certificate_secret_service_binding_resource" server_cert_lb_binding_management_plane_api {
   certificate_ocid              = certificate.tls_server_cert_deployment_service_management_plane_api.id
   secret_definition_ocid        = var.tls_certificate_management_plane_api.id

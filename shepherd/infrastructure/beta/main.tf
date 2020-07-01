@@ -257,10 +257,11 @@ module "ob3_jump" {
 }
 
 module "dns" {
-  source                                           = "./modules/dns"
-  environment                                      = local.environment
-  region                                           = local.execution_target.region.public_name
-  control_plane_api_public_loadbalancer_ip_address = module.service_lb_control_plane.service_public_loadbalancer_ip_address
+  source                                              = "./modules/dns"
+  environment                                         = local.environment
+  region                                              = local.execution_target.region.public_name
+  control_plane_api_public_loadbalancer_ip_address    = module.service_lb_control_plane.service_public_loadbalancer_ip_address
+  management_plane_api_public_loadbalancer_ip_address = module.service_lb_management_plane.service_public_loadbalancer_ip_address
 }
 
 module "limits" {

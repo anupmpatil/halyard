@@ -12,3 +12,8 @@ variable "control_plane_api_public_loadbalancer_ip_address" {
   type        = string
   description = "IP address of the loadbalancer"
 }
+
+variable "management_plane_api_public_loadbalancer_ip_address" {
+  type        = string
+  description = "IP address of the loadbalancer"
+}
