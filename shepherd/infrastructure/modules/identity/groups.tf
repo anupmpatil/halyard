@@ -14,7 +14,7 @@ resource "oci_identity_dynamic_group" "access_managers_dynamic_group" {
   }
   compartment_id = var.tenancy_ocid
   description    = "Dynamic group for service instance whitelisting"
-  matching_rule  = "ANY { instance.compartment.id = '${oci_identity_compartment.deployment_service_control_plane_worker.id}', instance.compartment.id = '${oci_identity_compartment.deployment_service_control_plane_api.id}', instance.compartment.id = '${oci_identity_compartment.deployment_bastion.id}' }"
+  matching_rule  = "ANY { instance.compartment.id = '${oci_identity_compartment.deployment_service_control_plane_worker.id}', instance.compartment.id = '${oci_identity_compartment.deployment_service_control_plane_api.id}', instance.compartment.id = '${oci_identity_compartment.deployment_bastion.id}', instance.compartment.id = '${oci_identity_compartment.deployment_service_management_plane_api.id}', instance.compartment.id = '${oci_identity_compartment.deployment_service_data_plane_worker.id}' }"
   name           = "access-managers"
 }
 

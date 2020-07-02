@@ -192,7 +192,7 @@ module "lumberjack_control_plane" {
   source               = "./modules/lumberjack"
   compartment_id       = local.control_plane_api_compartment_id
   availability_domains = local.service_availability_domains
-  log_namespace        = "deployment-service-ctrl-plane"
+  log_namespace        = "deployment-service-control-plane"
   environment          = local.environment
 }
 
@@ -200,7 +200,7 @@ module "lumberjack_management_plane" {
   source               = "./modules/lumberjack"
   compartment_id       = local.management_plane_api_compartment_id
   availability_domains = local.service_availability_domains
-  log_namespace        = "deployment-service-mgmt-plane"
+  log_namespace        = "deployment-service-management-plane"
   environment          = local.environment
 }
 
