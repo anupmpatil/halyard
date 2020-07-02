@@ -51,7 +51,7 @@ module "common" {
 module "identity" {
   source                                                   = "./modules/identity"
   tenancy_ocid                                             = local.execution_target.tenancy_ocid
-  deployment_service_control_plane_api_compartment_name    = "deployment_service_conrol_plane_api"
+  deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
   deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
   deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
   deployment_service_data_plane_worker_compartment_name    = "deployment_service_data_plane_worker"
