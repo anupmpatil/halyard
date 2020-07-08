@@ -45,7 +45,7 @@ resource "odo_application" "odo_application_api" {
   agent                   = "HOSTAGENT_V2"
   default_artifact_source = "OBJECT_STORE"
   type                    = var.odo_application_type
-  artifact_set_identifier = "deployment-service-api"
+  artifact_set_identifier = var.api_artifact_name
 
   pools = [odo_pool.api[each.key].resource_id]
 
@@ -100,7 +100,7 @@ resource "odo_application" "odo_application_worker" {
   agent                   = "HOSTAGENT_V2"
   default_artifact_source = "OBJECT_STORE"
   type                    = var.odo_application_type
-  artifact_set_identifier = "deployment-service-worker"
+  artifact_set_identifier = var.worker_artifact_name
 
   pools = [odo_pool.worker[each.key].resource_id]
 
@@ -161,7 +161,6 @@ resource "odo_application" "os_updater" {
 
   config {
     deployments {
-
       /*
         Starting with a conservative deployment strategy that would only deploy 1 host at a time.
         Please re-evaluate your deployment strategy based on your service's requirements before going production.
@@ -183,128 +182,4 @@ resource "odo_application" "os_updater" {
       run_as_user               = "root"
     }
   }
-}
-
-/*
-  Deploy os_updater changes, 1 AD at a time assuming there would be 3 ADs.
-*/
-resource "odo_deployment" "os_updater_deployment_0" {
-  ad         = var.availability_domains[0]
-  alias      = odo_application.os_updater[var.availability_domains[0]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["odo-system-updater"].uri
-    build_tag = var.artifact_versions["odo-system-updater"].version
-    type      = var.artifact_versions["odo-system-updater"].type
-  }
-  flags = ["SKIP_UP_TO_DATE_NODES"]
-}
-
-resource "odo_deployment" "os_updater_deployment_1" {
-  ad         = var.availability_domains[1]
-  alias      = odo_application.os_updater[var.availability_domains[1]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["odo-system-updater"].uri
-    build_tag = var.artifact_versions["odo-system-updater"].version
-    type      = var.artifact_versions["odo-system-updater"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.os_updater_deployment_0]
-}
-resource "odo_deployment" "os_updater_deployment_2" {
-  ad         = var.availability_domains[2]
-  alias      = odo_application.os_updater[var.availability_domains[2]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["odo-system-updater"].uri
-    build_tag = var.artifact_versions["odo-system-updater"].version
-    type      = var.artifact_versions["odo-system-updater"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.os_updater_deployment_1]
-}
-
-/*
-  Deploy API changes after os_updater, 1 AD at a time assuming there would be 3 ADs.
-*/
-resource "odo_deployment" "api_deployment_0" {
-  ad         = var.availability_domains[0]
-  alias      = odo_application.odo_application_api[var.availability_domains[0]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-api"].uri
-    build_tag = var.artifact_versions["deployment-service-api"].version
-    type      = var.artifact_versions["deployment-service-api"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.os_updater_deployment_2]
-}
-
-resource "odo_deployment" "api_deployment_1" {
-  ad         = var.availability_domains[1]
-  alias      = odo_application.odo_application_api[var.availability_domains[1]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-api"].uri
-    build_tag = var.artifact_versions["deployment-service-api"].version
-    type      = var.artifact_versions["deployment-service-api"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_0]
-}
-
-resource "odo_deployment" "api_deployment_2" {
-  ad         = var.availability_domains[2]
-  alias      = odo_application.odo_application_api[var.availability_domains[2]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-api"].uri
-    build_tag = var.artifact_versions["deployment-service-api"].version
-    type      = var.artifact_versions["deployment-service-api"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_1]
-}
-
-/*
-  Deploy Worker changes after API, 1 AD at a time assuming there would be 3 ADs.
-*/
-resource "odo_deployment" "worker_deployment_0" {
-  ad         = var.availability_domains[0]
-  alias      = odo_application.odo_application_worker[var.availability_domains[0]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-worker"].uri
-    build_tag = var.artifact_versions["deployment-service-worker"].version
-    type      = var.artifact_versions["deployment-service-worker"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_2]
-}
-
-resource "odo_deployment" "worker_deployment_1" {
-  ad         = var.availability_domains[1]
-  alias      = odo_application.odo_application_worker[var.availability_domains[1]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-worker"].uri
-    build_tag = var.artifact_versions["deployment-service-worker"].version
-    type      = var.artifact_versions["deployment-service-worker"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.worker_deployment_0]
-}
-
-resource "odo_deployment" "worker_deployment_2" {
-  ad         = var.availability_domains[2]
-  alias      = odo_application.odo_application_worker[var.availability_domains[2]].alias
-  is_overlay = true
-  artifact {
-    url       = var.artifact_versions["deployment-service-worker"].uri
-    build_tag = var.artifact_versions["deployment-service-worker"].version
-    type      = var.artifact_versions["deployment-service-worker"].type
-  }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.worker_deployment_1]
 }

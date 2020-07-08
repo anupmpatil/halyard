@@ -32,11 +32,6 @@ variable "odo_application_type" {
   description = "Specifies the ODO application's type: https://confluence.oci.oraclecorp.com/display/odo/Application+Types."
 }
 
-variable "deployment_parallelism_percentage" {
-  type        = number
-  description = "The maximum percentage of the hosts being deployed. Valid range is (0, 100]."
-}
-
 variable "api_instance_pools" {
   description = "Instance pools for api."
 }
@@ -45,6 +40,10 @@ variable "worker_instance_pools" {
   description = "Instance pools for worker."
 }
 
-variable "artifact_versions" {
-  description = "Simple mapping from the injected shepherd artifact versions."
+variable "api_artifact_name" {
+  description = "API artifact name"
+}
+
+variable "worker_artifact_name" {
+  description = "Worker artifact name"
 }

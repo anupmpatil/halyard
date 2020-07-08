@@ -22,8 +22,8 @@ locals {
   dns_label                           = "deploy"
   phonebook_name                      = "dlcdep"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
-  host_class = "DLC-DEPLOYMENT-DEV-ODO"
-
+  host_class              = "DLC-DEPLOYMENT-DEV-ODO"
+  jira_sd_queue           = "DLCDEP"
   lb_listening_port       = 443
   api_host_listening_port = 24443
 
@@ -267,4 +267,52 @@ module "dns" {
 module "limits" {
   source           = "./modules/limits"
   compartment_ocid = module.identity.deployment_limits.id
+}
+
+module "odo_application_control_plane" {
+  source                           = "./modules/odo-app-pool"
+  deployment_api_compartment_id    = local.control_plane_api_compartment_id
+  deployment_worker_compartment_id = local.control_plane_worker_compartment_id
+  availability_domains             = local.service_availability_domains
+  name_prefix                      = "${local.service_name}-control-plane"
+  release_name                     = local.execution_target.phase_name
+  odo_application_type             = "NON_PRODUCTION"
+  stage                            = local.environment
+  api_instance_pools               = module.service_instances_control_plane_api.instance_pools
+  worker_instance_pools            = module.service_instances_control_plane_worker.instance_pools
+  api_artifact_name                = "deployment-service-control-plane-api"
+  worker_artifact_name             = "deployment-service-control-plane-worker"
+}
+
+module "alarms_control_plane" {
+  source                           = "./modules/alarms"
+  deployment_api_compartment_id    = local.control_plane_api_compartment_id
+  deployment_worker_compartment_id = local.control_plane_worker_compartment_id
+  jira_sd_queue                    = local.jira_sd_queue
+  fleet_name_api                   = "${local.service_name}-control-plane-api"
+  fleet_name_worker                = "${local.service_name}-control-plane-worker"
+}
+
+module "odo_application_management_plane" {
+  source                           = "./modules/odo-app-pool"
+  deployment_api_compartment_id    = local.management_plane_api_compartment_id
+  deployment_worker_compartment_id = local.data_plane_worker_compartment_id
+  availability_domains             = local.service_availability_domains
+  name_prefix                      = "${local.service_name}-management-plane"
+  release_name                     = local.execution_target.phase_name
+  odo_application_type             = "NON_PRODUCTION"
+  stage                            = local.environment
+  api_instance_pools               = module.service_instances_management_plane_api.instance_pools
+  worker_instance_pools            = module.service_instances_data_plane_worker.instance_pools
+  api_artifact_name                = "deployment-service-management-plane-api"
+  worker_artifact_name             = "deployment-service-data-plane-worker"
+}
+
+module "alarms_management_plane" {
+  source                           = "./modules/alarms"
+  deployment_api_compartment_id    = local.management_plane_api_compartment_id
+  deployment_worker_compartment_id = local.data_plane_worker_compartment_id
+  jira_sd_queue                    = local.jira_sd_queue
+  fleet_name_api                   = "${local.service_name}-management-plane-api"
+  fleet_name_worker                = "${local.service_name}-management-plane-worker"
 }

@@ -2,7 +2,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-AvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "ServiceHostReporter.heartbeat[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -28,7 +28,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-Chainsaw2AvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "chainsaw2.standard.application_log.monitoring[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -53,7 +53,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-HeapUsageAfterGCAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "G1GC.Heap.After[1m].grouping().mean() > 921.0"
   severity         = 3
   is_enabled       = true
@@ -78,7 +78,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-JettyThreadPoolUtilizationAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "service.org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max[1m].grouping().mean() > 0.9"
   severity         = 3
   is_enabled       = true
@@ -103,7 +103,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentCreateAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.createDeployment.SuccessRate[1m].grouping().mean() < 0.999"
   severity         = 3
   is_enabled       = true
@@ -129,7 +129,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentCreateLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.createDeployment.Time[1m].grouping().percentile(0.99) > 10000.0"
   severity         = 3
   is_enabled       = true
@@ -155,7 +155,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentDeleteAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.deleteDeployment.SuccessRate[1m].grouping().mean() < 0.999"
   severity         = 3
   is_enabled       = true
@@ -181,7 +181,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentDeleteLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.deleteDeployment.Time[1m].grouping().percentile(0.99) > 10000.0"
   severity         = 3
   is_enabled       = true
@@ -207,7 +207,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentGetAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.getDeployment.SuccessRate[1m].grouping().mean() < 0.999"
   severity         = 3
   is_enabled       = true
@@ -233,7 +233,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentGetLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.getDeployment.Time[1m].grouping().percentile(0.99) > 10000.0"
   severity         = 3
   is_enabled       = true
@@ -259,7 +259,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentListAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.listDeployment.SuccessRate[1m].grouping().mean() < 0.999"
   severity         = 3
   is_enabled       = true
@@ -285,7 +285,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentListLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.listDeployment.Time[1m].grouping().percentile(0.99) > 10000.0"
   severity         = 3
   is_enabled       = true
@@ -311,7 +311,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentUpdateAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.updateDeployment.SuccessRate[1m].grouping().mean() < 0.999"
   severity         = 3
   is_enabled       = true
@@ -337,7 +337,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_api_DeploymentServic
   compartment_id   = var.deployment_api_compartment_id
   display_name     = "DeploymentService-Api-DeploymentUpdateLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-api"
+  fleet            = var.fleet_name_api
   query            = "DeploymentResource.updateDeployment.Time[1m].grouping().percentile(0.99) > 10000.0"
   severity         = 3
   is_enabled       = true

@@ -12,3 +12,13 @@ variable "jira_sd_queue" {
   type        = string
   description = "JIRA-SD Queue name"
 }
+
+variable "fleet_name_api" {
+  type        = string
+  description = "API microservice fleet name"
+}
+
+variable "fleet_name_worker" {
+  type        = string
+  description = "Worker microservice fleet name"
+}

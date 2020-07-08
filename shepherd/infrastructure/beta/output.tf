@@ -1,21 +1,31 @@
-output "control_plane_api_instance_pools" {
-  value       = module.service_instances_control_plane_api.instance_pools
-  description = "OCID of the control plane api instance pools in each AD."
+output "control_plane_api_application" {
+  value       = module.odo_application_control_plane.odo_application_api
+  description = "Control plane API ODO App"
 }
 
-output "control_plane_worker_instance_pools" {
-  value       = module.service_instances_control_plane_worker.instance_pools
-  description = "OCID of the control plane worker instance pools in each AD."
+output "control_plane_worker_application" {
+  value       = module.odo_application_control_plane.odo_application_worker
+  description = "Control worker API ODO App"
 }
 
-output "management_plane_api_instance_pools" {
-  value       = module.service_instances_management_plane_api.instance_pools
-  description = "OCID of the management plane api instance pools in each AD."
+output "control_plane_os_updater_application" {
+  value       = module.odo_application_control_plane.os_updater
+  description = "Control plane Os Updater ODO App"
 }
 
-output "data_plane_worker_instance_pools" {
-  value       = module.service_instances_data_plane_worker.instance_pools
-  description = "OCID of the data plane worker instance pools in each AD."
+output "management_plane_api_application" {
+  value       = module.odo_application_management_plane.odo_application_api
+  description = "Management plane API ODO App"
+}
+
+output "data_plane_worker_application" {
+  value       = module.odo_application_management_plane.odo_application_worker
+  description = "Data plane API ODO App"
+}
+
+output "management_plane_os_updater_application" {
+  value       = module.odo_application_management_plane.os_updater
+  description = "Management plane Os Updater ODO App"
 }
 
 output "availability_domains" {

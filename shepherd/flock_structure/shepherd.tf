@@ -6,29 +6,29 @@
 // Source of artifacts that would be deployed to each target.
 resource "shepherd_artifacts" "artifacts" {
   artifact {
-    name        = "deployment-service-api"
+    name        = "deployment-service-management-plane-api"
     type        = "docker"
-    location    = "deployment-service-api"
-    description = "The docker container for deployment-service's api server."
+    location    = "deployment-service-management-plane-api"
+    description = "The docker container for deployment-service's management plane api server."
   }
   artifact {
-    name        = "deployment-service-worker"
+    name        = "deployment-service-data-plane-worker"
     type        = "docker"
-    location    = "deployment-service-worker"
-    description = "The docker container for deployment-service's worker."
+    location    = "deployment-service-data-plane-worker"
+    description = "The docker container for deployment-service's data plane worker."
   }
-  # artifact {
-  #   name = "application-service-api"
-  #   type = "docker"
-  #   location = "application-service-api"
-  #   description = "The docker container for application-service's api server."
-  # }
-  # artifact {
-  #   name = "application-service-worker"
-  #   type = "docker"
-  #   location = "application-service-worker"
-  #   description = "The docker container for application-service's worker."
-  # }
+  artifact {
+    name        = "deployment-service-control-plane-api"
+    type        = "docker"
+    location    = "deployment-service-control-plane-api"
+    description = "The docker container for deployment-service's control plane api server."
+  }
+  artifact {
+    name        = "deployment-service-control-plane-worker"
+    type        = "docker"
+    location    = "deployment-service-control-plane-worker"
+    description = "The docker container for deployment-service's control plane worker."
+  }
   artifact {
     name        = "odo-system-updater"
     type        = "pop"
@@ -106,7 +106,6 @@ locals {
     //      "home_region" = ""
     //      "predecessors" = ["oc4-prod"]
     //    }
-
   }
 }
 

@@ -2,7 +2,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-AvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "ServiceHostReporter.heartbeat[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -28,7 +28,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-Chainsaw2AvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "chainsaw2.standard.application_log.monitoring[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -53,7 +53,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateDeploymentWorkflowAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -79,7 +79,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateDeploymentWorkflowLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "createDeployment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -105,7 +105,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteDeploymentWorkflowAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "deleteDeployment.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -131,7 +131,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteDeploymentWorkflowLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "deleteDeployment.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -157,7 +157,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateDeploymentWorkflowAvailabilityAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "updateDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -183,7 +183,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateDeploymentWorkflowLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "updateDeployment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -208,7 +208,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-WF-HeapUsageAfterGCAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "G1GC.Heap.After[1m].grouping().mean() > 921.0"
   severity         = 3
   is_enabled       = true
@@ -233,7 +233,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-WF-JettyThreadPoolUtilizationAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "service.org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max[1m].grouping().mean() > 0.9"
   severity         = 3
   is_enabled       = true
@@ -258,7 +258,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-WorkflowMessageQueuePollFaultRateAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "ReadWorkflowRequestQueue.Fault[1m].grouping().mean() > 0.01"
   severity         = 3
   is_enabled       = true
@@ -283,7 +283,7 @@ resource "telemetry_alarm" "DeploymentService_reference_app_worker_DeploymentSer
   compartment_id   = var.deployment_worker_compartment_id
   display_name     = "DeploymentService-Worker-WorkflowMessageQueuePollLatencyAlarm"
   project          = "DeploymentService"
-  fleet            = "deployment-service-worker"
+  fleet            = var.fleet_name_worker
   query            = "ReadWorkflowRequestQueue.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
