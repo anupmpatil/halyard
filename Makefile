@@ -23,7 +23,8 @@ terraform-install:
 fmt-check:
 	@if [ -x "$$(command -v terraform)" ]; then \
 		echo "==> Checking terraform formatting of files"; \
-		(terraform fmt -check=true -recursive && echo "Terraform format check passed successfully") || (echo "Terraform files are not appropriately formatted. Please run terraform fmt -recursive to format them." && exit 1); \
+		(terraform fmt -check=true -recursive && echo "Terraform format check passed successfully") \
+		|| (echo "Terraform files are not appropriately formatted. Please run terraform fmt -recursive to format them. To automate formatting files with every git commit - use pre-commit webhook. https://confluence.oci.oraclecorp.com/display/DLC/Terraform+fmt+on+git+commit" && exit 1); \
 	else \
 		echo "No terraform command found"; \
 		exit 1; \
