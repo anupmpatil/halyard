@@ -39,9 +39,19 @@ variable "service_vcn_cidr" {
   description = "The CIDR block for your service VCN."
 }
 
+variable "management_plane_service_vcn_cidr" {
+  type        = string
+  description = "The CIDR block for management plane service VCN."
+}
+
 variable "service_vcn_lpg_id" {
   type        = string
   description = "The service VCN's LPG ID that jump VCN should pair to."
+}
+
+variable "management_plane_vcn_lpg_id" {
+  type        = string
+  description = "The management plane VCN's LPG ID that jump VCN should pair to."
 }
 
 variable "jump_instance_display_name" {

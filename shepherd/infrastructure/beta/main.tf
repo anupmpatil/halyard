@@ -12,6 +12,7 @@ locals {
   bastion_compartment_id              = module.identity.deployment_bastion.id
   service_availability_domains        = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr                    = "10.0.0.0/16"
+  management_plane_service_vcn_cidr   = "10.2.0.0/16"
   service_name                        = "deployment-service"
   service_short_name                  = "dply-svc"
   control_plane_api_fleet_name        = "deployment-service-control-plane-api-${local.environment}"
@@ -86,7 +87,7 @@ module "service_network_management_plane" {
   source              = "./modules/service-network"
   region              = local.execution_target.region
   compartment_id      = local.management_plane_api_compartment_id
-  service_vcn_cidr    = local.service_vcn_cidr
+  service_vcn_cidr    = local.management_plane_service_vcn_cidr
   jump_vcn_cidr       = local.ob3_jump_vcn_cidr
   service_name        = "${local.service_short_name}-mgmt-plane-${local.environment}"
   dns_label           = "${local.dns_label}${local.environment}"
@@ -252,6 +253,8 @@ module "ob3_jump" {
   jump_instance_hostclass            = local.host_class
   service_vcn_cidr                   = local.service_vcn_cidr
   service_vcn_lpg_id                 = module.service_network_control_plane.service_jump_lpg_id
+  management_plane_service_vcn_cidr  = local.management_plane_service_vcn_cidr
+  management_plane_vcn_lpg_id        = module.service_network_management_plane.service_jump_lpg_id
   bastion_lpg_requestor_tenancy_ocid = module.region_config.bastion_lpg_requestor_tenancy_ocid
   bastion_lpg_requestor_group_ocid   = module.region_config.bastion_lpg_requestor_group_ocid
 }

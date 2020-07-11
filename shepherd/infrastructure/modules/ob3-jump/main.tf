@@ -36,6 +36,13 @@ resource "oci_core_local_peering_gateway" "service_lpg" {
   display_name   = "lpg_jump_to_service"
 }
 
+resource "oci_core_local_peering_gateway" "management_plane_service_lpg" {
+  compartment_id = var.bastion_compartment_id
+  vcn_id         = oci_core_vcn.jump_vcn.id
+  peer_id        = var.management_plane_vcn_lpg_id
+  display_name   = "lpg_jump_to_management_plane_service"
+}
+
 // Subnet in the jump vcn that would run the jump instance.
 resource "oci_core_subnet" "jump_vcn_subnet" {
   compartment_id             = var.bastion_compartment_id
@@ -72,6 +79,11 @@ resource "oci_core_route_table" "jump_vcn_route_table" {
     destination       = var.service_vcn_cidr
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_local_peering_gateway.service_lpg.id
+  }
+  route_rules {
+    destination       = var.management_plane_service_vcn_cidr
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_local_peering_gateway.management_plane_service_lpg.id
   }
 }
 
