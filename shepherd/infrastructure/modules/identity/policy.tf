@@ -91,3 +91,15 @@ resource "oci_identity_policy" "splat_policy" {
     "admit group dlcdep-sys-admins of tenancy boat to manage partner-service-spec-deployments in compartment ${oci_identity_compartment.deployment_splat.name}"
   ]
 }
+
+resource "oci_identity_policy" "lumberjack-policies" {
+  #Required
+  compartment_id = var.tenancy_ocid
+  description    = "Lumberjack onboarding policies"
+  name           = "lumberjack-policies"
+  statements = [
+    "allow service ${var.service_principal_name} to {AUDIT_DEFINITION_READ, AUDIT_READ, AUDIT_WRITE, AUDIT_DEFINITION_WRITE, AUDIT_CONFIGURATION_READ} in tenancy",
+    "allow service ${var.service_principal_name} to use logs in tenancy",
+    "allow dynamic-group ${oci_identity_dynamic_group.access_managers_dynamic_group.name} to use logs in tenancy"
+  ]
+}

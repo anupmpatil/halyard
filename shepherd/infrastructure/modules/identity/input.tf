@@ -67,3 +67,8 @@ variable "limits_group_ocid" {
   type        = string
   description = "Limits Group OCID for limits_policy"
 }
+
+variable "service_principal_name" {
+  type        = string
+  description = "Service principal name"
+}
