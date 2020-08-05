@@ -65,6 +65,7 @@ module "identity" {
   limits_group_ocid                                        = module.common.limits_group_ocid
   odo_tenancy_ocid                                         = module.common.odo_tenancy_ocid
   service_principal_name                                   = "dlc-deployment"
+  griffin_agent_tenancy_ocid                               = module.common.griffin_tenancy_ocid
 }
 
 module "image" {

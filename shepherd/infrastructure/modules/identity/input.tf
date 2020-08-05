@@ -72,3 +72,8 @@ variable "service_principal_name" {
   type        = string
   description = "Service principal name"
 }
+
+variable "griffin_agent_tenancy_ocid" {
+  type        = string
+  description = "Griffin agent tenancy OCID for hippogriffin OnBoarding"
+}

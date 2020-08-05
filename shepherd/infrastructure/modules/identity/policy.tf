@@ -103,3 +103,14 @@ resource "oci_identity_policy" "lumberjack-policies" {
     "allow dynamic-group ${oci_identity_dynamic_group.access_managers_dynamic_group.name} to use logs in tenancy"
   ]
 }
+
+resource "oci_identity_policy" "griffin-agent-policies" {
+  #Required
+  compartment_id = var.tenancy_ocid
+  description    = "Hippogriff policy to allow write to the MVP log target from the tenancy"
+  name           = "Hippogriff-policies"
+  statements = [
+    "define tenancy security-log as ${var.griffin_agent_tenancy_ocid}",
+    "endorse any-user to {LOG_WRITE, LOG_DEFINITION_READ, LOG_DEFINITION_WRITE, LOG_NAMESPACE_READ, UNIFIEDAGENT_CONFIG_GENERATE} in tenancy security-log"
+  ]
+}
