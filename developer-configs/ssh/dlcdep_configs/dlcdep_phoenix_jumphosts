@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_phoenix_beta_hosts
+
+# Jump Hosts
+Host dlcdep-beta-jump.phx
+  HostName 172.16.105.226
+  ProxyJump vcn16.ob.us-phoenix-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-beta-jump.phx
+  PermitLocalCommand yes

@@ -1,0 +1,36 @@
+Host dply-svc-ctrl-plne-api-beta-ad2.phx
+  HostName 10.0.0.3
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-ctrl-plne-api-beta-ad1.phx
+  HostName 10.0.0.2
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-ctrl-plne-api-beta-ad3.phx
+  HostName 10.0.0.4
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-ctrl-plne-wrkr-beta-ad2.phx
+  HostName 10.0.0.6
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-ctrl-plne-wrkr-beta-ad3.phx
+  HostName 10.0.0.7
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-ctrl-plne-wrkr-beta-ad1.phx
+  HostName 10.0.0.5
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-mgmt-plne-api-beta-ad2.phx
+  HostName 10.2.0.5
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-mgmt-plne-api-beta-ad1.phx
+  HostName 10.2.0.6
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-mgmt-plne-api-beta-ad3.phx
+  HostName 10.2.0.7
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-data-plne-wrkr-beta-ad3.phx
+  HostName 10.2.0.4
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-data-plne-wrkr-beta-ad1.phx
+  HostName 10.2.0.2
+  ProxyJump dlcdep-beta-jump.phx
+Host dply-svc-data-plne-wrkr-beta-ad2.phx
+  HostName 10.2.0.3
+  ProxyJump dlcdep-beta-jump.phx
