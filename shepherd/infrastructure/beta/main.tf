@@ -321,3 +321,21 @@ module "alarms_management_plane" {
   fleet_name_api                   = "${local.service_name}-management-plane-api"
   fleet_name_worker                = "${local.service_name}-management-plane-worker"
 }
+
+module "wfaas_control_plane" {
+  source                           = "./modules/wfaas"
+  wfaas_name                       = "dlcdep-dev-cp"
+  deployment_worker_compartment_id = local.control_plane_worker_compartment_id
+  availability_domains             = local.service_availability_domains
+  type                             = "AD_LOCAL"
+  cell                             = "overlay"
+}
+
+module "wfaas_data_plane" {
+  source                           = "./modules/wfaas"
+  wfaas_name                       = "dlcdep-dev-dp"
+  deployment_worker_compartment_id = local.data_plane_worker_compartment_id
+  availability_domains             = local.service_availability_domains
+  type                             = "AD_LOCAL"
+  cell                             = "overlay"
+}

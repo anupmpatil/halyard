@@ -114,3 +114,15 @@ resource "oci_identity_policy" "griffin-agent-policies" {
     "endorse any-user to {LOG_WRITE, LOG_DEFINITION_READ, LOG_DEFINITION_WRITE, LOG_NAMESPACE_READ, UNIFIEDAGENT_CONFIG_GENERATE} in tenancy security-log"
   ]
 }
+
+resource "oci_identity_policy" "wfaas-policies" {
+  compartment_id = var.tenancy_ocid
+  description    = "wfaas policies to allow workflow service"
+  name           = "wfaas-policies"
+  statements = [
+    "define tenancy boat as ${var.boat_tenancy_ocid}",
+    "define group dlcdep-sys-admins as ${var.dlcdep_sys_admins_ocid}",
+    "allow dynamic-group ${oci_identity_dynamic_group.deployment_worker_service_dynamic_group.name} to manage workflow-family in compartment ${oci_identity_compartment.deployment_service_control_plane_worker.name}",
+    "allow dynamic-group ${oci_identity_dynamic_group.deployment_worker_service_dynamic_group.name} to manage workflow-family in compartment ${oci_identity_compartment.deployment_service_data_plane_worker.name}"
+  ]
+}
