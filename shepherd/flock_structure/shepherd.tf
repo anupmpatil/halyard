@@ -113,9 +113,10 @@ locals {
 resource "shepherd_release_phase" "release_phases" {
   for_each = local.release_phase_config
 
-  name       = each.key
-  realm      = each.value["realm"]
-  production = each.value["production"]
+  name         = each.key
+  realm        = each.value["realm"]
+  production   = each.value["production"]
+  auto_approve = true
 
   predecessors = each.value["predecessors"]
 }
