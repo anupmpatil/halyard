@@ -94,7 +94,7 @@ resource "odo_deployment" "worker_deployment_0" {
     type      = var.artifact_versions[var.worker_artifact_name].type
   }
   flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_2]
+  depends_on = [odo_deployment.os_updater_deployment_2]
 }
 
 resource "odo_deployment" "worker_deployment_1" {
