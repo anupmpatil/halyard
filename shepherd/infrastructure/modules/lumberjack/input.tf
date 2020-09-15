@@ -1,6 +1,11 @@
-variable "compartment_id" {
+variable "api_compartment_id" {
   type        = string
-  description = "Compartment ID for your ODO application."
+  description = "Compartment ID for your API lumberjack logs"
+}
+
+variable "worker_compartment_id" {
+  type        = string
+  description = "Compartment ID for your worker lumberjack logs"
 }
 
 variable "availability_domains" {
@@ -8,9 +13,14 @@ variable "availability_domains" {
   description = "List of availability domains to deploy to."
 }
 
-variable "log_namespace" {
+variable "log_namespace_api" {
   type        = string
-  description = "Lumberjack's registered namespace."
+  description = "Lumberjack's API registered namespace."
+}
+
+variable "log_namespace_worker" {
+  type        = string
+  description = "Lumberjack's worker registered namespace."
 }
 
 variable "environment" {

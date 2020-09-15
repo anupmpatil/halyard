@@ -192,19 +192,23 @@ module "service_instances_data_plane_worker" {
 }
 
 module "lumberjack_control_plane" {
-  source               = "./modules/lumberjack"
-  compartment_id       = local.control_plane_api_compartment_id
-  availability_domains = local.service_availability_domains
-  log_namespace        = "deployment-service-control-plane"
-  environment          = local.environment
+  source                = "./modules/lumberjack"
+  api_compartment_id    = local.control_plane_api_compartment_id
+  worker_compartment_id = local.control_plane_worker_compartment_id
+  availability_domains  = local.service_availability_domains
+  log_namespace_api     = "deployment-service-control-plane"
+  log_namespace_worker  = "deployment-service-control-plane"
+  environment           = local.environment
 }
 
 module "lumberjack_management_plane" {
-  source               = "./modules/lumberjack"
-  compartment_id       = local.management_plane_api_compartment_id
-  availability_domains = local.service_availability_domains
-  log_namespace        = "deployment-service-management-plane"
-  environment          = local.environment
+  source                = "./modules/lumberjack"
+  api_compartment_id    = local.management_plane_api_compartment_id
+  worker_compartment_id = local.data_plane_worker_compartment_id
+  availability_domains  = local.service_availability_domains
+  log_namespace_api     = "deployment-service-management-plane"
+  log_namespace_worker  = "deployment-service-data-plane"
+  environment           = local.environment
 }
 
 module "secret_service" {
