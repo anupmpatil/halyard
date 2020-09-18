@@ -18,6 +18,11 @@ variable "name_prefix" {
   description = "Prefix for names(ODO and odo pool)."
 }
 
+variable "name_prefix_worker" {
+  type        = string
+  description = "Prefix for names(ODO and odo pool) for worker apps."
+}
+
 variable "release_name" {
   type        = string
   description = "Name of the shepherd release."

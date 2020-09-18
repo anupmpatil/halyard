@@ -95,7 +95,7 @@ resource "odo_application" "odo_application_worker" {
   for_each = toset(var.availability_domains)
 
   ad                      = each.key
-  alias                   = "${var.name_prefix}-worker-${var.stage}"
+  alias                   = "${var.name_prefix_worker}-worker-${var.stage}"
   compartment_ocid        = var.deployment_worker_compartment_id
   agent                   = "HOSTAGENT_V2"
   default_artifact_source = "OBJECT_STORE"

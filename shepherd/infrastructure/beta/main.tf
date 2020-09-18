@@ -284,6 +284,7 @@ module "odo_application_control_plane" {
   deployment_worker_compartment_id = local.control_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   name_prefix                      = "${local.service_name}-control-plane"
+  name_prefix_worker               = "${local.service_name}-control-plane"
   release_name                     = local.execution_target.phase_name
   odo_application_type             = "NON_PRODUCTION"
   stage                            = local.environment
@@ -308,6 +309,7 @@ module "odo_application_management_plane" {
   deployment_worker_compartment_id = local.data_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   name_prefix                      = "${local.service_name}-management-plane"
+  name_prefix_worker               = "${local.service_name}-data-plane"
   release_name                     = local.execution_target.phase_name
   odo_application_type             = "NON_PRODUCTION"
   stage                            = local.environment
