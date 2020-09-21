@@ -26,7 +26,7 @@ explained in the README of that repo):
 ## HOW TO SSH
 
 Accessing the hosts Access the desired host by hostname alias. The hostname aliases are configured in $HOME/.ssh/dlcdep_configs/*_hosts files.
-> ssh dply-svc-ctrl-plne-api-beta-ad1.PHX
+> ssh dply-svc-ctrl-plne-api-beta-ad1.phx
  $ sudo odoctl docker ps
 
 ## GENERATING THE HOSTS LISTS
