@@ -229,7 +229,7 @@ module "kiev_control_plane" {
 
 module "kiev_data_plane" {
   source         = "./modules/kiev"
-  compartment_id = local.control_plane_api_compartment_id
+  compartment_id = local.management_plane_api_compartment_id
   service_name   = "${local.service_short_name}-data-plane"
   environment    = local.environment
 }
