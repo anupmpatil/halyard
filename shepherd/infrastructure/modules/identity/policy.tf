@@ -126,3 +126,26 @@ resource "oci_identity_policy" "wfaas-policies" {
     "allow dynamic-group ${oci_identity_dynamic_group.deployment_worker_service_dynamic_group.name} to manage workflow-family in compartment ${oci_identity_compartment.deployment_service_data_plane_worker.name}"
   ]
 }
+
+resource "oci_identity_policy" "cd_rqs_policy" {
+  count          = var.enable_create_tenancy_policies == "true" ? 1 : 0
+  name           = "CloudDeployRQSPolicy"
+  description    = "Cloud Deploy RQS Policy"
+  compartment_id = var.tenancy_ocid
+  statements = [
+    # Below policy statements are needed to allow splat to manage RQS on our behalf.
+    # The RQS schemas must be owned by service tenancy (PRODUCTION) compartments.
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope ='CUSTOMER', event.resource.type = 'Application'}",
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Pipeline'}",
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Stage'}",
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Environment'}",
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Artifact'}",
+    "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
+    var.deployment_service_management_plane_api_compartment_name} WHERE all { event.resource.scope = 'CUSTOMER',event.resource.type = 'Deployment'}"
+  ]
+}

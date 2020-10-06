@@ -77,3 +77,7 @@ variable "griffin_agent_tenancy_ocid" {
   type        = string
   description = "Griffin agent tenancy OCID for hippogriffin OnBoarding"
 }
+
+variable "enable_create_tenancy_policies" {
+  default = "false"
+}

@@ -1,0 +1,31 @@
+{
+  "additional_fields": [
+    {
+      "name": "applicationId",
+      "isRequired": false,
+      "isArray": false,
+      "objectFields": [ ],
+      "fieldType": "ID",
+      "isRequiredForSelfIdentification": false,
+      "permissions": [ ]
+    },
+    {
+      "name": "stageType",
+      "isRequired": false,
+      "isArray": false,
+      "objectFields": [ ],
+      "fieldType": "ENUM",
+      "isRequiredForSelfIdentification": false,
+      "permissions": [ ]
+    },
+    {
+      "name": "pipelineId",
+      "isRequired": false,
+      "isArray": false,
+      "objectFields": [ ],
+      "fieldType": "ID",
+      "isRequiredForSelfIdentification": false,
+      "permissions": [ ]
+    }
+  ]
+}

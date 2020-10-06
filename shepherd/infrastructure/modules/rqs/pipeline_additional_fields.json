@@ -1,0 +1,13 @@
+{
+  "additional_fields": [
+    {
+      "name": "applicationId",
+      "isRequired": false,
+      "isArray": false,
+      "objectFields": [ ],
+      "fieldType": "ID",
+      "isRequiredForSelfIdentification": false,
+      "permissions": [ ]
+    }
+  ]
+}
