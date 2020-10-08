@@ -74,27 +74,29 @@ module "image" {
 }
 
 module "service_network_control_plane" {
-  source              = "./modules/service-network"
-  region              = local.execution_target.region
-  compartment_id      = local.control_plane_api_compartment_id
-  service_vcn_cidr    = local.service_vcn_cidr
-  jump_vcn_cidr       = local.ob3_jump_vcn_cidr
-  service_name        = "${local.service_short_name}-ctrl-plane-${local.environment}"
-  dns_label           = "${local.dns_label}${local.environment}"
-  host_listening_port = local.api_host_listening_port
-  lb_listener_port    = local.lb_listening_port
+  source                = "./modules/service-network"
+  region                = local.execution_target.region
+  compartment_id_api    = local.control_plane_api_compartment_id
+  compartment_id_worker = local.control_plane_worker_compartment_id
+  service_vcn_cidr      = local.service_vcn_cidr
+  jump_vcn_cidr         = local.ob3_jump_vcn_cidr
+  service_name          = "${local.service_short_name}-ctrl-plane-${local.environment}"
+  dns_label             = "${local.dns_label}${local.environment}"
+  host_listening_port   = local.api_host_listening_port
+  lb_listener_port      = local.lb_listening_port
 }
 
 module "service_network_management_plane" {
-  source              = "./modules/service-network"
-  region              = local.execution_target.region
-  compartment_id      = local.management_plane_api_compartment_id
-  service_vcn_cidr    = local.management_plane_service_vcn_cidr
-  jump_vcn_cidr       = local.ob3_jump_vcn_cidr
-  service_name        = "${local.service_short_name}-mgmt-plane-${local.environment}"
-  dns_label           = "${local.dns_label}${local.environment}"
-  host_listening_port = local.api_host_listening_port
-  lb_listener_port    = local.lb_listening_port
+  source                = "./modules/service-network"
+  region                = local.execution_target.region
+  compartment_id_api    = local.management_plane_api_compartment_id
+  compartment_id_worker = local.data_plane_worker_compartment_id
+  service_vcn_cidr      = local.management_plane_service_vcn_cidr
+  jump_vcn_cidr         = local.ob3_jump_vcn_cidr
+  service_name          = "${local.service_short_name}-mgmt-plane-${local.environment}"
+  dns_label             = "${local.dns_label}${local.environment}"
+  host_listening_port   = local.api_host_listening_port
+  lb_listener_port      = local.lb_listening_port
 }
 
 module "service_lb_control_plane" {
@@ -138,7 +140,7 @@ module "service_instances_control_plane_api" {
   service_instances_oci_fleet           = local.control_plane_api_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network_control_plane.service_subnet_id
+  service_subnet_id                     = module.service_network_control_plane.service_subnet_api_id
   attach_to_lb                          = true
   lb_backend_set_name                   = module.service_lb_control_plane.service_lb_backend_set_name
   load_balancer_id                      = module.service_lb_control_plane.service_lb_id
@@ -158,7 +160,7 @@ module "service_instances_control_plane_worker" {
   service_instances_oci_fleet           = local.control_plane_worker_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network_control_plane.service_subnet_id
+  service_subnet_id                     = module.service_network_control_plane.service_subnet_worker_id
   attach_to_lb                          = false
 }
 
@@ -175,7 +177,7 @@ module "service_instances_management_plane_api" {
   service_instances_oci_fleet           = local.management_plane_api_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network_management_plane.service_subnet_id
+  service_subnet_id                     = module.service_network_management_plane.service_subnet_api_id
   attach_to_lb                          = true
   lb_backend_set_name                   = module.service_lb_management_plane.service_lb_backend_set_name
   load_balancer_id                      = module.service_lb_management_plane.service_lb_id
@@ -195,7 +197,7 @@ module "service_instances_data_plane_worker" {
   service_instances_oci_fleet           = local.data_plane_worker_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.service_network_management_plane.service_subnet_id
+  service_subnet_id                     = module.service_network_management_plane.service_subnet_worker_id
   attach_to_lb                          = false
 }
 

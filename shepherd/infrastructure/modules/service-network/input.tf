@@ -1,9 +1,14 @@
 // The region where you're provisioning resources.
 variable "region" {}
 
-variable "compartment_id" {
+variable "compartment_id_api" {
   type        = string
   description = "Compartment ID for the service VCN related resources."
+}
+
+variable "compartment_id_worker" {
+  type        = string
+  description = "Compartment ID for the worker VCN related resources."
 }
 
 variable "service_vcn_cidr" {

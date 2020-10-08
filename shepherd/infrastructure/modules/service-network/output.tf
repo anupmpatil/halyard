@@ -8,7 +8,12 @@ output "service_lb_subnet_id" {
   description = "The regional subnet that hosts public load balancer."
 }
 
-output "service_subnet_id" {
-  value       = oci_core_subnet.service_subnet.id
+output "service_subnet_api_id" {
+  value       = oci_core_subnet.service_subnet_api.id
   description = "The subnets that host service compute instances."
+}
+
+output "service_subnet_worker_id" {
+  value       = oci_core_subnet.service_subnet_worker.id
+  description = "The subnets that host worker compute instances."
 }
