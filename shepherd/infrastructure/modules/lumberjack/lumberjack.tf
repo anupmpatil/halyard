@@ -18,6 +18,18 @@ resource "lumberjack" "lumberjack_api" {
         }
       }
     }
+    log_group_configs {
+      log_group = "requests_log"
+      enabled   = true
+      agent {
+        enabled = true
+        single_log_rotation_schema {
+          directory                = "/logs/${var.log_namespace_api}-api"
+          current_log_filename     = "requests.log"
+          rotated_filename_pattern = "requests.*log.gz"
+        }
+      }
+    }
   }
 }
 
@@ -38,6 +50,18 @@ resource "lumberjack" "lumberjack_worker" {
           directory                = "/logs/${var.log_namespace_worker}-worker"
           current_log_filename     = "application.log"
           rotated_filename_pattern = "application.*log.gz"
+        }
+      }
+    }
+    log_group_configs {
+      log_group = "requests_log"
+      enabled   = true
+      agent {
+        enabled = true
+        single_log_rotation_schema {
+          directory                = "/logs/${var.log_namespace_worker}-worker"
+          current_log_filename     = "requests.log"
+          rotated_filename_pattern = "requests.*log.gz"
         }
       }
     }

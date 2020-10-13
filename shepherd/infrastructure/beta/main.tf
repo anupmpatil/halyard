@@ -109,14 +109,6 @@ module "service_lb_control_plane" {
   display_name        = "lb_${local.service_short_name}_ctrl_plane_${local.environment}"
 }
 
-module "rqs" {
-  source                          = "./modules/rqs"
-  control_plane_compartment_id    = local.control_plane_api_compartment_id
-  management_plane_compartment_id = local.management_plane_api_compartment_id
-  environment                     = local.environment
-  phone_book_id                   = local.phonebook_name
-}
-
 module "service_lb_management_plane" {
   source              = "./modules/load-balancer"
   compartment_id      = local.management_plane_api_compartment_id
