@@ -1,6 +1,6 @@
 locals {
-  image_name = "ol77-x86_64-lvm-20200420-UEK575GB-5AD7-PV"
-  image_uri  = "https://objectstorage.us-phoenix-1.oraclecloud.com/p/EmadslmoXDXqE1RItnCd7Pt10-UHEqcO0_yuqK_lpCc/n/idlybogdd5kn/b/manual_tagged_images/o/ol77-x86_64-lvm-20200420-UEK575GB-5AD7-PV"
+  image_name = "ol79-x86_64-lvm-20201014-UEK5-75G-00F6-PV"
+  image_uri  = "https://objectstorage.us-phoenix-1.oraclecloud.com/p/Tzut-zRU24r6wq9UGQs17Dn-cfYK06chggQrKl0HRviuXLydlT97Rv18p1a8hCJc/n/idlybogdd5kn/b/manual_tagged_images/o/ol79-x86_64-lvm-20201014-UEK5-75G-00F6-PV"
 }
 
 resource "oci_core_image" "overlay_image" {

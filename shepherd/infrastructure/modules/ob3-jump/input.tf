@@ -64,16 +64,6 @@ variable "region" {
   description = "The region for this service."
 }
 
-variable "bastion_lpg_requestor_tenancy_ocid" {
-  type        = string
-  description = "REQUIRED: OCID for SECEDGE tenancy requesting peering for bastion lpg"
-}
-
-variable "bastion_lpg_requestor_group_ocid" {
-  type        = string
-  description = "REQUIRED: OCID for SECEDGE group requesting peering for bastion lpg"
-}
-
 variable "tenancy_ocid" {
   type        = string
   description = "REQUIRED: Tenancy OCID"

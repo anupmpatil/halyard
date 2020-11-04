@@ -3,6 +3,11 @@ variable "tenancy_ocid" {
   description = "REQUIRED: Tenancy OCID"
 }
 
+variable "realm" {
+  type        = string
+  description = "REQUIRED: Realm for deployment."
+}
+
 variable "deployment_service_control_plane_api_compartment_name" {
   type        = string
   description = "REQUIRED: name for the control plane api compartment"
@@ -80,4 +85,19 @@ variable "griffin_agent_tenancy_ocid" {
 
 variable "enable_create_tenancy_policies" {
   default = "false"
+}
+
+variable "bastion_compartment_id" {
+  type        = string
+  description = "Compartment ID where the OB3 jump VCN belongs to."
+}
+
+variable "bastion_lpg_requestor_tenancy_ocid" {
+  type        = string
+  description = "REQUIRED: OCID for SECEDGE tenancy requesting peering for bastion lpg"
+}
+
+variable "bastion_lpg_requestor_group_ocid" {
+  type        = string
+  description = "REQUIRED: OCID for SECEDGE group requesting peering for bastion lpg"
 }

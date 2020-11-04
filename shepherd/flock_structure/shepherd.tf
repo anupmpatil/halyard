@@ -51,10 +51,11 @@ locals {
     "beta" = {
       "production"   = false
       "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1"]
+      "regions"      = ["us-phoenix-1", "us-ashburn-1"]
       "home_region"  = "us-phoenix-1"
       "predecessors" = []
     }
+
     // todo: env variable
     // env - beta, prod
     //    "oc1-groupA" = {
@@ -122,15 +123,32 @@ resource "shepherd_release_phase" "release_phases" {
 }
 
 // Release targets for each release phase.
+###########
+# Execution targets for BETA
+###########
+
+# Execution targets for BETA(Tenancy)
 resource "shepherd_execution_target" "beta" {
+  //for_each = toset(local.release_phase_config["beta"]["regions"])
+
+  name                      = "beta-us-phoenix-1"
+  tenancy_ocid              = local.tenancy_ocid_map["beta"]
+  region                    = "us-phoenix-1"
+  phase                     = shepherd_release_phase.release_phases["beta"].name
+  is_home_region_target     = true
+  snowflake_config_location = "generic_tenancy"
+
+  predecessors = []
+}
+
+# Execution targets for BETA(Regional)
+resource "shepherd_execution_target" "beta-region" {
   for_each = toset(local.release_phase_config["beta"]["regions"])
 
-  name                      = "beta-${each.key}"
-  tenancy_ocid              = local.tenancy_ocid_map["beta"]
-  region                    = each.key
-  phase                     = shepherd_release_phase.release_phases["beta"].name
-  is_home_region_target     = (each.key == local.release_phase_config["beta"]["home_region"])
-  snowflake_config_location = "beta"
+  name         = "beta-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["beta"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["beta"].name
 
   predecessors = []
 }

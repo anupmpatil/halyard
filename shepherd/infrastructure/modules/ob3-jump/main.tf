@@ -151,19 +151,3 @@ resource "oci_core_instance" "jump_instance" {
     hostclass = var.jump_instance_hostclass
   }
 }
-
-resource "oci_identity_policy" "bastion_policy" {
-  // This ocid is for the root compartment where the policy resides
-  compartment_id = var.tenancy_ocid
-
-  // This ocid is for the bastion compartment which the lpg belongs to
-  description = "bastion lpg for compartment ${var.bastion_compartment_id}"
-  name        = "bastion-lpg-policy"
-
-  statements = [
-    "define tenancy Requestor as ${var.bastion_lpg_requestor_tenancy_ocid}",
-    "define group RequestorGrp as ${var.bastion_lpg_requestor_group_ocid}",
-    "admit group RequestorGrp of tenancy Requestor to manage local-peering-to in compartment id ${var.bastion_compartment_id}",
-    "admit group RequestorGrp of tenancy Requestor to associate local-peering-gateways in tenancy Requestor with local-peering-gateways in compartment id ${var.bastion_compartment_id}"
-  ]
-}

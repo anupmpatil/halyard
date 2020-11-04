@@ -1,66 +1,44 @@
-resource "oci_identity_compartment" "deployment_service_control_plane_api" {
-  compartment_id = var.tenancy_ocid
-  description    = "Compartment for control plane api service"
-  name           = var.deployment_service_control_plane_api_compartment_name
+variable "execution_target" {}
+
+locals {
+  deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
+  deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
+  deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
+  deployment_service_data_plane_worker_compartment_name    = "deployment_service_data_plane_worker"
+  bastion_compartment_name                                 = "deployment_bastion"
+  limits_compartment_name                                  = "deployment_limits"
+  splat_compartment_name                                   = "deployment_splat"
 }
 
-resource "oci_identity_compartment" "deployment_service_management_plane_api" {
-  compartment_id = var.tenancy_ocid
-  description    = "Compartment for management plane api service"
-  name           = var.deployment_service_management_plane_api_compartment_name
+data "oci_identity_compartments" "all_compartments" {
+  compartment_id = var.execution_target.tenancy_ocid
 }
 
-resource "oci_identity_compartment" "deployment_service_control_plane_worker" {
-  compartment_id = var.tenancy_ocid
-  description    = "Compartment for control plane worker"
-  name           = var.deployment_service_control_plane_worker_compartment_name
+//Fetching identity resources(compartments) created in another execution target by means of their names
+output "deployment_service_control_plane_api_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.deployment_service_control_plane_api_compartment_name][0]
 }
 
-resource "oci_identity_compartment" "deployment_service_data_plane_worker" {
-  compartment_id = var.tenancy_ocid
-  description    = "Compartment for data plane worker"
-  name           = var.deployment_service_data_plane_worker_compartment_name
+output "deployment_service_management_plane_api_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.deployment_service_management_plane_api_compartment_name][0]
 }
 
-resource "oci_identity_compartment" "deployment_bastion" {
-  compartment_id = var.tenancy_ocid
-  description    = "Bastion compartment"
-  name           = var.bastion_compartment_name
+output "deployment_service_control_plane_worker_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.deployment_service_control_plane_worker_compartment_name][0]
 }
 
-resource "oci_identity_compartment" "deployment_limits" {
-  compartment_id = var.tenancy_ocid
-  description    = "Limits compartment"
-  name           = var.limits_compartment_name
+output "deployment_service_data_plane_worker_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.deployment_service_data_plane_worker_compartment_name][0]
 }
 
-resource "oci_identity_compartment" "deployment_splat" {
-  compartment_id = var.tenancy_ocid
-  description    = "Splat compartment"
-  name           = var.splat_compartment_name
+output "bastion_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.bastion_compartment_name][0]
 }
 
-# exporting compartment id created
-output "deployment_service_control_plane_api" {
-  value = oci_identity_compartment.deployment_service_control_plane_api
+output "limits_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.limits_compartment_name][0]
 }
 
-output "deployment_service_management_plane_api" {
-  value = oci_identity_compartment.deployment_service_management_plane_api
-}
-
-output "deployment_service_control_plane_worker" {
-  value = oci_identity_compartment.deployment_service_control_plane_worker
-}
-
-output "deployment_service_data_plane_worker" {
-  value = oci_identity_compartment.deployment_service_data_plane_worker
-}
-
-output "deployment_bastion" {
-  value = oci_identity_compartment.deployment_bastion
-}
-
-output "deployment_limits" {
-  value = oci_identity_compartment.deployment_limits
+output "splat_compartment" {
+  value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.splat_compartment_name][0]
 }

@@ -127,6 +127,21 @@ resource "oci_identity_policy" "wfaas-policies" {
   ]
 }
 
+resource "oci_identity_policy" "bastion_policy" {
+  // This ocid is for the root compartment where the policy resides
+  compartment_id = var.tenancy_ocid
+
+  description = "bastion lpg for compartment ${var.bastion_compartment_id}"
+  name        = "bastion-lpg-policy"
+
+  statements = [
+    "define tenancy Requestor as ${var.bastion_lpg_requestor_tenancy_ocid}",
+    "define group RequestorGrp as ${var.bastion_lpg_requestor_group_ocid}",
+    "admit group RequestorGrp of tenancy Requestor to manage local-peering-to in compartment id ${var.bastion_compartment_id}",
+    "admit group RequestorGrp of tenancy Requestor to associate local-peering-gateways in tenancy Requestor with local-peering-gateways in compartment id ${var.bastion_compartment_id}"
+  ]
+}
+
 resource "oci_identity_policy" "cd_rqs_policy" {
   count          = var.enable_create_tenancy_policies == "true" ? 1 : 0
   name           = "CloudDeployRQSPolicy"

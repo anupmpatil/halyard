@@ -81,6 +81,10 @@ def main(argv):
             jump_host = 'dlcdep-beta-jump.phx'
             compartments = [__DEV_CONTROL_PLANE_API_COMPARTMENT, __DEV_CONTROL_PLANE_WORKER_COMPARTMENT, __DEV_MANAGEMENT_PLANE_API_COMPARTMENT, __DEV_DATA_PLANE_WORKER_COMPARTMENT]
             region = 'phx'
+        elif args.region == 'ashburn':
+            jump_host = 'dlcdep-beta-jump.iad'
+            compartments = [__DEV_CONTROL_PLANE_API_COMPARTMENT, __DEV_CONTROL_PLANE_WORKER_COMPARTMENT, __DEV_MANAGEMENT_PLANE_API_COMPARTMENT, __DEV_DATA_PLANE_WORKER_COMPARTMENT]
+            region = 'iad'
 
 ##ELIF_REGION_ADD_ABOVE
     else:

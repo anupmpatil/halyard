@@ -22,7 +22,3 @@ variable "phonebook_name" {
   type        = string
   description = "Phonebook name for the service."
 }
-
-variable "tls_certificate_control_plane_api" {}
-
-variable "tls_certificate_management_plane_api" {}

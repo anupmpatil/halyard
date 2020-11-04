@@ -1,10 +1,12 @@
 locals {
   ob3_jump_vcn_cidrs_map = {
     beta_phx = "172.16.105.224/29"
+    beta_iad = "192.168.176.248/29"
   }
 
   ob3_bastion_cidrs_map = {
     beta_phx = "192.168.1.128/26"
+    beta_iad = "172.16.4.128/26"
   }
 
   ob3_bastion_lpg_requestor_tenancy_ocid_map = {

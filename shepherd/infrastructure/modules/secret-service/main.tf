@@ -4,6 +4,11 @@ locals {
   tls_bundle_name = "tls.bundle"
 }
 
+data "certificate_data_source" "tls_server_cert_deployment_service_management_plane_api" {
+  compartment_id   = var.management_plane_api_compartment_id
+  certificate_name = "deployment_service_management_plane_api_tls_server_cert"
+}
+
 // Namespace of the secrets.
 resource "sms_namespace" "control_plane_api_namespace" {
   name           = var.control_plane_api_namespace
@@ -47,4 +52,24 @@ resource "sms_secret_definition" "tls_bundle_management_plane_api" {
   description  = "TLS bundle"
   path         = "tls/bundle"
   service_ocid = sms_namespace.management_plane_api_namespace.id
+}
+
+data "certificate_data_source" "tls_server_cert_deployment_service_control_plane_api" {
+  compartment_id   = var.control_plane_api_compartment_id
+  certificate_name = "deployment_service_control_plane_api_tls_server_cert"
+}
+
+# Deliver certs to secret service
+resource "certificate_secret_service_binding_resource" dep_service_cp_api_tls_server_cert_binding {
+  certificate_ocid              = data.certificate_data_source.tls_server_cert_deployment_service_control_plane_api.certificate_ocid
+  secret_definition_ocid        = sms_secret_definition.tls_bundle_control_plane_api.id
+  secret_service_compartment_id = var.control_plane_api_compartment_id
+  availability_domain           = "ad1"
+}
+
+resource "certificate_secret_service_binding_resource" dep_service_mp_api_tls_server_cert_binding {
+  certificate_ocid              = data.certificate_data_source.tls_server_cert_deployment_service_management_plane_api.certificate_ocid
+  secret_definition_ocid        = sms_secret_definition.tls_bundle_management_plane_api.id
+  secret_service_compartment_id = var.management_plane_api_compartment_id
+  availability_domain           = "ad1"
 }

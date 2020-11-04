@@ -1,15 +1,15 @@
 // Retrieve all available physical ADs
 data "oci_identity_availability_domains" "service_ads" {
-  compartment_id = local.control_plane_api_compartment_id
+  compartment_id = module.identity.deployment_service_control_plane_api_compartment.id
 }
 
 locals {
-  environment                         = local.execution_target.name == "beta-us-phoenix-1" ? "beta" : "prod"
-  control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api.id
-  management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api.id
-  control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker.id
-  data_plane_worker_compartment_id    = module.identity.deployment_service_data_plane_worker.id
-  bastion_compartment_id              = module.identity.deployment_bastion.id
+  environment                         = length(regexall("beta", local.execution_target.name)) > 0 ? "beta" : "prod"
+  control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api_compartment.id
+  management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api_compartment.id
+  control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker_compartment.id
+  data_plane_worker_compartment_id    = module.identity.deployment_service_data_plane_worker_compartment.id
+  bastion_compartment_id              = module.identity.bastion_compartment.id
   service_availability_domains        = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr                    = "10.0.0.0/16"
   management_plane_service_vcn_cidr   = "10.2.0.0/16"
@@ -30,10 +30,14 @@ locals {
 
   // OverlayBastion3 Configs, for details check: https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
   // https://jira.oci.oraclecorp.com/browse/DLCDEP-79
-  ob3_bastion_cidr                = module.region_config.ob3_bastion_cidr
-  ob3_jump_vcn_cidr               = module.region_config.ob3_jump_vcn_cidr
-  tls_bundle_control_plane_api    = module.secret_service.tls_bundle_control_plane_api
-  tls_bundle_management_plane_api = module.secret_service.tls_bundle_management_plane_api
+  ob3_bastion_cidr  = module.region_config.ob3_bastion_cidr
+  ob3_jump_vcn_cidr = module.region_config.ob3_jump_vcn_cidr
+}
+
+module "identity" {
+  source = "./modules/identity"
+
+  execution_target = local.execution_target
 }
 
 module "region_config" {
@@ -41,31 +45,6 @@ module "region_config" {
   region_short = local.execution_target.region.name
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm
-}
-
-module "common" {
-  source = "./shared_modules/common"
-  realm  = local.execution_target.region.realm
-}
-
-# identity module
-module "identity" {
-  source                                                   = "./modules/identity"
-  tenancy_ocid                                             = local.execution_target.tenancy_ocid
-  deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
-  deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
-  deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
-  deployment_service_data_plane_worker_compartment_name    = "deployment_service_data_plane_worker"
-  bastion_compartment_name                                 = "deployment_bastion"
-  limits_compartment_name                                  = "deployment_limits"
-  splat_compartment_name                                   = "deployment_splat"
-  secinf_tenancy_ocid                                      = module.common.secinf_tenancy_ocid
-  telemetry_tenancy_ocid                                   = module.common.telemetry_tenancy_ocid
-  boat_tenancy_ocid                                        = module.common.boat_tenancy_ocid
-  limits_group_ocid                                        = module.common.limits_group_ocid
-  odo_tenancy_ocid                                         = module.common.odo_tenancy_ocid
-  service_principal_name                                   = "dlc-deployment"
-  griffin_agent_tenancy_ocid                               = module.common.griffin_tenancy_ocid
 }
 
 module "image" {
@@ -236,35 +215,22 @@ module "kiev_data_plane" {
   environment    = local.environment
 }
 
-module "certificate" {
-  source                               = "./modules/certificate"
-  tenancy_ocid                         = local.execution_target.tenancy_ocid
-  environment                          = local.environment
-  control_plane_compartment_id         = local.control_plane_api_compartment_id
-  management_plane_compartment_id      = local.management_plane_api_compartment_id
-  phonebook_name                       = local.phonebook_name
-  tls_certificate_control_plane_api    = local.tls_bundle_control_plane_api
-  tls_certificate_management_plane_api = local.tls_bundle_management_plane_api
-}
-
 // https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
 module "ob3_jump" {
-  source                             = "./modules/ob3-jump"
-  tenancy_ocid                       = local.execution_target.tenancy_ocid
-  region                             = local.execution_target.region.public_name
-  bastion_compartment_id             = local.bastion_compartment_id
-  ob3_bastion_cidr                   = local.ob3_bastion_cidr
-  jump_vcn_cidr                      = local.ob3_jump_vcn_cidr
-  jump_instance_shape                = "VM.Standard.E2.1"
-  jump_instance_image_id             = module.image.overlay_image.id
-  jump_instance_ad                   = data.oci_identity_availability_domains.service_ads.availability_domains[0].name
-  jump_instance_hostclass            = local.host_class
-  service_vcn_cidr                   = local.service_vcn_cidr
-  service_vcn_lpg_id                 = module.service_network_control_plane.service_jump_lpg_id
-  management_plane_service_vcn_cidr  = local.management_plane_service_vcn_cidr
-  management_plane_vcn_lpg_id        = module.service_network_management_plane.service_jump_lpg_id
-  bastion_lpg_requestor_tenancy_ocid = module.region_config.bastion_lpg_requestor_tenancy_ocid
-  bastion_lpg_requestor_group_ocid   = module.region_config.bastion_lpg_requestor_group_ocid
+  source                            = "./modules/ob3-jump"
+  tenancy_ocid                      = local.execution_target.tenancy_ocid
+  region                            = local.execution_target.region.public_name
+  bastion_compartment_id            = local.bastion_compartment_id
+  ob3_bastion_cidr                  = local.ob3_bastion_cidr
+  jump_vcn_cidr                     = local.ob3_jump_vcn_cidr
+  jump_instance_shape               = "VM.Standard.E2.1"
+  jump_instance_image_id            = module.image.overlay_image.id
+  jump_instance_ad                  = data.oci_identity_availability_domains.service_ads.availability_domains[0].name
+  jump_instance_hostclass           = local.host_class
+  service_vcn_cidr                  = local.service_vcn_cidr
+  service_vcn_lpg_id                = module.service_network_control_plane.service_jump_lpg_id
+  management_plane_service_vcn_cidr = local.management_plane_service_vcn_cidr
+  management_plane_vcn_lpg_id       = module.service_network_management_plane.service_jump_lpg_id
 }
 
 module "dns" {
@@ -277,7 +243,7 @@ module "dns" {
 
 module "limits" {
   source           = "./modules/limits"
-  compartment_ocid = module.identity.deployment_limits.id
+  compartment_ocid = module.identity.limits_compartment.id
 }
 
 module "odo_application_control_plane" {
@@ -346,4 +312,12 @@ module "wfaas_data_plane" {
   availability_domains             = local.service_availability_domains
   type                             = "AD_LOCAL"
   cell                             = "overlay"
+}
+
+module "rqs" {
+  source                          = "./modules/rqs"
+  control_plane_compartment_id    = local.control_plane_api_compartment_id
+  management_plane_compartment_id = local.management_plane_api_compartment_id
+  environment                     = local.environment
+  phone_book_id                   = local.phonebook_name
 }
