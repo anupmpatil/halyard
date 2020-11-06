@@ -35,6 +35,12 @@ resource "shepherd_artifacts" "artifacts" {
     location    = "odo-system-updater"
     description = "ODO's security updater binaries."
   }
+  artifact {
+    name        = "deployment-service-integration-test"
+    type        = "docker"
+    location    = "deployment-service-integration-test"
+    description = "The docker container for deployment-service's integration tests."
+  }
 }
 
 locals {

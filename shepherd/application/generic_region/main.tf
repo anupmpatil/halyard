@@ -36,3 +36,11 @@ module "odo_deployment_management_plane" {
   odo_worker_application     = local.data_plane_worker_application
   odo_os_updater_application = local.management_plane_os_updater_application
 }
+
+module "deployment_service_integration_tests" {
+  source               = "./modules/exec-provider-integration-tests"
+  availability_domains = local.app_availability_domains
+  artifact_versions    = local.artifact_versions
+  compartment_id       = local.execution_target.tenancy_ocid
+  artifact_name        = "deployment-service-integration-test"
+}
