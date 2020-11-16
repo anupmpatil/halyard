@@ -2,7 +2,7 @@ Include dlcdep_configs/dlcdep_ashburn_beta_hosts
 
 # Jump Hosts
 Host dlcdep-beta-jump.iad
-  HostName 192.168.176.250
+  HostName 192.168.176.253
   ProxyJump vcn17.ob.us-ashburn-1.oci.oraclecloud.com
 
 # Service Hosts
