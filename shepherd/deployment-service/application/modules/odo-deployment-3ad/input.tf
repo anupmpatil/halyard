@@ -6,10 +6,6 @@ variable "odo_worker_application" {
   description = "worker service ODO App"
 }
 
-variable "odo_os_updater_application" {
-  description = "Os Updater ODO App"
-}
-
 variable "availability_domains" {
   type        = list(string)
   description = "List of availability domains to deploy to."

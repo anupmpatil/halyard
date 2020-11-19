@@ -32,3 +32,8 @@ output "availability_domains" {
   value       = local.service_availability_domains
   description = "List of availability domains where resources are created."
 }
+
+output "bastion_os_updater_application" {
+  value       = module.ob3_jump.os_updater_bastion
+  description = "Bastion Os Updater ODO App"
+}

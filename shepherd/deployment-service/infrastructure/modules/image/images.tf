@@ -16,6 +16,13 @@ resource "oci_core_image" "overlay_image" {
     #Optional
     source_image_type = "VMDK"
   }
+
+  # You need to ignore the image source details if you don't want to apply any changes to old images.
+  lifecycle {
+    ignore_changes = [
+      image_source_details
+    ]
+  }
 }
 
 # export

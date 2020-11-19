@@ -68,3 +68,27 @@ variable "tenancy_ocid" {
   type        = string
   description = "REQUIRED: Tenancy OCID"
 }
+
+variable "name_prefix" {
+  type        = string
+  description = "Prefix for names(ODO and odo pool)."
+}
+
+variable "release_name" {
+  type        = string
+  description = "Name of the shepherd release."
+}
+
+variable "stage" {
+  type        = string
+  description = "Stage of the application."
+}
+
+variable "odo_application_type" {
+  description = "Specifies the ODO application's type: https://confluence.oci.oraclecorp.com/display/odo/Application+Types."
+}
+
+variable "availability_domain" {
+  type        = string
+  description = "availability domain to deploy to."
+}

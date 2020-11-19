@@ -155,6 +155,7 @@ resource "odo_application" "os_updater" {
   compartment_ocid        = var.deployment_api_compartment_id
   type                    = var.odo_application_type
   artifact_set_identifier = "odo-system-updater"
+  default_artifact_source = "OBJECT_STORE"
   agent                   = "HOSTAGENT_V2"
 
   pools = [odo_pool.worker[each.key].resource_id, odo_pool.api[each.key].resource_id]

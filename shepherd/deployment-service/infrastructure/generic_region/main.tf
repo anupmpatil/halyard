@@ -231,6 +231,11 @@ module "ob3_jump" {
   service_vcn_lpg_id                = module.service_network_control_plane.service_jump_lpg_id
   management_plane_service_vcn_cidr = local.management_plane_service_vcn_cidr
   management_plane_vcn_lpg_id       = module.service_network_management_plane.service_jump_lpg_id
+  name_prefix                       = "${local.service_name}-bastion"
+  release_name                      = local.execution_target.phase_name
+  odo_application_type              = "NON_PRODUCTION"
+  stage                             = local.environment
+  availability_domain               = local.service_availability_domains[0]
 }
 
 module "dns" {

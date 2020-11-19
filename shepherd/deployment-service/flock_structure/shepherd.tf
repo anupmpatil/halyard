@@ -29,18 +29,6 @@ resource "shepherd_artifacts" "artifacts" {
     location    = "deployment-service-control-plane-worker"
     description = "The docker container for deployment-service's control plane worker."
   }
-  artifact {
-    name        = "odo-system-updater"
-    type        = "pop"
-    location    = "odo-system-updater"
-    description = "ODO's security updater binaries."
-  }
-  artifact {
-    name        = "deployment-service-integration-test"
-    type        = "docker"
-    location    = "deployment-service-integration-test"
-    description = "The docker container for deployment-service's integration tests."
-  }
 }
 
 locals {

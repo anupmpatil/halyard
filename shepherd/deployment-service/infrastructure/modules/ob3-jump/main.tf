@@ -4,6 +4,10 @@
     Must make sure there is no CIDR block overlap between the Jump VCN and
     the service VCN.
 */
+data "oci_core_instances" "bastion_instances" {
+  compartment_id = var.bastion_compartment_id
+}
+
 resource "oci_core_vcn" "jump_vcn" {
   cidr_block     = var.jump_vcn_cidr
   compartment_id = var.bastion_compartment_id
@@ -149,5 +153,52 @@ resource "oci_core_instance" "jump_instance" {
   }
   metadata = {
     hostclass = var.jump_instance_hostclass
+  }
+}
+
+
+resource "odo_pool" "bastion" {
+  ad                       = var.availability_domain
+  alias                    = "${var.name_prefix}-${var.release_name}"
+  compartment_ocid         = var.bastion_compartment_id
+  managed_by               = "ODO"
+  default_node_admin_state = "STANDBY"
+
+  nodes = [for host in data.oci_core_instances.bastion_instances.instances : host.id]
+}
+
+
+resource "odo_application" "os_updater_bastion" {
+  ad                      = var.availability_domain
+  alias                   = "${var.name_prefix}-os-updater-${var.stage}"
+  compartment_ocid        = var.bastion_compartment_id
+  type                    = var.odo_application_type
+  artifact_set_identifier = "odo-system-updater"
+  default_artifact_source = "OBJECT_STORE"
+  agent                   = "HOSTAGENT_V2"
+
+  pools = [odo_pool.bastion.resource_id]
+
+  config {
+    deployments {
+      /*
+        Starting with a conservative deployment strategy that would only deploy 1 host at a time.
+        Please re-evaluate your deployment strategy based on your service's requirements before going production.
+      */
+      deploy_sequentially              = true
+      fault_domain_deploy_sequentially = true
+      parallelism                      = 1
+      parallelism_type                 = "HOSTS"
+      ttl_seconds_pull_image           = 240
+      ttl_seconds_start_instance       = 1200
+      ttl_seconds_stop_instance        = 300
+      ttl_seconds_validation           = 300
+      validation_script                = ""
+    }
+
+    runtime_config {
+      run_as_root_exception_url = "https://jira.oci.oraclecorp.com/browse/SECARCH-2398"
+      run_as_user               = "root"
+    }
   }
 }

@@ -11,3 +11,9 @@ output "ob3_jump_vcn_lpt" {
   value       = oci_core_local_peering_gateway.ob3_lpg.id
   description = "The ID of the LPG connecting overlay bastion hosts and the jump instance. Needs to provide this to the SecEdge team so they can pair the two networks"
 }
+
+
+output "os_updater_bastion" {
+  value       = odo_application.os_updater_bastion
+  description = "ODO OS_Updater Application"
+}
