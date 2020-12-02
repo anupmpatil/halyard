@@ -202,17 +202,19 @@ module "secret_service" {
 }
 
 module "kiev_control_plane" {
-  source         = "./modules/kiev"
-  compartment_id = local.control_plane_api_compartment_id
-  service_name   = "${local.service_short_name}-control-plane"
-  environment    = local.environment
+  source          = "./modules/kiev"
+  compartment_id  = local.control_plane_api_compartment_id
+  service_name    = "${local.service_short_name}-control-plane"
+  environment     = local.environment
+  phone_book_name = local.phonebook_name
 }
 
 module "kiev_data_plane" {
-  source         = "./modules/kiev"
-  compartment_id = local.management_plane_api_compartment_id
-  service_name   = "${local.service_short_name}-data-plane"
-  environment    = local.environment
+  source          = "./modules/kiev"
+  compartment_id  = local.management_plane_api_compartment_id
+  service_name    = "${local.service_short_name}-data-plane"
+  environment     = local.environment
+  phone_book_name = local.phonebook_name
 }
 
 // https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding

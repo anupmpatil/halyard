@@ -12,3 +12,8 @@ variable "environment" {
   type        = string
   description = "Environment of the log space. (beta/prod)"
 }
+
+variable "phone_book_name" {
+  type        = string
+  description = "Phonebook page guid"
+}
