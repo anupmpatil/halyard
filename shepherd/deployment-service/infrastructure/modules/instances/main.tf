@@ -52,7 +52,7 @@ resource "oci_core_instance_pool" "instance_pools" {
   }
   size = var.instance_count_per_ad
 
-  dynamic load_balancers {
+  dynamic "load_balancers" {
     // Not iterating any collection, just don't attach LB when var.attach_to_lb is false
     for_each = [for lb in [var.attach_to_lb] : lb if lb == true]
 

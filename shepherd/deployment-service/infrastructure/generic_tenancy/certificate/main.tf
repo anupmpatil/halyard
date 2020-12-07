@@ -1,6 +1,6 @@
 # This configuration is realm-wide, and only needs to be included in 1 AD per realm
 
-resource "certificate" tls_server_cert_deployment_service_control_plane_api {
+resource "certificate" "tls_server_cert_deployment_service_control_plane_api" {
   compartment_id = var.control_plane_compartment_id
   name           = "deployment_service_control_plane_api_tls_server_cert"
   description    = "deployment_service_control_plane_api tls server certificate"
@@ -31,7 +31,7 @@ resource "certificate" tls_server_cert_deployment_service_control_plane_api {
   }
 }
 
-resource "certificate" tls_server_cert_deployment_service_management_plane_api {
+resource "certificate" "tls_server_cert_deployment_service_management_plane_api" {
   compartment_id = var.management_plane_compartment_id
   name           = "deployment_service_management_plane_api_tls_server_cert"
   description    = "deployment_service_management_plane_api tls server certificate"

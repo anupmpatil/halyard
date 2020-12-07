@@ -3,6 +3,7 @@
  * Shepherd flock references: https://confluence.oci.oraclecorp.com/pages/viewpage.action?spaceKey=SHEP&title=Shepherd+Flock+and+Provider+Reference
  */
 
+
 // Source of artifacts that would be deployed to each target.
 resource "shepherd_artifacts" "artifacts" {
   artifact {
@@ -33,8 +34,9 @@ resource "shepherd_artifacts" "artifacts" {
 
 locals {
   tenancy_ocid_map = {
-    "beta" = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
-    "oc1"  = "ocid1.tenancy.oc1..aaaaaaaatvulfxx72mqjtzkj75wtgvcvqac6lo7lwll2yvl7rjqwnvicbs7q"
+    "beta"    = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
+    "preprod" = "ocid1.tenancy.oc1..aaaaaaaakiqb4agx7mu4hqu7rtitlmirgsv3z3nth4qasokxnzvqbp2dgoza"
+    "oc1"     = "ocid1.tenancy.oc1..aaaaaaaatvulfxx72mqjtzkj75wtgvcvqac6lo7lwll2yvl7rjqwnvicbs7q"
   }
   // Helper local configs to define release phases.
   release_phase_config = {
@@ -46,13 +48,21 @@ locals {
       "auto_approve" = true
       "predecessors" = []
     }
+    "preprod" = {
+      "production"   = false
+      "realm"        = "oc1"
+      "regions"      = ["us-ashburn-1"]
+      "home_region"  = "us-ashburn-1"
+      "auto_approve" = false
+      "predecessors" = ["beta"]
+    }
     "oc1-groupA" = {
       "production"   = true
       "realm"        = "oc1"
       "regions"      = ["us-ashburn-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
-      "predecessors" = ["beta"]
+      "predecessors" = ["preprod"]
     }
   }
 }
@@ -98,6 +108,17 @@ resource "shepherd_execution_target" "beta-region" {
   phase        = shepherd_release_phase.release_phases["beta"].name
 
   predecessors = []
+}
+
+# Execution targets for PREPROD(Tenancy)
+resource "shepherd_execution_target" "preprod" {
+  name                      = "preprod-us-ashburn-1"
+  tenancy_ocid              = local.tenancy_ocid_map["preprod"]
+  region                    = "us-ashburn-1"
+  phase                     = shepherd_release_phase.release_phases["preprod"].name
+  is_home_region_target     = true
+  snowflake_config_location = "generic_tenancy"
+  predecessors              = []
 }
 
 # Execution targets for PROD(Tenancy)
