@@ -24,6 +24,7 @@ locals {
   phonebook_name                      = "dlcdep"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
   host_class              = "DLC-DEPLOYMENT-DEV-ODO"
+  host_classes            = local.environment == "beta" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
   lb_listening_port       = 443
   api_host_listening_port = 24443
@@ -107,7 +108,7 @@ module "service_instances_control_plane_api" {
   service_instance_shape                = "VM.Standard.E2.2"
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
-  service_instances_hostclass_name      = local.host_class
+  service_instances_hostclass_name      = local.host_classes["dep-service-cp-api"]
   service_instances_oci_fleet           = local.control_plane_api_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
@@ -127,7 +128,7 @@ module "service_instances_control_plane_worker" {
   service_instance_shape                = "VM.Standard.E2.2"
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
-  service_instances_hostclass_name      = local.host_class
+  service_instances_hostclass_name      = local.host_classes["dep-service-cp-worker"]
   service_instances_oci_fleet           = local.control_plane_worker_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
@@ -144,7 +145,7 @@ module "service_instances_management_plane_api" {
   service_instance_shape                = "VM.Standard.E2.1"
   service_instance_name_prefix          = "${local.service_short_name}-mgmt-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
-  service_instances_hostclass_name      = local.host_class
+  service_instances_hostclass_name      = local.host_classes["dep-service-mgt-api"]
   service_instances_oci_fleet           = local.management_plane_api_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
@@ -164,7 +165,7 @@ module "service_instances_data_plane_worker" {
   service_instance_shape                = "VM.Standard.E2.1"
   service_instance_name_prefix          = "${local.service_short_name}-data-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
-  service_instances_hostclass_name      = local.host_class
+  service_instances_hostclass_name      = local.host_classes["dep-service-dp-worker"]
   service_instances_oci_fleet           = local.data_plane_worker_fleet_name
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1

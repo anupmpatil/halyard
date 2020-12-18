@@ -1,4 +1,18 @@
 locals {
+  oci_host_classes_prod_map = {
+    dep-service-cp-api    = "DEPLOYMENT-SERVICE-CP-API"
+    dep-service-mgt-api   = "DEPLOYMENT-SERVICE-MGT-API"
+    dep-service-cp-worker = "DEPLOYMENT-SERVICE-CP-WORKER"
+    dep-service-dp-worker = "DEPLOYMENT-SERVICE-DP-WORKER"
+  }
+
+  oci_host_classes_dev_map = {
+    dep-service-cp-api    = "DEPLOYMENT-SERVICE-CP-API-DEV"
+    dep-service-mgt-api   = "DEPLOYMENT-SERVICE-MGT-API-DEV"
+    dep-service-cp-worker = "DEPLOYMENT-SERVICE-CP-WRKR-DEV"
+    dep-service-dp-worker = "DEPLOYMENT-SERVICE-DP-WRKR-DEV"
+  }
+
   ob3_jump_vcn_cidrs_map = {
     beta_phx       = "172.16.105.224/29"
     beta_iad       = "192.168.176.248/29"
@@ -50,4 +64,12 @@ output "bastion_lpg_requestor_group_ocid" {
 
 output "bastion_lpg_requestor_tenancy_ocid" {
   value = local.ob3_bastion_lpg_requestor_tenancy_ocid_map["${var.realm}"]
+}
+
+output "oci_host_classes_prod_map" {
+  value = local.oci_host_classes_prod_map
+}
+
+output "oci_host_classes_dev_map" {
+  value = local.oci_host_classes_dev_map
 }
