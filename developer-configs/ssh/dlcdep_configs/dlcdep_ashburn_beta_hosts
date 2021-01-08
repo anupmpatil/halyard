@@ -33,4 +33,4 @@ Host dply-svc-data-plne-wrkr-beta-ad3.iad
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-data-plne-wrkr-beta-ad2.iad
   HostName 10.2.192.8
-  ProxyJump dlcdep-beta-jump.iadss
+  ProxyJump dlcdep-beta-jump.iad
