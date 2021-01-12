@@ -110,6 +110,10 @@ resource "shepherd_execution_target" "beta-region" {
   predecessors = []
 }
 
+###########
+# Execution targets for PREPROD
+###########
+
 # Execution targets for PREPROD(Tenancy)
 resource "shepherd_execution_target" "preprod" {
   name                      = "preprod-us-ashburn-1"
@@ -120,6 +124,22 @@ resource "shepherd_execution_target" "preprod" {
   snowflake_config_location = "generic_tenancy"
   predecessors              = []
 }
+
+# Execution targets for PREPROD(Regional)
+resource "shepherd_execution_target" "preprod-region" {
+  for_each = toset(local.release_phase_config["preprod"]["regions"])
+
+  name         = "preprod-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["preprod"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["preprod"].name
+
+  predecessors = []
+}
+
+###########
+# Execution targets for PROD
+###########
 
 # Execution targets for PROD(Tenancy)
 resource "shepherd_execution_target" "prod-oc1-groupA" {

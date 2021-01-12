@@ -151,16 +151,16 @@ resource "oci_identity_policy" "cd_rqs_policy" {
     # Below policy statements are needed to allow splat to manage RQS on our behalf.
     # The RQS schemas must be owned by service tenancy (PRODUCTION) compartments.
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope ='CUSTOMER', event.resource.type = 'Application'}",
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope ='CUSTOMER', event.resource.type = 'CloudDeployApplication'}",
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Pipeline'}",
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'CloudDeployPipeline'}",
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Stage'}",
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'CloudDeployStage'}",
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Environment'}",
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'CloudDeployArtifact'}",
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'Artifact'}",
+    var.deployment_service_control_plane_api_compartment_name} WHERE all {event.resource.scope = 'CUSTOMER', event.resource.type = 'CloudDeployEnvironment'}",
     "ALLOW SERVICE splat TO {RQS_RESOURCE_MANAGE} IN COMPARTMENT ${
-    var.deployment_service_management_plane_api_compartment_name} WHERE all { event.resource.scope = 'CUSTOMER',event.resource.type = 'Deployment'}"
+    var.deployment_service_management_plane_api_compartment_name} WHERE all { event.resource.scope = 'CUSTOMER',event.resource.type = 'CloudDeployDeployment'}"
   ]
 }

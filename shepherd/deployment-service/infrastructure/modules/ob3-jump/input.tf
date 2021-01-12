@@ -15,7 +15,7 @@ variable "jump_vcn_cidr" {
 
 variable "jump_instance_shape" {
   type        = string
-  default     = "VM.Standard2.1"
+  default     = "VM.Standard.E3.Flex"
   description = "The shape of the jump instance."
 }
 

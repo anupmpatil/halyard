@@ -3,6 +3,7 @@ locals {
 }
 
 resource "oci_dns_record" "deployment_service_control_plane_api_public_dns" {
+  count           = var.environment == "beta" ? 1 : 0
   zone_name_or_id = local.zone_name
   domain          = "${var.environment}.control.plane.api.clouddeploy.${local.zone_name}"
   rtype           = "A"
@@ -11,6 +12,7 @@ resource "oci_dns_record" "deployment_service_control_plane_api_public_dns" {
 }
 
 resource "oci_dns_record" "deployment_service_management_plane_api_public_dns" {
+  count           = var.environment == "beta" ? 1 : 0
   zone_name_or_id = local.zone_name
   domain          = "${var.environment}.management.plane.api.clouddeploy.${local.zone_name}"
   rtype           = "A"

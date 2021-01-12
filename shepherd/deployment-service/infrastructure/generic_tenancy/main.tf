@@ -1,5 +1,5 @@
 locals {
-  environment = length(regexall("beta", local.execution_target.name)) > 0 ? "beta" : "prod"
+  environment = lookup(module.region_config.environment_name_map, local.execution_target.phase_name, "beta")
   team_queue  = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
 }
 

@@ -142,7 +142,8 @@ resource "oci_core_instance" "jump_instance" {
   compartment_id      = var.bastion_compartment_id
   availability_domain = var.jump_instance_ad
   shape               = var.jump_instance_shape
-  display_name        = var.jump_instance_display_name
+  shape_config { ocpus = 1 }
+  display_name = var.jump_instance_display_name
   create_vnic_details {
     subnet_id        = oci_core_subnet.jump_vcn_subnet.id
     assign_public_ip = false
@@ -156,7 +157,6 @@ resource "oci_core_instance" "jump_instance" {
   }
 }
 
-
 resource "odo_pool" "bastion" {
   ad                       = var.availability_domain
   alias                    = "${var.name_prefix}-${var.release_name}"
@@ -166,7 +166,6 @@ resource "odo_pool" "bastion" {
 
   nodes = [for host in data.oci_core_instances.bastion_instances.instances : host.id]
 }
-
 
 resource "odo_application" "os_updater_bastion" {
   ad                      = var.availability_domain

@@ -4,7 +4,7 @@ data "oci_identity_availability_domains" "service_ads" {
 }
 
 locals {
-  environment                         = length(regexall("beta", local.execution_target.name)) > 0 ? "beta" : "prod"
+  environment                         = lookup(module.region_config.environment_name_map, local.execution_target.phase_name, "beta")
   control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api_compartment.id
   management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api_compartment.id
   control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker_compartment.id
@@ -22,9 +22,9 @@ locals {
   team_queue                          = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
   dns_label                           = "deploy"
   phonebook_name                      = "dlcdep"
+  instance_shape                      = "VM.Standard.E3.Flex"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
-  host_class              = "DLC-DEPLOYMENT-DEV-ODO"
-  host_classes            = local.environment == "beta" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
+  host_classes            = local.environment != "prod" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
   lb_listening_port       = 443
   api_host_listening_port = 24443
@@ -105,7 +105,8 @@ module "service_instances_control_plane_api" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.control_plane_api_compartment_id
-  service_instance_shape                = "VM.Standard.E2.2"
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
+  instance_shape_config                 = { ocpus = 2 }
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-cp-api"]
@@ -125,7 +126,8 @@ module "service_instances_control_plane_worker" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.control_plane_worker_compartment_id
-  service_instance_shape                = "VM.Standard.E2.2"
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
+  instance_shape_config                 = { ocpus = 2 }
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-cp-worker"]
@@ -142,7 +144,8 @@ module "service_instances_management_plane_api" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.management_plane_api_compartment_id
-  service_instance_shape                = "VM.Standard.E2.1"
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
+  instance_shape_config                 = { ocpus = 1 }
   service_instance_name_prefix          = "${local.service_short_name}-mgmt-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-mgt-api"]
@@ -162,7 +165,8 @@ module "service_instances_data_plane_worker" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.data_plane_worker_compartment_id
-  service_instance_shape                = "VM.Standard.E2.1"
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
+  instance_shape_config                 = { ocpus = 1 }
   service_instance_name_prefix          = "${local.service_short_name}-data-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-dp-worker"]
@@ -226,10 +230,10 @@ module "ob3_jump" {
   bastion_compartment_id            = local.bastion_compartment_id
   ob3_bastion_cidr                  = local.ob3_bastion_cidr
   jump_vcn_cidr                     = local.ob3_jump_vcn_cidr
-  jump_instance_shape               = "VM.Standard.E2.1"
+  jump_instance_shape               = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
   jump_instance_image_id            = module.image.overlay_image.id
   jump_instance_ad                  = data.oci_identity_availability_domains.service_ads.availability_domains[0].name
-  jump_instance_hostclass           = local.host_class
+  jump_instance_hostclass           = local.host_classes["dep-service-bastion"]
   service_vcn_cidr                  = local.service_vcn_cidr
   service_vcn_lpg_id                = module.service_network_control_plane.service_jump_lpg_id
   management_plane_service_vcn_cidr = local.management_plane_service_vcn_cidr
@@ -306,7 +310,7 @@ module "alarms_management_plane" {
 
 module "wfaas_control_plane" {
   source                           = "./modules/wfaas"
-  wfaas_name                       = "dlcdep-dev-cp"
+  wfaas_name                       = local.environment == "beta" ? "dlcdep-dev-cp" : "dlcdep-${local.environment}-cp"
   deployment_worker_compartment_id = local.control_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   type                             = "AD_LOCAL"
@@ -315,7 +319,7 @@ module "wfaas_control_plane" {
 
 module "wfaas_data_plane" {
   source                           = "./modules/wfaas"
-  wfaas_name                       = "dlcdep-dev-dp"
+  wfaas_name                       = local.environment == "beta" ? "dlcdep-dev-dp" : "dlcdep-${local.environment}-dp"
   deployment_worker_compartment_id = local.data_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   type                             = "AD_LOCAL"

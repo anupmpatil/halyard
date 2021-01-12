@@ -20,8 +20,14 @@ variable "service_instance_name_prefix" {
 
 variable "service_instance_shape" {
   type        = string
-  default     = "VM.Standard2.1"
+  default     = "VM.Standard.E3.Flex"
   description = "The shape of service instance."
+}
+
+variable "instance_shape_config" {
+  type        = map(string)
+  default     = { ocpus = 1 }
+  description = "Instance shape config"
 }
 
 variable "service_instance_image_id" {

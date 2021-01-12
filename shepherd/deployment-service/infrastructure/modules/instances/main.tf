@@ -19,6 +19,7 @@ resource "oci_core_instance_configuration" "instance_configuration" {
       availability_domain = local.ad_map[each.value]
       compartment_id      = var.compartment_id
       shape               = var.service_instance_shape
+      shape_config { ocpus = var.instance_shape_config.ocpus }
 
       create_vnic_details {
         subnet_id        = var.service_subnet_id

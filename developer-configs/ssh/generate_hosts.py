@@ -8,6 +8,11 @@ __DEV_CONTROL_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaapvd53hs
 __DEV_MANAGEMENT_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaachohyaxwwnfcfpdga7kvc6jae5fl2c6tor4uq7t7cjqmhw2hyogq'
 __DEV_DATA_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaay735nx4ueuzyobl325y2thvybwfju633ihqrn7g5y2y6nlq3ibra'
 
+__PREPROD_CONTROL_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaa6g47mcelo2sy5x2by5ctyboxzjue6a4ejl5rwz356p6jjewwxjaa'
+__PREPROD_CONTROL_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaau6lkwuipovqefnhqgtwkk5guwgxzevvtyenjee5sbi4upc4n554a'
+__PREPROD_MANAGEMENT_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaanb7lg7aq3kibqmwzzf7mm4ecu7lzyafdwa7kevt6p4kvvnje2ura'
+__PREPROD_DATA_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaawmqozxu6pjtii2u3a2c54ftd6hfgvbtpztdggtodo54nme3755mq'
+
 def __check_package(pkg, pippkg = None):
     pippkg = pkg if pippkg == None else pippkg
     try:
@@ -65,7 +70,7 @@ def main(argv):
     __check_packages()
     parser = argparse.ArgumentParser(description='Generate ssh config hosts')
     parser.add_argument('environment', metavar='<environment>', help='Environment',
-            choices=['DEV', 'TEST','PROD'])
+            choices=['DEV', 'PREPROD','PROD'])
     parser.add_argument('region', metavar='<region>', help='Region',
             choices=[
                     "ashburn",
@@ -84,6 +89,11 @@ def main(argv):
         elif args.region == 'ashburn':
             jump_host = 'dlcdep-beta-jump.iad'
             compartments = [__DEV_CONTROL_PLANE_API_COMPARTMENT, __DEV_CONTROL_PLANE_WORKER_COMPARTMENT, __DEV_MANAGEMENT_PLANE_API_COMPARTMENT, __DEV_DATA_PLANE_WORKER_COMPARTMENT]
+            region = 'iad'
+    elif args.environment == 'PREPROD':
+        compartments = [__PREPROD_CONTROL_PLANE_API_COMPARTMENT, __PREPROD_CONTROL_PLANE_WORKER_COMPARTMENT, __PREPROD_MANAGEMENT_PLANE_API_COMPARTMENT,__PREPROD_DATA_PLANE_WORKER_COMPARTMENT]
+        if args.region == 'ashburn':
+            jump_host = 'dlcdep-preprod-jump.iad'
             region = 'iad'
 
 ##ELIF_REGION_ADD_ABOVE

@@ -4,6 +4,7 @@ locals {
     dep-service-mgt-api   = "DEPLOYMENT-SERVICE-MGT-API"
     dep-service-cp-worker = "DEPLOYMENT-SERVICE-CP-WORKER"
     dep-service-dp-worker = "DEPLOYMENT-SERVICE-DP-WORKER"
+    dep-service-bastion   = "deployment-service-bastions"
   }
 
   oci_host_classes_dev_map = {
@@ -11,19 +12,20 @@ locals {
     dep-service-mgt-api   = "DEPLOYMENT-SERVICE-MGT-API-DEV"
     dep-service-cp-worker = "DEPLOYMENT-SERVICE-CP-WRKR-DEV"
     dep-service-dp-worker = "DEPLOYMENT-SERVICE-DP-WRKR-DEV"
+    dep-service-bastion   = "deployment-service-bastions-dev"
   }
 
   ob3_jump_vcn_cidrs_map = {
     beta_phx       = "172.16.105.224/29"
     beta_iad       = "192.168.176.248/29"
-    preprod_iad    = ""
+    preprod_iad    = "172.16.224.144/29"
     oc1-groupA_iad = ""
   }
 
   ob3_bastion_cidrs_map = {
     beta_phx       = "192.168.1.128/26"
     beta_iad       = "172.16.4.128/26"
-    preprod_iad    = ""
+    preprod_iad    = "192.168.4.192/26"
     oc1-groupA_iad = ""
   }
 
