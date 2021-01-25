@@ -2,7 +2,7 @@
 # https://confluence.oci.oraclecorp.com/display/QP/Author+RQS+schema#AuthorRQSschema-PublishRQSschema
 
 resource "rqs_resource_schema" "clouddeploy_application_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployApplication"
   compartment_id                        = var.control_plane_compartment_id
@@ -13,7 +13,7 @@ resource "rqs_resource_schema" "clouddeploy_application_schema" {
 }
 
 resource "rqs_resource_schema" "clouddeploy_pipeline_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployPipeline"
   compartment_id                        = var.control_plane_compartment_id
@@ -25,7 +25,7 @@ resource "rqs_resource_schema" "clouddeploy_pipeline_schema" {
 }
 
 resource "rqs_resource_schema" "clouddeploy_stage_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployStage"
   compartment_id                        = var.control_plane_compartment_id
@@ -37,7 +37,7 @@ resource "rqs_resource_schema" "clouddeploy_stage_schema" {
 }
 
 resource "rqs_resource_schema" "clouddeploy_artifact_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployArtifact"
   compartment_id                        = var.control_plane_compartment_id
@@ -49,7 +49,7 @@ resource "rqs_resource_schema" "clouddeploy_artifact_schema" {
 }
 
 resource "rqs_resource_schema" "clouddeploy_environment_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployEnvironment"
   compartment_id                        = var.control_plane_compartment_id
@@ -61,7 +61,7 @@ resource "rqs_resource_schema" "clouddeploy_environment_schema" {
 }
 
 resource "rqs_resource_schema" "clouddeploy_deployment_schema" {
-  count                                 = var.environment == "beta" ? 1 : 0
+  count                                 = var.environment == "prod" ? 1 : 0
   scope                                 = var.scope
   resource_type                         = "CloudDeployDeployment"
   compartment_id                        = var.management_plane_compartment_id

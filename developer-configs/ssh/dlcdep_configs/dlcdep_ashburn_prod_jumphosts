@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_ashburn_prod_hosts
+
+# Jump Hosts
+Host dlcdep-prod-jump.iad
+  HostName 192.168.125.235
+  ProxyJump vcn4.ob.us-ashburn-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-prod-jump.iad
+  PermitLocalCommand yes

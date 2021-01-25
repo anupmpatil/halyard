@@ -1,8 +1,3 @@
-// Retrieve all available physical ADs
-data "oci_identity_availability_domains" "service_ads" {
-  compartment_id = module.identity.deployment_service_control_plane_api_compartment.id
-}
-
 locals {
   environment                         = lookup(module.region_config.environment_name_map, local.execution_target.phase_name, "beta")
   control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api_compartment.id
@@ -209,7 +204,7 @@ module "secret_service" {
 module "kiev_control_plane" {
   source          = "./modules/kiev"
   compartment_id  = local.control_plane_api_compartment_id
-  service_name    = "${local.service_short_name}-control-plane"
+  service_name    = local.environment == "prod" ? "${local.service_short_name}-cp" : "${local.service_short_name}-control-plane"
   environment     = local.environment
   phone_book_name = local.phonebook_name
 }
@@ -232,7 +227,6 @@ module "ob3_jump" {
   jump_vcn_cidr                     = local.ob3_jump_vcn_cidr
   jump_instance_shape               = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
   jump_instance_image_id            = module.image.overlay_image.id
-  jump_instance_ad                  = data.oci_identity_availability_domains.service_ads.availability_domains[0].name
   jump_instance_hostclass           = local.host_classes["dep-service-bastion"]
   service_vcn_cidr                  = local.service_vcn_cidr
   service_vcn_lpg_id                = module.service_network_control_plane.service_jump_lpg_id
@@ -242,7 +236,6 @@ module "ob3_jump" {
   release_name                      = local.execution_target.phase_name
   odo_application_type              = "NON_PRODUCTION"
   stage                             = local.environment
-  availability_domain               = local.service_availability_domains[0]
 }
 
 module "dns" {

@@ -8,6 +8,10 @@ data "oci_core_instances" "bastion_instances" {
   compartment_id = var.bastion_compartment_id
 }
 
+data "ad_availability_domains" "availability_domains" {
+  tenancy_id = var.tenancy_ocid
+}
+
 resource "oci_core_vcn" "jump_vcn" {
   cidr_block     = var.jump_vcn_cidr
   compartment_id = var.bastion_compartment_id
@@ -140,7 +144,7 @@ resource "oci_core_security_list" "jump_vcn_security_list" {
 // Launching the jump instance.
 resource "oci_core_instance" "jump_instance" {
   compartment_id      = var.bastion_compartment_id
-  availability_domain = var.jump_instance_ad
+  availability_domain = data.ad_availability_domains.availability_domains.ads[0].logical_ad
   shape               = var.jump_instance_shape
   shape_config { ocpus = 1 }
   display_name = var.jump_instance_display_name
@@ -158,17 +162,17 @@ resource "oci_core_instance" "jump_instance" {
 }
 
 resource "odo_pool" "bastion" {
-  ad                       = var.availability_domain
+  ad                       = data.ad_availability_domains.availability_domains.ads[0].name
   alias                    = "${var.name_prefix}-${var.release_name}"
   compartment_ocid         = var.bastion_compartment_id
   managed_by               = "ODO"
   default_node_admin_state = "STANDBY"
 
-  nodes = [for host in data.oci_core_instances.bastion_instances.instances : host.id]
+  nodes = [for host in data.oci_core_instances.bastion_instances.instances : host.id if host.state == "RUNNING"]
 }
 
 resource "odo_application" "os_updater_bastion" {
-  ad                      = var.availability_domain
+  ad                      = data.ad_availability_domains.availability_domains.ads[0].name
   alias                   = "${var.name_prefix}-os-updater-${var.stage}"
   compartment_ocid        = var.bastion_compartment_id
   type                    = var.odo_application_type

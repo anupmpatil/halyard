@@ -13,6 +13,11 @@ __PREPROD_CONTROL_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaau6l
 __PREPROD_MANAGEMENT_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaanb7lg7aq3kibqmwzzf7mm4ecu7lzyafdwa7kevt6p4kvvnje2ura'
 __PREPROD_DATA_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaawmqozxu6pjtii2u3a2c54ftd6hfgvbtpztdggtodo54nme3755mq'
 
+__PROD_CONTROL_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaajg4p7xvr7cv2drq37xsgoblx6e64g5segkwth3e6jt2bekn26npa'
+__PROD_CONTROL_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaajtwim5st254beg3m5lkzynb46oa72ihakbuj76i2go23etgkrzra'
+__PROD_MANAGEMENT_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaa5huej7mm3hyh36knr6v74gsl4kizv3uh7nk6c2qel4tjzut3tdnq'
+__PROD_DATA_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaaumetikbza2x6b7gdyozenrqy2u5wymr64pdp5tft6ntxusrg2ela'
+
 def __check_package(pkg, pippkg = None):
     pippkg = pkg if pippkg == None else pippkg
     try:
@@ -95,6 +100,14 @@ def main(argv):
         if args.region == 'ashburn':
             jump_host = 'dlcdep-preprod-jump.iad'
             region = 'iad'
+    elif args.environment == 'PROD':
+        compartments = [__PROD_CONTROL_PLANE_API_COMPARTMENT, __PROD_CONTROL_PLANE_WORKER_COMPARTMENT, __PROD_MANAGEMENT_PLANE_API_COMPARTMENT,__PROD_DATA_PLANE_WORKER_COMPARTMENT]
+        if args.region == 'ashburn':
+            jump_host = 'dlcdep-prod-jump.iad'
+            region = 'iad'
+        elif args.region == 'phoenix':
+            jump_host = 'dlcdep-prod-jump.phx'
+            region = 'phx'
 
 ##ELIF_REGION_ADD_ABOVE
     else:

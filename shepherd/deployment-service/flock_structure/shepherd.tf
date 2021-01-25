@@ -59,7 +59,7 @@ locals {
     "oc1-groupA" = {
       "production"   = true
       "realm"        = "oc1"
-      "regions"      = ["us-ashburn-1"]
+      "regions"      = ["us-ashburn-1", "us-phoenix-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
       "predecessors" = ["preprod"]
@@ -150,4 +150,16 @@ resource "shepherd_execution_target" "prod-oc1-groupA" {
   is_home_region_target     = true
   snowflake_config_location = "generic_tenancy"
   predecessors              = []
+}
+
+# Execution targets for PROD(Regional)
+resource "shepherd_execution_target" "prod-oc1-groupA-region" {
+  for_each = toset(local.release_phase_config["oc1-groupA"]["regions"])
+
+  name         = "oc1-groupA-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["oc1-groupA"].name
+
+  predecessors = []
 }

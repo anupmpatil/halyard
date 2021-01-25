@@ -24,11 +24,6 @@ variable "jump_instance_image_id" {
   description = "The image id for the jump instance. Note: it must be chef enabled."
 }
 
-variable "jump_instance_ad" {
-  type        = string
-  description = "The availability zone where you want to run the jump instance."
-}
-
 variable "jump_instance_hostclass" {
   type        = string
   description = "The overlay hostclass that your jump instance belongs to."
@@ -86,9 +81,4 @@ variable "stage" {
 
 variable "odo_application_type" {
   description = "Specifies the ODO application's type: https://confluence.oci.oraclecorp.com/display/odo/Application+Types."
-}
-
-variable "availability_domain" {
-  type        = string
-  description = "availability domain to deploy to."
 }
