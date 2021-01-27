@@ -6,14 +6,20 @@ data "oci_identity_availability_domains" "service_ads" {
 }
 
 locals {
-  et = local.execution_target
-  ad = [for ad in local.availability_domains : ad.name]
+  environment_name_map = {
+    beta       = "beta"
+    preprod    = "preprod"
+    oc1-groupA = "prod"
+  }
+  et          = local.execution_target
+  ad          = [for ad in local.availability_domains : ad.name]
+  environment = lookup(local.environment_name_map, local.execution_target.phase_name, "beta")
 
   # Combined map:
   aliases = {
-    management_plane = "deployment-service-management-plane-os-updater-beta"
-    control_plane    = "deployment-service-control-plane-os-updater-beta"
-    bastion          = "deployment-service-bastion-os-updater-beta"
+    management_plane = "deployment-service-management-plane-os-updater-${local.environment}"
+    control_plane    = "deployment-service-control-plane-os-updater-${local.environment}"
+    bastion          = "deployment-service-bastion-os-updater-${local.environment}"
   }
 }
 
