@@ -100,8 +100,8 @@ module "service_instances_control_plane_api" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.control_plane_api_compartment_id
-  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
-  instance_shape_config                 = { ocpus = 2 }
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
+  instance_shape_config                 = { ocpus = 1 }
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-cp-api"]
@@ -121,8 +121,8 @@ module "service_instances_control_plane_worker" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.control_plane_worker_compartment_id
-  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
-  instance_shape_config                 = { ocpus = 2 }
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
+  instance_shape_config                 = { ocpus = 1 }
   service_instance_name_prefix          = "${local.service_short_name}-ctrl-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-cp-worker"]
@@ -139,8 +139,8 @@ module "service_instances_management_plane_api" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.management_plane_api_compartment_id
-  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
-  instance_shape_config                 = { ocpus = 1 }
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
+  instance_shape_config                 = { ocpus = 2 }
   service_instance_name_prefix          = "${local.service_short_name}-mgmt-plne-api-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-mgt-api"]
@@ -160,8 +160,8 @@ module "service_instances_data_plane_worker" {
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
   compartment_id                        = local.data_plane_worker_compartment_id
-  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
-  instance_shape_config                 = { ocpus = 1 }
+  service_instance_shape                = local.environment == "beta" ? "VM.Standard.E2.2" : local.instance_shape
+  instance_shape_config                 = { ocpus = 2 }
   service_instance_name_prefix          = "${local.service_short_name}-data-plne-wrkr-${local.environment}"
   service_instance_image_id             = module.image.overlay_image.id
   service_instances_hostclass_name      = local.host_classes["dep-service-dp-worker"]

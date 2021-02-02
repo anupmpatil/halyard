@@ -1,36 +1,36 @@
+Host dply-svc-ctrl-plne-api-preprod-ad3.iad
+  HostName 10.0.0.6
+  ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-ctrl-plne-api-preprod-ad1.iad
-  HostName 10.0.0.2
+  HostName 10.0.0.5
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-ctrl-plne-api-preprod-ad2.iad
-  HostName 10.0.0.3
-  ProxyJump dlcdep-preprod-jump.iad
-Host dply-svc-ctrl-plne-api-preprod-ad3.iad
-  HostName 10.0.0.4
-  ProxyJump dlcdep-preprod-jump.iad
-Host dply-svc-ctrl-plne-wrkr-preprod-ad3.iad
-  HostName 10.0.192.4
-  ProxyJump dlcdep-preprod-jump.iad
-Host dply-svc-ctrl-plne-wrkr-preprod-ad2.iad
-  HostName 10.0.192.3
+  HostName 10.0.0.7
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-ctrl-plne-wrkr-preprod-ad1.iad
-  HostName 10.0.192.2
+  HostName 10.0.192.6
   ProxyJump dlcdep-preprod-jump.iad
-Host dply-svc-mgmt-plne-api-preprod-ad2.iad
-  HostName 10.2.0.4
+Host dply-svc-ctrl-plne-wrkr-preprod-ad3.iad
+  HostName 10.0.192.5
+  ProxyJump dlcdep-preprod-jump.iad
+Host dply-svc-ctrl-plne-wrkr-preprod-ad2.iad
+  HostName 10.0.192.7
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-mgmt-plne-api-preprod-ad3.iad
-  HostName 10.2.0.3
+  HostName 10.2.0.6
+  ProxyJump dlcdep-preprod-jump.iad
+Host dply-svc-mgmt-plne-api-preprod-ad2.iad
+  HostName 10.2.0.5
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-mgmt-plne-api-preprod-ad1.iad
-  HostName 10.2.0.2
+  HostName 10.2.0.7
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-data-plne-wrkr-preprod-ad3.iad
-  HostName 10.2.192.4
-  ProxyJump dlcdep-preprod-jump.iad
-Host dply-svc-data-plne-wrkr-preprod-ad2.iad
-  HostName 10.2.192.3
+  HostName 10.2.192.5
   ProxyJump dlcdep-preprod-jump.iad
 Host dply-svc-data-plne-wrkr-preprod-ad1.iad
-  HostName 10.2.192.2
+  HostName 10.2.192.7
+  ProxyJump dlcdep-preprod-jump.iad
+Host dply-svc-data-plne-wrkr-preprod-ad2.iad
+  HostName 10.2.192.6
   ProxyJump dlcdep-preprod-jump.iad

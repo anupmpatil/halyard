@@ -1,36 +1,36 @@
 Host dply-svc-ctrl-plne-api-beta-ad1.iad
-  HostName 10.0.0.11
-  ProxyJump dlcdep-beta-jump.iad
-Host dply-svc-ctrl-plne-api-beta-ad2.iad
-  HostName 10.0.0.13
+  HostName 10.0.0.19
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-ctrl-plne-api-beta-ad3.iad
-  HostName 10.0.0.12
+  HostName 10.0.0.17
   ProxyJump dlcdep-beta-jump.iad
-Host dply-svc-ctrl-plne-wrkr-beta-ad1.iad
-  HostName 10.0.192.13
+Host dply-svc-ctrl-plne-api-beta-ad2.iad
+  HostName 10.0.0.18
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-ctrl-plne-wrkr-beta-ad2.iad
-  HostName 10.0.192.12
+  HostName 10.0.192.19
+  ProxyJump dlcdep-beta-jump.iad
+Host dply-svc-ctrl-plne-wrkr-beta-ad1.iad
+  HostName 10.0.192.18
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-ctrl-plne-wrkr-beta-ad3.iad
-  HostName 10.0.192.11
-  ProxyJump dlcdep-beta-jump.iad
-Host dply-svc-mgmt-plne-api-beta-ad1.iad
-  HostName 10.2.0.11
-  ProxyJump dlcdep-beta-jump.iad
-Host dply-svc-mgmt-plne-api-beta-ad3.iad
-  HostName 10.2.0.12
+  HostName 10.0.192.17
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-mgmt-plne-api-beta-ad2.iad
-  HostName 10.2.0.13
+  HostName 10.2.0.16
   ProxyJump dlcdep-beta-jump.iad
-Host dply-svc-data-plne-wrkr-beta-ad1.iad
-  HostName 10.2.192.13
+Host dply-svc-mgmt-plne-api-beta-ad1.iad
+  HostName 10.2.0.15
+  ProxyJump dlcdep-beta-jump.iad
+Host dply-svc-mgmt-plne-api-beta-ad3.iad
+  HostName 10.2.0.14
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-data-plne-wrkr-beta-ad3.iad
-  HostName 10.2.192.12
+  HostName 10.2.192.16
   ProxyJump dlcdep-beta-jump.iad
 Host dply-svc-data-plne-wrkr-beta-ad2.iad
-  HostName 10.2.192.11
+  HostName 10.2.192.15
+  ProxyJump dlcdep-beta-jump.iad
+Host dply-svc-data-plne-wrkr-beta-ad1.iad
+  HostName 10.2.192.14
   ProxyJump dlcdep-beta-jump.iad
