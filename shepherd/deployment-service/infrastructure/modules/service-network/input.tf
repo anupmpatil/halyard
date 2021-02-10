@@ -48,3 +48,8 @@ variable "lb_listener_port" {
   type        = string
   description = "The load balancer listener's port."
 }
+
+variable "region_short" {
+  type        = string
+  description = "The short name of a region"
+}

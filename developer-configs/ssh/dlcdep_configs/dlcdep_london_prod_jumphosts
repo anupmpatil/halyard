@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_london_prod_hosts
+
+# Jump Hosts
+Host dlcdep-prod-jump.lhr
+  HostName 192.168.46.194
+  ProxyJump vcn11.ob.uk-london-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-prod-jump.lhr
+  PermitLocalCommand yes

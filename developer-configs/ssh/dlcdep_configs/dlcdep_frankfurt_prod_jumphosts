@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_frankfurt_prod_hosts
+
+# Jump Hosts
+Host dlcdep-prod-jump.fra
+  HostName 192.168.127.178
+  ProxyJump vcn2.ob.eu-frankfurt-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-prod-jump.fra
+  PermitLocalCommand yes

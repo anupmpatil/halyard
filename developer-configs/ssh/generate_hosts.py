@@ -18,6 +18,13 @@ __PROD_CONTROL_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaajtwim5
 __PROD_MANAGEMENT_PLANE_API_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaa5huej7mm3hyh36knr6v74gsl4kizv3uh7nk6c2qel4tjzut3tdnq'
 __PROD_DATA_PLANE_WORKER_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaaumetikbza2x6b7gdyozenrqy2u5wymr64pdp5tft6ntxusrg2ela'
 
+prodRegionMap = {
+    "ashburn" : "iad",
+    "phoenix" : "phx",
+    "london" : "lhr",
+    "frankfurt" :"fra"
+}
+
 def __check_package(pkg, pippkg = None):
     pippkg = pkg if pippkg == None else pippkg
     try:
@@ -79,7 +86,7 @@ def main(argv):
     parser.add_argument('region', metavar='<region>', help='Region',
             choices=[
                     "ashburn",
-                    "phoenix",
+                    "phoenix", "london", "frankfurt",
 ##REGION_LIST_ADD_ABOVE
             ])
 
@@ -102,13 +109,8 @@ def main(argv):
             region = 'iad'
     elif args.environment == 'PROD':
         compartments = [__PROD_CONTROL_PLANE_API_COMPARTMENT, __PROD_CONTROL_PLANE_WORKER_COMPARTMENT, __PROD_MANAGEMENT_PLANE_API_COMPARTMENT,__PROD_DATA_PLANE_WORKER_COMPARTMENT]
-        if args.region == 'ashburn':
-            jump_host = 'dlcdep-prod-jump.iad'
-            region = 'iad'
-        elif args.region == 'phoenix':
-            jump_host = 'dlcdep-prod-jump.phx'
-            region = 'phx'
-
+        jump_host = 'dlcdep-prod-jump.'+prodRegionMap[args.region]
+        region = prodRegionMap[args.region]
 ##ELIF_REGION_ADD_ABOVE
     else:
         sys.exit(1)

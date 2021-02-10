@@ -29,7 +29,7 @@ module "identity" {
 
 module "region_config" {
   source       = "./shared_modules/region_config"
-  region_short = local.execution_target.region.name
+  region_short = lookup(module.region_config.region_short_name_map, local.execution_target.region.name, "phx")
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm
 }

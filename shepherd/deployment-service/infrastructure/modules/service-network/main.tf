@@ -262,7 +262,7 @@ resource "oci_core_subnet" "service_subnet_api" {
   route_table_id             = oci_core_route_table.service_vcn_route_table_api.id
   security_list_ids          = [oci_core_security_list.service_vcn_security_list.id]
   display_name               = "service_api_subnet_${oci_core_vcn.service_vcn.display_name}"
-  dns_label                  = var.region.name
+  dns_label                  = var.region_short
 }
 
 resource "oci_core_subnet" "service_subnet_worker" {
@@ -273,7 +273,7 @@ resource "oci_core_subnet" "service_subnet_worker" {
   route_table_id             = oci_core_route_table.service_vcn_route_table_worker.id
   security_list_ids          = [oci_core_security_list.service_vcn_security_list.id]
   display_name               = "service_worker_subnet_${oci_core_vcn.service_vcn.display_name}"
-  dns_label                  = "${var.region.name}worker"
+  dns_label                  = "${var.region_short}worker"
 }
 
 // Subnet for public loadbalancer.

@@ -18,6 +18,7 @@ locals {
   dns_label                           = "deploy"
   phonebook_name                      = "dlcdep"
   instance_shape                      = "VM.Standard.E3.Flex"
+  region_short_name                   = lookup(module.region_config.region_short_name_map, local.execution_target.region.name, "phx")
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
   host_classes            = local.environment != "prod" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
@@ -38,7 +39,7 @@ module "identity" {
 
 module "region_config" {
   source       = "./shared_modules/region_config"
-  region_short = local.execution_target.region.name
+  region_short = local.region_short_name
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm
 }
@@ -59,6 +60,7 @@ module "service_network_control_plane" {
   dns_label             = "${local.dns_label}${local.environment}"
   host_listening_port   = local.api_host_listening_port
   lb_listener_port      = local.lb_listening_port
+  region_short          = local.region_short_name
 }
 
 module "service_network_management_plane" {
@@ -72,6 +74,7 @@ module "service_network_management_plane" {
   dns_label             = "${local.dns_label}${local.environment}"
   host_listening_port   = local.api_host_listening_port
   lb_listener_port      = local.lb_listening_port
+  region_short          = local.region_short_name
 }
 
 module "service_lb_control_plane" {

@@ -20,7 +20,9 @@ locals {
     beta_iad       = "192.168.176.248/29"
     preprod_iad    = "172.16.224.144/29"
     oc1-groupA_iad = "192.168.125.232/29"
-    oc1-groupA_phx = "172.16.119.104/29"
+    oc1-groupB_phx = "172.16.119.104/29"
+    oc1-groupB_lhr = "192.168.46.192/29"
+    oc1-groupA_fra = "192.168.127.176/29"
   }
 
   ob3_bastion_cidrs_map = {
@@ -28,7 +30,9 @@ locals {
     beta_iad       = "172.16.4.128/26"
     preprod_iad    = "192.168.4.192/26"
     oc1-groupA_iad = "172.16.104.64/26"
-    oc1-groupA_phx = "192.168.101.192/26"
+    oc1-groupB_phx = "192.168.101.192/26"
+    oc1-groupB_lhr = "172.16.103.192/26"
+    oc1-groupA_fra = "172.16.102.0/26"
   }
 
   ob3_bastion_lpg_requestor_tenancy_ocid_map = {

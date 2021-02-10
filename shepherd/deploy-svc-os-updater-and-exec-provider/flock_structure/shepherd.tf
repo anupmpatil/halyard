@@ -19,6 +19,7 @@ locals {
     "preprod" = "ocid1.tenancy.oc1..aaaaaaaakiqb4agx7mu4hqu7rtitlmirgsv3z3nth4qasokxnzvqbp2dgoza"
     "oc1"     = "ocid1.tenancy.oc1..aaaaaaaatvulfxx72mqjtzkj75wtgvcvqac6lo7lwll2yvl7rjqwnvicbs7q"
   }
+  bellwether_region = "us-ashburn-1"
   // Helper local configs to define release phases.
   release_phase_config = {
     "beta" = {
@@ -40,10 +41,18 @@ locals {
     "oc1-groupA" = {
       "production"   = true
       "realm"        = "oc1"
-      "regions"      = ["us-ashburn-1", "us-phoenix-1"]
+      "regions"      = ["us-ashburn-1", "eu-frankfurt-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
       "predecessors" = ["preprod"]
+    }
+    "oc1-groupB" = {
+      "production"   = true
+      "realm"        = "oc1"
+      "regions"      = ["us-phoenix-1", "uk-london-1"]
+      "home_region"  = "us-ashburn-1"
+      "auto_approve" = false
+      "predecessors" = ["oc1-groupA"]
     }
   }
 }
@@ -92,6 +101,17 @@ resource "shepherd_execution_target" "oc1-groupA-region" {
   tenancy_ocid = local.tenancy_ocid_map["oc1"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["oc1-groupA"].name
+  # After the bellwether succeeds, everything happens in parallel
+  predecessors = each.key == local.bellwether_region ? [] : ["oc1-groupA-${local.bellwether_region}-region"]
+}
+
+resource "shepherd_execution_target" "oc1-groupB-region" {
+  for_each = toset(local.release_phase_config["oc1-groupB"]["regions"])
+
+  name         = "oc1-groupB-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["oc1-groupB"].name
 
   predecessors = []
 }

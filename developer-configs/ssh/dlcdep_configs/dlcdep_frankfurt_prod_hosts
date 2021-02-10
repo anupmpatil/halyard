@@ -1,0 +1,36 @@
+Host dply-svc-ctrl-plne-api-prod-ad1.fra
+  HostName 10.0.0.4
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-ctrl-plne-api-prod-ad2.fra
+  HostName 10.0.0.2
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-ctrl-plne-api-prod-ad3.fra
+  HostName 10.0.0.3
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-ctrl-plne-wrkr-prod-ad1.fra
+  HostName 10.0.192.3
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-ctrl-plne-wrkr-prod-ad3.fra
+  HostName 10.0.192.2
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-ctrl-plne-wrkr-prod-ad2.fra
+  HostName 10.0.192.4
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-mgmt-plne-api-prod-ad3.fra
+  HostName 10.2.0.2
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-mgmt-plne-api-prod-ad2.fra
+  HostName 10.2.0.3
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-mgmt-plne-api-prod-ad1.fra
+  HostName 10.2.0.4
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-data-plne-wrkr-prod-ad2.fra
+  HostName 10.2.192.4
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-data-plne-wrkr-prod-ad1.fra
+  HostName 10.2.192.2
+  ProxyJump dlcdep-prod-jump.fra
+Host dply-svc-data-plne-wrkr-prod-ad3.fra
+  HostName 10.2.192.3
+  ProxyJump dlcdep-prod-jump.fra

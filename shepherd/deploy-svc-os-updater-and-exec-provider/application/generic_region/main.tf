@@ -10,6 +10,7 @@ locals {
     beta       = "beta"
     preprod    = "preprod"
     oc1-groupA = "prod"
+    oc1-groupB = "prod"
   }
   et          = local.execution_target
   ad          = [for ad in local.availability_domains : ad.name]
