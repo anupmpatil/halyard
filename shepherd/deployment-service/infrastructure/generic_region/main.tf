@@ -19,6 +19,7 @@ locals {
   phonebook_name                      = "dlcdep"
   instance_shape                      = "VM.Standard.E3.Flex"
   region_short_name                   = lookup(module.region_config.region_short_name_map, local.execution_target.region.name, "phx")
+  t2_project_name                     = "DLC-DeploymentService"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
   host_classes            = local.environment != "prod" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
@@ -277,6 +278,7 @@ module "alarms_control_plane" {
   jira_sd_queue                    = local.jira_sd_queue
   fleet_name_api                   = "${local.service_name}-control-plane-api"
   fleet_name_worker                = "${local.service_name}-control-plane-worker"
+  t2_project_name                  = local.t2_project_name
 }
 
 module "odo_application_management_plane" {
@@ -302,6 +304,7 @@ module "alarms_management_plane" {
   jira_sd_queue                    = local.jira_sd_queue
   fleet_name_api                   = "${local.service_name}-management-plane-api"
   fleet_name_worker                = "${local.service_name}-management-plane-worker"
+  t2_project_name                  = local.t2_project_name
 }
 
 module "wfaas_control_plane" {

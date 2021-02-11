@@ -22,3 +22,8 @@ variable "fleet_name_worker" {
   type        = string
   description = "Worker microservice fleet name"
 }
+
+variable "t2_project_name" {
+  type        = string
+  description = "T2 project name"
+}
