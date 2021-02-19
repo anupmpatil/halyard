@@ -164,3 +164,13 @@ resource "oci_identity_policy" "cd_rqs_policy" {
     var.deployment_service_management_plane_api_compartment_name} WHERE all { event.resource.scope = 'CUSTOMER',event.resource.type = 'CloudDeployDeployment'}"
   ]
 }
+
+resource "oci_identity_policy" "cross_tenancy_kiev_policy" {
+  compartment_id = var.tenancy_ocid
+  description    = "Policy to endorse our tenancy to access kaas store owned by ProjectService"
+  name           = "cross-tenancy-kiev-policy"
+  statements = [
+    "Define tenancy projectTenancy as ${var.project_tenancy_ocid}",
+    "Endorse dynamic-group odo-dynamic-group to manage kiev-data-stores in tenancy projectTenancy"
+  ]
+}

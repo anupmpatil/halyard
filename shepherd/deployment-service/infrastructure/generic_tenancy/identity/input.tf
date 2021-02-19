@@ -3,9 +3,19 @@ variable "tenancy_ocid" {
   description = "REQUIRED: Tenancy OCID"
 }
 
+variable "project_tenancy_ocid" {
+  type        = string
+  description = "ProjectService tenancy OCID"
+}
+
 variable "realm" {
   type        = string
   description = "REQUIRED: Realm for deployment."
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment of the log space. (beta/prod)"
 }
 
 variable "deployment_service_control_plane_api_compartment_name" {

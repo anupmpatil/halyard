@@ -7,6 +7,7 @@ locals {
 module "identity" {
   source                                                   = "./identity"
   tenancy_ocid                                             = local.execution_target.tenancy_ocid
+  project_tenancy_ocid                                     = module.identity.project_service_tenancy_ocid
   deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
   deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
   deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
@@ -22,6 +23,7 @@ module "identity" {
   service_principal_name                                   = "dlc-deployment"
   griffin_agent_tenancy_ocid                               = module.identity.griffin_tenancy_ocid
   realm                                                    = local.execution_target.region.realm
+  environment                                              = local.environment
   bastion_compartment_id                                   = module.identity.deployment_bastion.id
   bastion_lpg_requestor_tenancy_ocid                       = module.region_config.bastion_lpg_requestor_tenancy_ocid
   bastion_lpg_requestor_group_ocid                         = module.region_config.bastion_lpg_requestor_group_ocid
