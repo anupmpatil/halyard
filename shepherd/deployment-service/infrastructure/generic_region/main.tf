@@ -205,14 +205,6 @@ module "secret_service" {
   team_queue                          = local.team_queue
 }
 
-module "kiev_control_plane" {
-  source          = "./modules/kiev"
-  compartment_id  = local.control_plane_api_compartment_id
-  service_name    = local.environment == "prod" ? "${local.service_short_name}-cp" : "${local.service_short_name}-control-plane"
-  environment     = local.environment
-  phone_book_name = local.phonebook_name
-}
-
 module "kiev_data_plane" {
   source          = "./modules/kiev"
   compartment_id  = local.management_plane_api_compartment_id
