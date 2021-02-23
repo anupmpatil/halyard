@@ -32,50 +32,15 @@ resource "shepherd_artifacts" "artifacts" {
   }
 }
 
+module "region_config" {
+  source = "./shared_modules/common_files"
+}
+
 locals {
-  tenancy_ocid_map = {
-    "beta"    = "ocid1.tenancy.oc1..aaaaaaaazcj7jjwnom4hyjvzdxdsyomxbeaao3v7keizrtllhc5g2r35hyca"
-    "preprod" = "ocid1.tenancy.oc1..aaaaaaaakiqb4agx7mu4hqu7rtitlmirgsv3z3nth4qasokxnzvqbp2dgoza"
-    "oc1"     = "ocid1.tenancy.oc1..aaaaaaaatvulfxx72mqjtzkj75wtgvcvqac6lo7lwll2yvl7rjqwnvicbs7q"
-  }
+  tenancy_ocid_map  = module.region_config.tenancy_ocid_map
   bellwether_region = "us-ashburn-1"
   // Helper local configs to define release phases.
-  release_phase_config = {
-    "beta" = {
-      "production"   = false
-      "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1", "us-ashburn-1"]
-      "home_region"  = "us-phoenix-1"
-      "auto_approve" = true
-      "predecessors" = []
-    }
-    "preprod" = {
-      "production"   = false
-      "realm"        = "oc1"
-      "regions"      = ["us-ashburn-1"]
-      "home_region"  = "us-ashburn-1"
-      "auto_approve" = false
-      "predecessors" = ["beta"]
-    }
-    # We do ashburn first in group a - it's our bellwether
-    # After that, it's pairs of nearby(ish) regions, one in a, one in b
-    "oc1-groupA" = {
-      "production"   = true
-      "realm"        = "oc1"
-      "regions"      = ["us-ashburn-1", "eu-frankfurt-1"]
-      "home_region"  = "us-ashburn-1"
-      "auto_approve" = false
-      "predecessors" = ["preprod"]
-    }
-    "oc1-groupB" = {
-      "production"   = true
-      "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1", "uk-london-1"]
-      "home_region"  = "us-ashburn-1"
-      "auto_approve" = false
-      "predecessors" = ["oc1-groupA"]
-    }
-  }
+  release_phase_config = module.region_config.release_phase_config
 }
 
 // Create high-level shepherd release phases.

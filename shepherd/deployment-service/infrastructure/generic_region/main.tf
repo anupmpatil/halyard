@@ -1,5 +1,5 @@
 locals {
-  environment                         = lookup(module.region_config.environment_name_map, local.execution_target.phase_name, "beta")
+  environment                         = lookup(module.environment_config.environment_name_map, local.execution_target.phase_name, "beta")
   control_plane_api_compartment_id    = module.identity.deployment_service_control_plane_api_compartment.id
   management_plane_api_compartment_id = module.identity.deployment_service_management_plane_api_compartment.id
   control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker_compartment.id
@@ -18,18 +18,18 @@ locals {
   dns_label                           = "deploy"
   phonebook_name                      = "dlcdep"
   instance_shape                      = "VM.Standard.E3.Flex"
-  region_short_name                   = lookup(module.region_config.region_short_name_map, local.execution_target.region.name, "phx")
+  region_short_name                   = lookup(module.environment_config.region_short_name_map, local.execution_target.region.name, "phx")
   t2_project_name                     = "DLC-DeploymentService"
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
-  host_classes            = local.environment != "prod" ? module.region_config.oci_host_classes_dev_map : module.region_config.oci_host_classes_prod_map
+  host_classes            = local.environment != "prod" ? module.network_config.oci_host_classes_dev_map : module.network_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
   lb_listening_port       = 443
   api_host_listening_port = 24443
 
   // OverlayBastion3 Configs, for details check: https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
   // https://jira.oci.oraclecorp.com/browse/DLCDEP-79
-  ob3_bastion_cidr  = module.region_config.ob3_bastion_cidr
-  ob3_jump_vcn_cidr = module.region_config.ob3_jump_vcn_cidr
+  ob3_bastion_cidr  = module.network_config.ob3_bastion_cidr
+  ob3_jump_vcn_cidr = module.network_config.ob3_jump_vcn_cidr
 }
 
 module "identity" {
@@ -38,8 +38,12 @@ module "identity" {
   execution_target = local.execution_target
 }
 
-module "region_config" {
-  source       = "./shared_modules/region_config"
+module "environment_config" {
+  source = "./shared_locals/environment"
+}
+
+module "network_config" {
+  source       = "./shared_locals/network"
   region_short = local.region_short_name
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm

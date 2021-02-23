@@ -1,5 +1,5 @@
 locals {
-  environment = lookup(module.region_config.environment_name_map, local.execution_target.phase_name, "beta")
+  environment = lookup(module.environment_config.environment_name_map, local.execution_target.phase_name, "beta")
   team_queue  = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
 }
 
@@ -25,13 +25,17 @@ module "identity" {
   realm                                                    = local.execution_target.region.realm
   environment                                              = local.environment
   bastion_compartment_id                                   = module.identity.deployment_bastion.id
-  bastion_lpg_requestor_tenancy_ocid                       = module.region_config.bastion_lpg_requestor_tenancy_ocid
-  bastion_lpg_requestor_group_ocid                         = module.region_config.bastion_lpg_requestor_group_ocid
+  bastion_lpg_requestor_tenancy_ocid                       = module.network_config.bastion_lpg_requestor_tenancy_ocid
+  bastion_lpg_requestor_group_ocid                         = module.network_config.bastion_lpg_requestor_group_ocid
 }
 
-module "region_config" {
-  source       = "./shared_modules/region_config"
-  region_short = lookup(module.region_config.region_short_name_map, local.execution_target.region.name, "phx")
+module "environment_config" {
+  source = "./shared_locals/environment"
+}
+
+module "network_config" {
+  source       = "./shared_locals/network"
+  region_short = lookup(module.environment_config.region_short_name_map, local.execution_target.region.name, "iad")
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm
 }

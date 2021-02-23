@@ -120,7 +120,7 @@ resource "oci_core_security_list" "jump_vcn_security_list" {
   //Only allow ssh ingress traffic at port 22
   ingress_security_rules {
     protocol  = "6" //TCP
-    source    = coalesce(oci_core_local_peering_gateway.ob3_lpg.peer_advertised_cidr, "0.0.0.0/0")
+    source    = var.ob3_bastion_cidr
     stateless = false
 
     tcp_options {
