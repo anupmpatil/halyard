@@ -37,3 +37,4 @@ output "bastion_os_updater_application" {
   value       = module.ob3_jump.os_updater_bastion
   description = "Bastion Os Updater ODO App"
 }
+

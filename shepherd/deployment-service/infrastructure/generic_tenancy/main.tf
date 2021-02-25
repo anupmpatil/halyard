@@ -30,7 +30,7 @@ module "identity" {
 }
 
 module "environment_config" {
-  source = "./shared_locals/environment"
+  source = "./shared_modules/common_files"
 }
 
 module "network_config" {

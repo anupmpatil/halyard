@@ -19,7 +19,7 @@ locals {
   phonebook_name                      = "dlcdep"
   instance_shape                      = "VM.Standard.E3.Flex"
   region_short_name                   = lookup(module.environment_config.region_short_name_map, local.execution_target.region.name, "phx")
-  t2_project_name                     = "DLC-DeploymentService"
+  t2_project_name                     = module.t2_config.t2_project_name
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
   host_classes            = local.environment != "prod" ? module.network_config.oci_host_classes_dev_map : module.network_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
@@ -33,13 +33,17 @@ locals {
 }
 
 module "identity" {
-  source = "./modules/identity"
+  source = "./shared_modules/identity"
 
   execution_target = local.execution_target
 }
 
 module "environment_config" {
-  source = "./shared_locals/environment"
+  source = "./shared_modules/common_files"
+}
+
+module "t2_config" {
+  source = "./shared_modules/common_files"
 }
 
 module "network_config" {
@@ -328,3 +332,4 @@ module "rqs" {
   environment                     = local.environment
   phone_book_id                   = local.phonebook_name
 }
+

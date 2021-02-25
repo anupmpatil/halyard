@@ -36,6 +36,7 @@ Flock is structured as a composition of three folders: "application", "flock_str
                 - ob3-jump
                 - secret-service
                 - service-network
+                - splat
 
 * shepherd.tf file under flock_structure is the main entry point to the shepherd flock config. It contains declaration of various phases and execution targets.
 * beta, {realm}-prod folders under application and infrastructure contains code specific to the respective phases.
@@ -58,4 +59,5 @@ Flock is structured as a composition of three folders: "application", "flock_str
   This command applies a subset of the Terraform language style conventions, along with other minor adjustments for readability.
   If files are not formatted then build service will fail with error "Terraform files are not appropriately formatted. Please run terraform fmt -recursive to format them."
   To automate formatting files with every git commit - use pre-commit webhook.
-  https://confluence.oci.oraclecorp.com/display/DLC/Terraform+fmt+on+git+commit 
+  https://confluence.oci.oraclecorp.com/display/DLC/Terraform+fmt+on+git+commit
+
