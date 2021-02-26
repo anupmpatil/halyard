@@ -5,6 +5,7 @@ locals {
   control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker_compartment.id
   data_plane_worker_compartment_id    = module.identity.deployment_service_data_plane_worker_compartment.id
   bastion_compartment_id              = module.identity.bastion_compartment.id
+  project_svc_cp_compartment_id       = lookup(module.identity.project_svc_cp_compartment_map, local.environment, "")
   service_availability_domains        = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr                    = "10.0.0.0/16"
   management_plane_service_vcn_cidr   = "10.2.0.0/16"
@@ -256,19 +257,25 @@ module "limits" {
 }
 
 module "odo_application_control_plane" {
-  source                           = "./modules/odo-app-pool"
-  deployment_api_compartment_id    = local.control_plane_api_compartment_id
-  deployment_worker_compartment_id = local.control_plane_worker_compartment_id
-  availability_domains             = local.service_availability_domains
-  name_prefix                      = "${local.service_name}-control-plane"
-  name_prefix_worker               = "${local.service_name}-control-plane"
-  release_name                     = local.execution_target.phase_name
-  odo_application_type             = "NON_PRODUCTION"
-  stage                            = local.environment
-  api_instance_pools               = module.service_instances_control_plane_api.instance_pools
-  worker_instance_pools            = module.service_instances_control_plane_worker.instance_pools
-  api_artifact_name                = "deployment-service-control-plane-api"
-  worker_artifact_name             = "deployment-service-control-plane-worker"
+  source                              = "./modules/odo-app-pool"
+  deployment_api_compartment_id       = local.control_plane_api_compartment_id
+  deployment_worker_compartment_id    = local.control_plane_worker_compartment_id
+  availability_domains                = local.service_availability_domains
+  name_prefix                         = "${local.service_name}-control-plane"
+  name_prefix_worker                  = "${local.service_name}-control-plane"
+  release_name                        = local.execution_target.phase_name
+  odo_application_type                = local.environment == "prod" ? "PRODUCTION" : "NON_PRODUCTION"
+  stage                               = local.environment
+  api_instance_pools                  = module.service_instances_control_plane_api.instance_pools
+  worker_instance_pools               = module.service_instances_control_plane_worker.instance_pools
+  api_artifact_name                   = "deployment-service-control-plane-api"
+  worker_artifact_name                = "deployment-service-control-plane-worker"
+  tenancy_ocid                        = local.execution_target.tenancy_ocid
+  management_plane_api_compartment_id = local.management_plane_api_compartment_id
+  control_plane_api_compartment_id    = local.control_plane_api_compartment_id
+  cp_worker_compartment_id            = local.control_plane_worker_compartment_id
+  dp_worker_compartment_id            = local.data_plane_worker_compartment_id
+  project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
 }
 
 module "alarms_control_plane" {
@@ -282,19 +289,25 @@ module "alarms_control_plane" {
 }
 
 module "odo_application_management_plane" {
-  source                           = "./modules/odo-app-pool"
-  deployment_api_compartment_id    = local.management_plane_api_compartment_id
-  deployment_worker_compartment_id = local.data_plane_worker_compartment_id
-  availability_domains             = local.service_availability_domains
-  name_prefix                      = "${local.service_name}-management-plane"
-  name_prefix_worker               = "${local.service_name}-data-plane"
-  release_name                     = local.execution_target.phase_name
-  odo_application_type             = "NON_PRODUCTION"
-  stage                            = local.environment
-  api_instance_pools               = module.service_instances_management_plane_api.instance_pools
-  worker_instance_pools            = module.service_instances_data_plane_worker.instance_pools
-  api_artifact_name                = "deployment-service-management-plane-api"
-  worker_artifact_name             = "deployment-service-data-plane-worker"
+  source                              = "./modules/odo-app-pool"
+  deployment_api_compartment_id       = local.management_plane_api_compartment_id
+  deployment_worker_compartment_id    = local.data_plane_worker_compartment_id
+  availability_domains                = local.service_availability_domains
+  name_prefix                         = "${local.service_name}-management-plane"
+  name_prefix_worker                  = "${local.service_name}-data-plane"
+  release_name                        = local.execution_target.phase_name
+  odo_application_type                = local.environment == "prod" ? "PRODUCTION" : "NON_PRODUCTION"
+  stage                               = local.environment
+  api_instance_pools                  = module.service_instances_management_plane_api.instance_pools
+  worker_instance_pools               = module.service_instances_data_plane_worker.instance_pools
+  api_artifact_name                   = "deployment-service-management-plane-api"
+  worker_artifact_name                = "deployment-service-data-plane-worker"
+  tenancy_ocid                        = local.execution_target.tenancy_ocid
+  management_plane_api_compartment_id = local.management_plane_api_compartment_id
+  control_plane_api_compartment_id    = local.control_plane_api_compartment_id
+  cp_worker_compartment_id            = local.control_plane_worker_compartment_id
+  dp_worker_compartment_id            = local.data_plane_worker_compartment_id
+  project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
 }
 
 module "alarms_management_plane" {

@@ -52,3 +52,33 @@ variable "api_artifact_name" {
 variable "worker_artifact_name" {
   description = "Worker artifact name"
 }
+
+variable "tenancy_ocid" {
+  type        = string
+  description = "Tenancy ID."
+}
+
+variable "management_plane_api_compartment_id" {
+  type        = string
+  description = "Management plane compartment OCID"
+}
+
+variable "control_plane_api_compartment_id" {
+  type        = string
+  description = "Management plane compartment OCID"
+}
+
+variable "cp_worker_compartment_id" {
+  type        = string
+  description = "Control plane worker compartment OCID"
+}
+
+variable "dp_worker_compartment_id" {
+  type        = string
+  description = "Data plane worker compartment OCID"
+}
+
+variable "project_svc_cp_compartment_id" {
+  type        = string
+  description = "Project service control plane compartment OCID"
+}

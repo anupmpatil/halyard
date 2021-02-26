@@ -8,6 +8,11 @@ locals {
   bastion_compartment_name                                 = "deployment_bastion"
   limits_compartment_name                                  = "deployment_limits"
   splat_compartment_name                                   = "deployment_splat"
+  project_svc_cp_compartment_map = {
+    "beta"    = "ocid1.compartment.oc1..aaaaaaaar65tqdtuakqaccygz5chv6k2o7j6i6cy3xqzetcqg2hfwnmwgy5a"
+    "preprod" = ""
+    "prod"    = ""
+  }
 }
 
 data "oci_identity_compartments" "all_compartments" {
@@ -41,4 +46,8 @@ output "limits_compartment" {
 
 output "splat_compartment" {
   value = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.splat_compartment_name][0]
+}
+
+output "project_svc_cp_compartment_map" {
+  value = local.project_svc_cp_compartment_map
 }

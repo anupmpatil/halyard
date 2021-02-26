@@ -88,6 +88,36 @@ resource "odo_application" "odo_application_api" {
     runtime_config {
       root_fs_access_level = "READ_WRITE"
     }
+
+    environment_variables {
+      name  = "TENANCY_OCID"
+      value = var.tenancy_ocid
+    }
+
+    environment_variables {
+      name  = "DEPLOY_CP_COMPARTMENT_OCID"
+      value = var.control_plane_api_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_MP_COMPARTMENT_OCID"
+      value = var.management_plane_api_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_CP_WORKER_COMPARTMENT_OCID"
+      value = var.cp_worker_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_WORKER_COMPARTMENT_OCID"
+      value = var.dp_worker_compartment_id
+    }
+
+    environment_variables {
+      name  = "PROJECT_CP_COMPARTMENT_OCID"
+      value = var.project_svc_cp_compartment_id
+    }
   }
 }
 
@@ -143,6 +173,36 @@ resource "odo_application" "odo_application_worker" {
 
     runtime_config {
       root_fs_access_level = "READ_WRITE"
+    }
+
+    environment_variables {
+      name  = "TENANCY_OCID"
+      value = var.tenancy_ocid
+    }
+
+    environment_variables {
+      name  = "DEPLOY_CP_COMPARTMENT_OCID"
+      value = var.control_plane_api_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_MP_COMPARTMENT_OCID"
+      value = var.management_plane_api_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_CP_WORKER_COMPARTMENT_OCID"
+      value = var.cp_worker_compartment_id
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_WORKER_COMPARTMENT_OCID"
+      value = var.dp_worker_compartment_id
+    }
+
+    environment_variables {
+      name  = "PROJECT_CP_COMPARTMENT_OCID"
+      value = var.project_svc_cp_compartment_id
     }
   }
 }
