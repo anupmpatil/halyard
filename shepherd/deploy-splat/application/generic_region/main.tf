@@ -49,8 +49,8 @@ locals {
 
       ["cloud-deploy.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}",
       "deployment.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}"]
-  ))
 
+  ))
   splat_service_name_suffix = local.environment == "prod" ? "" : "-${local.environment}"
 
   spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"

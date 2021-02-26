@@ -104,6 +104,15 @@ resource "oci_identity_policy" "lumberjack-policies" {
   ]
 }
 
+resource "oci_identity_policy" "tim-service-allow" {
+  compartment_id = var.tenancy_ocid
+  description    = "Allows tim-service to read all-resources in this tenancy."
+  name           = "tim-service-allow"
+  statements = [
+    "allow service tim-service to read all-resources in tenancy",
+  ]
+}
+
 resource "oci_identity_policy" "griffin-agent-policies" {
   #Required
   compartment_id = var.tenancy_ocid
