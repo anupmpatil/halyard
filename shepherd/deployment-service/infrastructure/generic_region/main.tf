@@ -6,6 +6,7 @@ locals {
   data_plane_worker_compartment_id    = module.identity.deployment_service_data_plane_worker_compartment.id
   bastion_compartment_id              = module.identity.bastion_compartment.id
   project_svc_cp_compartment_id       = lookup(module.identity.project_svc_cp_compartment_map, local.environment, "")
+  canary_compartment_id               = module.identity.canary_compartment.id
   service_availability_domains        = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr                    = "10.0.0.0/16"
   management_plane_service_vcn_cidr   = "10.2.0.0/16"
@@ -346,3 +347,7 @@ module "rqs" {
   phone_book_id                   = local.phonebook_name
 }
 
+module "operations" {
+  source                = "./modules/operations"
+  canary_compartment_id = local.canary_compartment_id
+}
