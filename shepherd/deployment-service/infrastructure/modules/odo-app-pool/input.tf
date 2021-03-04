@@ -82,3 +82,13 @@ variable "project_svc_cp_compartment_id" {
   type        = string
   description = "Project service control plane compartment OCID"
 }
+
+variable "control_plane_kiev_endpoint" {
+  type        = string
+  description = "Control-plane kiev endpoint"
+}
+
+variable "data_plane_kiev_endpoint" {
+  type        = string
+  description = "Data-plane kiev endpoint"
+}

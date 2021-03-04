@@ -5,7 +5,6 @@ locals {
   control_plane_worker_compartment_id = module.identity.deployment_service_control_plane_worker_compartment.id
   data_plane_worker_compartment_id    = module.identity.deployment_service_data_plane_worker_compartment.id
   bastion_compartment_id              = module.identity.bastion_compartment.id
-  project_svc_cp_compartment_id       = lookup(module.identity.project_svc_cp_compartment_map, local.environment, "")
   canary_compartment_id               = module.identity.canary_compartment.id
   service_availability_domains        = [for ad in local.availability_domains : ad.name]
   service_vcn_cidr                    = "10.0.0.0/16"
@@ -32,12 +31,20 @@ locals {
   // https://jira.oci.oraclecorp.com/browse/DLCDEP-79
   ob3_bastion_cidr  = module.network_config.ob3_bastion_cidr
   ob3_jump_vcn_cidr = module.network_config.ob3_jump_vcn_cidr
+
+  project_svc_cp_compartment_id = module.project_service.project_svc_cp_compartment_id
+  project_svc_cp_kiev_endpoint  = module.project_service.project_svc_cp_kiev_endpoint
 }
 
 module "identity" {
   source = "./shared_modules/identity"
 
   execution_target = local.execution_target
+}
+
+module "project_service" {
+  source      = "./shared_modules/project_service"
+  environment = local.environment
 }
 
 module "environment_config" {
@@ -219,6 +226,7 @@ module "kiev_data_plane" {
   source          = "./modules/kiev"
   compartment_id  = local.management_plane_api_compartment_id
   service_name    = "${local.service_short_name}-data-plane"
+  kiev_store_name = "${local.service_short_name}-data-plane-${local.environment}"
   environment     = local.environment
   phone_book_name = local.phonebook_name
 }
@@ -277,6 +285,8 @@ module "odo_application_control_plane" {
   cp_worker_compartment_id            = local.control_plane_worker_compartment_id
   dp_worker_compartment_id            = local.data_plane_worker_compartment_id
   project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
+  control_plane_kiev_endpoint         = local.project_svc_cp_kiev_endpoint
+  data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
 }
 
 module "alarms_control_plane" {
@@ -309,6 +319,8 @@ module "odo_application_management_plane" {
   cp_worker_compartment_id            = local.control_plane_worker_compartment_id
   dp_worker_compartment_id            = local.data_plane_worker_compartment_id
   project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
+  control_plane_kiev_endpoint         = local.project_svc_cp_kiev_endpoint
+  data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
 }
 
 module "alarms_management_plane" {
@@ -351,3 +363,4 @@ module "operations" {
   source                = "./modules/operations"
   canary_compartment_id = local.canary_compartment_id
 }
+

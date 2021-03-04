@@ -3,6 +3,11 @@ variable "service_name" {
   description = "Service name, mostly used for naming purposes."
 }
 
+variable "kiev_store_name" {
+  type        = string
+  description = "The Kiev store name."
+}
+
 variable "compartment_id" {
   type        = string
   description = "Compartment ID for the kiev instance related resources."

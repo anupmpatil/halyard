@@ -1,3 +1,6 @@
+module "realms" {
+  source = "./shared_modules/common_files"
+}
 
 module "environment_config" {
   source = "./shared_modules/common_files"
@@ -33,6 +36,8 @@ module "dnsdomain" {
 }
 
 locals {
+  is_onsr = contains(module.realms.onsr_realms, local.execution_target.region.realm)
+
   tenancy_lookup_key = local.environment == "prod" ? local.execution_target.region.realm : local.environment
   tenancy_name       = module.tenancies.tenancy_name_map[local.tenancy_lookup_key]
 
@@ -40,7 +45,7 @@ locals {
 
   //https://confluence.oci.oraclecorp.com/pages/viewpage.action?spaceKey=PLAT&title=2.+Splat+Onboarding
   splat_host_headers = local.environment == "prod" ? (
-    ["cloud-deploy.{OCI-PUB-DOMAIN-NAME}"]
+    local.is_onsr ? ["cloud-deploy.{OCI-PUB-ONSR-DOMAIN-NAME}"] : ["cloud-deploy.{OCI-PUB-DOMAIN-NAME}"]
     ) : (
 
     local.environment == "preprod" ? (
@@ -52,6 +57,9 @@ locals {
 
   ))
   splat_service_name_suffix = local.environment == "prod" ? "" : "-${local.environment}"
+
+  cp_endpoint = local.is_onsr ? "https://${local.environment}.control.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
+  mp_endpoint = local.is_onsr ? "https://${local.environment}.management.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
 
   spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"
   api_yaml         = file(format("%s/%s", path.module, "api-specs/${local.spec_release_dir}/api.yaml"))
@@ -76,14 +84,14 @@ module "splat_control_plane" {
   telemetry_key_alarm_names = []
   grafana_dashboard_names   = ["deployment-service-host-metrics-${local.environment}"]
 
-  endpoint            = "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
+  endpoint            = local.cp_endpoint
   host_headers        = local.splat_host_headers
   read_timeout_millis = 30000
 
   rollout_duration_in_seconds = 300
 }
 
-module "splat_data_plane" {
+module "splat_management_plane" {
   source         = "./modules/splat"
   service_name   = "deployment-service-management-plane-api${local.splat_service_name_suffix}"
   realm          = local.execution_target.region.realm
@@ -101,7 +109,7 @@ module "splat_data_plane" {
   telemetry_key_alarm_names = []
   grafana_dashboard_names   = ["deployment-service-host-metrics-${local.environment}"]
 
-  endpoint            = "https://${local.environment}.management.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
+  endpoint            = local.mp_endpoint
   host_headers        = local.splat_host_headers
   read_timeout_millis = 30000
 

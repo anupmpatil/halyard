@@ -1,3 +1,3 @@
 output "kiev_endpoint" {
-  value = kaas_regional_instance.kaas_instance.dns
+  value = "https://${kaas_regional_instance.kaas_instance.dns}"
 }

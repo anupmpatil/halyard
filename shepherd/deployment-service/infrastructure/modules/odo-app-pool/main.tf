@@ -118,6 +118,17 @@ resource "odo_application" "odo_application_api" {
       name  = "PROJECT_CP_COMPARTMENT_OCID"
       value = var.project_svc_cp_compartment_id
     }
+
+    environment_variables {
+      name  = "PROJECT_CP_KIEV_ENDPOINT"
+      value = var.control_plane_kiev_endpoint
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_KIEV_ENDPOINT"
+      value = var.data_plane_kiev_endpoint
+    }
+
   }
 }
 
@@ -204,6 +215,17 @@ resource "odo_application" "odo_application_worker" {
       name  = "PROJECT_CP_COMPARTMENT_OCID"
       value = var.project_svc_cp_compartment_id
     }
+
+    environment_variables {
+      name  = "PROJECT_CP_KIEV_ENDPOINT"
+      value = var.control_plane_kiev_endpoint
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_KIEV_ENDPOINT"
+      value = var.data_plane_kiev_endpoint
+    }
+
   }
 }
 

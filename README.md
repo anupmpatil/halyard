@@ -5,8 +5,7 @@
 
 ## **Structure**
 
-Currently we have a flock called "deployment-service" which contains configs for control-plane-api, control-plane-worker, data-plane-worker, 
-management-plane-api and odo-system-updater.
+Currently we have a flock called "deployment-service" which contains configs for control-plane-api, control-plane-worker, data-plane-worker, management-plane-api and odo-system-updater.
 
 Flock is structured as a composition of three folders: "application", "flock_structure" and "infrastructure" as shown below:
 
