@@ -12,9 +12,10 @@ locals {
   }
 
   canary_tenancy_ocid_map = {
-    "beta"    = "ocid1.tenancy.oc1..aaaaaaaavhpcp5czywf2djkxv3mcswbdobuvpwk24mbcll72tkuskw7qhw5q" /* dlctest tenancy (will update once Raj update the tenancy) */
-    "preprod" = "ocid1.tenancy.oc1..aaaaaaaaes5ujidrlz2t2ry56rltbi5jxifr7eresraa2ukbygfw6aocd7aq" /* devopsdeploypreprodcanary tenancy */
-    "oc1"     = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
+    "beta"       = "ocid1.tenancy.oc1..aaaaaaaavhpcp5czywf2djkxv3mcswbdobuvpwk24mbcll72tkuskw7qhw5q" /* dlctest tenancy (will update once Raj update the tenancy) */
+    "preprod"    = "ocid1.tenancy.oc1..aaaaaaaaes5ujidrlz2t2ry56rltbi5jxifr7eresraa2ukbygfw6aocd7aq" /* devopsdeploypreprodcanary tenancy */
+    "oc1-groupA" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
+    "oc1-groupB" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
   }
 }
 
