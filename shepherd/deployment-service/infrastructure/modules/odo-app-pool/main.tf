@@ -129,6 +129,15 @@ resource "odo_application" "odo_application_api" {
       value = var.data_plane_kiev_endpoint
     }
 
+    environment_variables {
+      name  = "PROJECT_CP_KIEV_STORE_NAME"
+      value = var.control_plane_kiev_store_name
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_KIEV_STORE_NAME"
+      value = var.data_plane_kiev_store_name
+    }
   }
 }
 
@@ -226,6 +235,15 @@ resource "odo_application" "odo_application_worker" {
       value = var.data_plane_kiev_endpoint
     }
 
+    environment_variables {
+      name  = "PROJECT_CP_KIEV_STORE_NAME"
+      value = var.control_plane_kiev_store_name
+    }
+
+    environment_variables {
+      name  = "DEPLOY_DP_KIEV_STORE_NAME"
+      value = var.data_plane_kiev_store_name
+    }
   }
 }
 

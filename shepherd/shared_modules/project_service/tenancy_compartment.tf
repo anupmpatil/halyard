@@ -11,7 +11,7 @@ locals {
 
   project_svc_tenancy_id = lookup(local.project_svc_tenancy_ocid_map, var.environment, "not_defined")
 
-  project_svc_cp_compartment_id = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.project_svc_cp_compartment_name][0]
+  project_svc_cp_compartment_id = [for c in data.oci_identity_compartments.all_compartments.compartments : c if c.name == local.project_svc_cp_compartment_name][0].id
 
 }
 

@@ -34,6 +34,9 @@ locals {
 
   project_svc_cp_compartment_id = module.project_service.project_svc_cp_compartment_id
   project_svc_cp_kiev_endpoint  = module.project_service.project_svc_cp_kiev_endpoint
+
+  project_svc_cp_kiev_store_name = module.project_service.project_svc_cp_kiev_store_name
+  data_plane_kiev_store_name     = "${local.service_short_name}-data-plane-${local.environment}"
 }
 
 module "identity" {
@@ -226,7 +229,7 @@ module "kiev_data_plane" {
   source          = "./modules/kiev"
   compartment_id  = local.management_plane_api_compartment_id
   service_name    = "${local.service_short_name}-data-plane"
-  kiev_store_name = "${local.service_short_name}-data-plane-${local.environment}"
+  kiev_store_name = local.data_plane_kiev_store_name
   environment     = local.environment
   phone_book_name = local.phonebook_name
 }
@@ -287,6 +290,8 @@ module "odo_application_control_plane" {
   project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
   control_plane_kiev_endpoint         = local.project_svc_cp_kiev_endpoint
   data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
+  control_plane_kiev_store_name       = local.project_svc_cp_kiev_store_name
+  data_plane_kiev_store_name          = local.data_plane_kiev_store_name
 }
 
 module "alarms_control_plane" {
@@ -321,6 +326,8 @@ module "odo_application_management_plane" {
   project_svc_cp_compartment_id       = local.project_svc_cp_compartment_id
   control_plane_kiev_endpoint         = local.project_svc_cp_kiev_endpoint
   data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
+  control_plane_kiev_store_name       = local.project_svc_cp_kiev_store_name
+  data_plane_kiev_store_name          = local.data_plane_kiev_store_name
 }
 
 module "alarms_management_plane" {

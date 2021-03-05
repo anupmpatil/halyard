@@ -92,3 +92,14 @@ variable "data_plane_kiev_endpoint" {
   type        = string
   description = "Data-plane kiev endpoint"
 }
+
+variable "control_plane_kiev_store_name" {
+  type        = string
+  description = "Control-plane kiev store name"
+}
+
+variable "data_plane_kiev_store_name" {
+  type        = string
+  description = "Data-plane kiev store name"
+}
+
