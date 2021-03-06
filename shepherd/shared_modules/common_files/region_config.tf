@@ -22,7 +22,7 @@ locals {
     "oc1-groupA" = {
       "production"   = true
       "realm"        = "oc1"
-      "regions"      = ["us-ashburn-1", "eu-frankfurt-1"]
+      "regions"      = ["us-ashburn-1", "eu-frankfurt-1", "eu-amsterdam-1", "ap-tokyo-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
       "predecessors" = ["preprod"]
@@ -30,7 +30,7 @@ locals {
     "oc1-groupB" = {
       "production"   = true
       "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1", "uk-london-1"]
+      "regions"      = ["us-phoenix-1", "uk-london-1", "ap-seoul-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
       "predecessors" = ["oc1-groupA"]

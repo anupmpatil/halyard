@@ -10,6 +10,9 @@ locals {
     iad            = "iad"
     uk-london-1    = "lhr"
     eu-frankfurt-1 = "fra"
+    ap-seoul-1     = "icn"
+    ap-tokyo-1     = "nrt"
+    eu-amsterdam-1 = "ams"
   }
 }
 

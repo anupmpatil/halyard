@@ -12,7 +12,7 @@ locals {
   bastion_compartment_name                                 = "deployment_bastion"
   limits_compartment_name                                  = "deployment_limits"
   splat_compartment_name                                   = "deployment_splat"
-  canary_tenancy_ocid                                      = lookup(module.tenancies_config.canary_tenancy_ocid_map, var.execution_target.phase_name, "beta")
+  canary_tenancy_ocid                                      = lookup(module.tenancies_config.canary_tenancy_ocid_map, var.execution_target.phase_name, "not_defined")
   canary_compartment_name                                  = "canary_tests"
 }
 

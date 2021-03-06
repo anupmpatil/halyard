@@ -6,9 +6,9 @@ locals {
   }
 
   tenancy_name_map = {
-    "beta"    = "deploymentservicedev"
-    "preprod" = "deploymentservicepreprod"
-    "oc1"     = "deploymentserviceprod"
+    "beta"    = "devopsdeploydev"
+    "preprod" = "devopsdeploypreprod"
+    "oc1"     = "devopsdeployprod"
   }
 
   canary_tenancy_ocid_map = {
