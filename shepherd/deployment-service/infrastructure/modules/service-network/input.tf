@@ -53,3 +53,13 @@ variable "region_short" {
   type        = string
   description = "The short name of a region"
 }
+
+variable "onboard_scanplatform" {
+  type        = bool
+  description = "This is a temporary variable until Scan Platform shepherd provider GA"
+}
+
+variable "phone_book_id" {
+  type        = string
+  description = "Team phone book name."
+}

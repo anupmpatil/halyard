@@ -70,6 +70,11 @@ module "image" {
   compartment_id = local.control_plane_api_compartment_id
 }
 
+module "scanplatform" {
+  source = "./shared_locals/scanplatform"
+  realm  = local.execution_target.region.realm
+}
+
 module "service_network_control_plane" {
   source                = "./modules/service-network"
   region                = local.execution_target.region
@@ -82,6 +87,8 @@ module "service_network_control_plane" {
   host_listening_port   = local.api_host_listening_port
   lb_listener_port      = local.lb_listening_port
   region_short          = local.region_short_name
+  onboard_scanplatform  = contains(module.scanplatform.scanplatform_supported_regions, local.execution_target.region.public_name)
+  phone_book_id         = local.phonebook_name
 }
 
 module "service_network_management_plane" {
@@ -96,6 +103,8 @@ module "service_network_management_plane" {
   host_listening_port   = local.api_host_listening_port
   lb_listener_port      = local.lb_listening_port
   region_short          = local.region_short_name
+  onboard_scanplatform  = contains(module.scanplatform.scanplatform_supported_regions, local.execution_target.region.public_name)
+  phone_book_id         = local.phonebook_name
 }
 
 module "service_lb_control_plane" {
@@ -236,23 +245,28 @@ module "kiev_data_plane" {
 
 // https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
 module "ob3_jump" {
-  source                            = "./modules/ob3-jump"
-  tenancy_ocid                      = local.execution_target.tenancy_ocid
-  region                            = local.execution_target.region.public_name
-  bastion_compartment_id            = local.bastion_compartment_id
-  ob3_bastion_cidr                  = local.ob3_bastion_cidr
-  jump_vcn_cidr                     = local.ob3_jump_vcn_cidr
-  jump_instance_shape               = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
-  jump_instance_image_id            = module.image.overlay_image.id
-  jump_instance_hostclass           = local.host_classes["dep-service-bastion"]
-  service_vcn_cidr                  = local.service_vcn_cidr
-  service_vcn_lpg_id                = module.service_network_control_plane.service_jump_lpg_id
-  management_plane_service_vcn_cidr = local.management_plane_service_vcn_cidr
-  management_plane_vcn_lpg_id       = module.service_network_management_plane.service_jump_lpg_id
-  name_prefix                       = "${local.service_name}-bastion"
-  release_name                      = local.execution_target.phase_name
-  odo_application_type              = "NON_PRODUCTION"
-  stage                             = local.environment
+  source                                = "./modules/ob3-jump"
+  tenancy_ocid                          = local.execution_target.tenancy_ocid
+  region                                = local.execution_target.region.public_name
+  bastion_compartment_id                = local.bastion_compartment_id
+  ob3_bastion_cidr                      = local.ob3_bastion_cidr
+  jump_vcn_cidr                         = local.ob3_jump_vcn_cidr
+  jump_instance_shape                   = local.environment == "beta" ? "VM.Standard.E2.1" : local.instance_shape
+  jump_instance_image_id                = module.image.overlay_image.id
+  jump_instance_hostclass               = local.host_classes["dep-service-bastion"]
+  service_vcn_cidr                      = local.service_vcn_cidr
+  service_vcn_lpg_id                    = module.service_network_control_plane.service_jump_lpg_id
+  service_vcn_scan_subnet_cidr          = module.service_network_control_plane.scan_subnet_cidr
+  scan_subnet_id                        = module.service_network_control_plane.scan_subnet_id
+  management_plane_service_vcn_cidr     = local.management_plane_service_vcn_cidr
+  management_plane_vcn_lpg_id           = module.service_network_management_plane.service_jump_lpg_id
+  management_plane_vcn_scan_subnet_cidr = module.service_network_management_plane.scan_subnet_cidr
+  onboard_scanplatform                  = contains(module.scanplatform.scanplatform_supported_regions, local.execution_target.region.public_name)
+  phone_book_id                         = local.phonebook_name
+  name_prefix                           = "${local.service_name}-bastion"
+  release_name                          = local.execution_target.phase_name
+  odo_application_type                  = "NON_PRODUCTION"
+  stage                                 = local.environment
 }
 
 module "dns" {

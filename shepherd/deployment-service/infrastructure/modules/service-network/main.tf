@@ -162,6 +162,18 @@ resource "oci_core_security_list" "service_vcn_security_list" {
       code = 4
     }
   }
+
+  //https://confluence.oci.oraclecorp.com/display/VS/Onboarding+to+Scan+Platform+via+Terraform
+  ingress_security_rules {
+    protocol  = local.icmp_protocol
+    source    = oci_core_subnet.scan_platform_subnet.cidr_block
+    stateless = false
+  }
+  ingress_security_rules {
+    protocol  = local.tcp_protocol
+    source    = oci_core_subnet.scan_platform_subnet.cidr_block
+    stateless = false
+  }
 }
 
 // Route outbound traffic to internet gateway. Also required to make public LB work.
@@ -296,4 +308,13 @@ resource "oci_core_subnet" "scan_platform_subnet" {
   security_list_ids = [oci_core_security_list.scan_platform_subnet_security_list.id]
   display_name      = "subnet_scan_platform_${oci_core_vcn.service_vcn.display_name}"
   dns_label         = "scanplatform"
+}
+
+resource "scanplatform_onboarding" "onboard_scanplatform" {
+  count = var.onboard_scanplatform ? 1 : 0
+
+  onboarding_type  = "OVERLAY_INTERNAL"
+  target_vcn_ocid  = oci_core_vcn.service_vcn.id
+  scan_subnet_ocid = oci_core_subnet.scan_platform_subnet.id
+  phonebook_id     = var.phone_book_id
 }

@@ -17,3 +17,13 @@ output "service_subnet_worker_id" {
   value       = oci_core_subnet.service_subnet_worker.id
   description = "The subnets that host worker compute instances."
 }
+
+output "scan_subnet_cidr" {
+  value       = oci_core_subnet.scan_platform_subnet.cidr_block
+  description = "The scan subnet cidr block."
+}
+
+output "scan_subnet_id" {
+  value       = oci_core_subnet.scan_platform_subnet.id
+  description = "The scan subnet ocid."
+}

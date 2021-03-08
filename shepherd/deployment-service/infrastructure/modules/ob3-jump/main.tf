@@ -139,6 +139,27 @@ resource "oci_core_security_list" "jump_vcn_security_list" {
       code = 4
     }
   }
+
+  //https://confluence.oci.oraclecorp.com/display/VS/Onboarding+to+Scan+Platform+via+Terraform
+  ingress_security_rules {
+    protocol  = "1"
+    source    = var.service_vcn_scan_subnet_cidr
+    stateless = false
+  }
+  ingress_security_rules {
+    protocol  = "6"
+    source    = var.management_plane_vcn_scan_subnet_cidr
+    stateless = false
+  }
+}
+
+resource "scanplatform_onboarding" "jump_vcn_onboard_scanplatform" {
+  count = var.onboard_scanplatform ? 1 : 0
+
+  onboarding_type  = "OVERLAY_INTERNAL"
+  target_vcn_ocid  = oci_core_vcn.jump_vcn.id
+  scan_subnet_ocid = var.scan_subnet_id
+  phonebook_id     = var.phone_book_id
 }
 
 // Launching the jump instance.

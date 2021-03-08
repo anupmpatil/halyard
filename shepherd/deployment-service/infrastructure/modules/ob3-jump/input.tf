@@ -34,9 +34,19 @@ variable "service_vcn_cidr" {
   description = "The CIDR block for your service VCN."
 }
 
+variable "service_vcn_scan_subnet_cidr" {
+  type        = string
+  description = "The scan subnet CIDR block in service VCN."
+}
+
 variable "management_plane_service_vcn_cidr" {
   type        = string
   description = "The CIDR block for management plane service VCN."
+}
+
+variable "management_plane_vcn_scan_subnet_cidr" {
+  type        = string
+  description = "The scan subnet CIDR block in management plane service VCN."
 }
 
 variable "service_vcn_lpg_id" {
@@ -47,6 +57,21 @@ variable "service_vcn_lpg_id" {
 variable "management_plane_vcn_lpg_id" {
   type        = string
   description = "The management plane VCN's LPG ID that jump VCN should pair to."
+}
+
+variable "onboard_scanplatform" {
+  type        = bool
+  description = "This is temporary variable until Scan Platform shepherd provider GA."
+}
+
+variable "scan_subnet_id" {
+  type        = string
+  description = "The scan subnet ocid in primary VCN."
+}
+
+variable "phone_book_id" {
+  type        = string
+  description = "The team phone book name."
 }
 
 variable "jump_instance_display_name" {
