@@ -76,6 +76,17 @@ module "scanplatform" {
   realm  = local.execution_target.region.realm
 }
 
+module "wfaasconfig" {
+  source      = "./shared_modules/wfaas_config"
+  environment = local.environment
+}
+
+module "dnsdomain" {
+  source      = "./shared_modules/dns_domain"
+  environment = local.environment
+  realm       = local.execution_target.region.realm
+}
+
 module "service_network_control_plane" {
   source                = "./modules/service-network"
   region                = local.execution_target.region
@@ -287,7 +298,7 @@ module "odo_application_control_plane" {
   source                              = "./modules/odo-app-pool"
   deployment_api_compartment_id       = local.control_plane_api_compartment_id
   deployment_worker_compartment_id    = local.control_plane_worker_compartment_id
-  availability_domains                = local.service_availability_domains
+  availability_domains                = local.availability_domains
   name_prefix                         = "${local.service_name}-control-plane"
   name_prefix_worker                  = "${local.service_name}-control-plane"
   release_name                        = local.execution_target.phase_name
@@ -307,6 +318,10 @@ module "odo_application_control_plane" {
   data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
   control_plane_kiev_store_name       = local.project_svc_cp_kiev_store_name
   data_plane_kiev_store_name          = local.data_plane_kiev_store_name
+  cp_wfaas_name                       = module.wfaasconfig.cp_wfaas_name
+  dp_wfaas_name                       = module.wfaasconfig.dp_wfaas_name
+  region_internal_name                = local.execution_target.region.internal_name
+  oci_service_internal_domain_name    = module.dnsdomain.oci_service_internal_endpoint_domain
 }
 
 module "alarms_control_plane" {
@@ -323,7 +338,7 @@ module "odo_application_management_plane" {
   source                              = "./modules/odo-app-pool"
   deployment_api_compartment_id       = local.management_plane_api_compartment_id
   deployment_worker_compartment_id    = local.data_plane_worker_compartment_id
-  availability_domains                = local.service_availability_domains
+  availability_domains                = local.availability_domains
   name_prefix                         = "${local.service_name}-management-plane"
   name_prefix_worker                  = "${local.service_name}-data-plane"
   release_name                        = local.execution_target.phase_name
@@ -343,6 +358,10 @@ module "odo_application_management_plane" {
   data_plane_kiev_endpoint            = module.kiev_data_plane.kiev_endpoint
   control_plane_kiev_store_name       = local.project_svc_cp_kiev_store_name
   data_plane_kiev_store_name          = local.data_plane_kiev_store_name
+  cp_wfaas_name                       = module.wfaasconfig.cp_wfaas_name
+  dp_wfaas_name                       = module.wfaasconfig.dp_wfaas_name
+  region_internal_name                = local.execution_target.region.internal_name
+  oci_service_internal_domain_name    = module.dnsdomain.oci_service_internal_endpoint_domain
 }
 
 module "alarms_management_plane" {
@@ -357,7 +376,7 @@ module "alarms_management_plane" {
 
 module "wfaas_control_plane" {
   source                           = "./modules/wfaas"
-  wfaas_name                       = local.environment == "beta" ? "dlcdep-dev-cp" : "dlcdep-${local.environment}-cp"
+  wfaas_name                       = module.wfaasconfig.cp_wfaas_name
   deployment_worker_compartment_id = local.control_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   type                             = "AD_LOCAL"
@@ -366,7 +385,7 @@ module "wfaas_control_plane" {
 
 module "wfaas_data_plane" {
   source                           = "./modules/wfaas"
-  wfaas_name                       = local.environment == "beta" ? "dlcdep-dev-dp" : "dlcdep-${local.environment}-dp"
+  wfaas_name                       = module.wfaasconfig.dp_wfaas_name
   deployment_worker_compartment_id = local.data_plane_worker_compartment_id
   availability_domains             = local.service_availability_domains
   type                             = "AD_LOCAL"

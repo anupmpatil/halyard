@@ -1,3 +1,8 @@
+locals {
+  force_redeploy   = true
+  deployment_flags = local.force_redeploy ? [] : ["SKIP_UP_TO_DATE_NODES"]
+}
+
 resource "odo_deployment" "api_deployment_0" {
   ad         = var.availability_domains[0]
   alias      = var.odo_api_application[var.availability_domains[0]].alias
@@ -7,11 +12,14 @@ resource "odo_deployment" "api_deployment_0" {
     build_tag = var.artifact_versions[var.api_artifact_name].version
     type      = var.artifact_versions[var.api_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = []
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = []
 }
 
 resource "odo_deployment" "api_deployment_1" {
+  count = length(var.availability_domains) > 1 ? 1 : 0
+
   ad         = var.availability_domains[1]
   alias      = var.odo_api_application[var.availability_domains[1]].alias
   is_overlay = true
@@ -20,11 +28,14 @@ resource "odo_deployment" "api_deployment_1" {
     build_tag = var.artifact_versions[var.api_artifact_name].version
     type      = var.artifact_versions[var.api_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_0]
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = [odo_deployment.api_deployment_0]
 }
 
 resource "odo_deployment" "api_deployment_2" {
+  count = length(var.availability_domains) > 2 ? 1 : 0
+
   ad         = var.availability_domains[2]
   alias      = var.odo_api_application[var.availability_domains[2]].alias
   is_overlay = true
@@ -33,8 +44,9 @@ resource "odo_deployment" "api_deployment_2" {
     build_tag = var.artifact_versions[var.api_artifact_name].version
     type      = var.artifact_versions[var.api_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.api_deployment_1]
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = [odo_deployment.api_deployment_1]
 }
 
 /*
@@ -49,11 +61,14 @@ resource "odo_deployment" "worker_deployment_0" {
     build_tag = var.artifact_versions[var.worker_artifact_name].version
     type      = var.artifact_versions[var.worker_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = []
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = []
 }
 
 resource "odo_deployment" "worker_deployment_1" {
+  count = length(var.availability_domains) > 1 ? 1 : 0
+
   ad         = var.availability_domains[1]
   alias      = var.odo_worker_application[var.availability_domains[1]].alias
   is_overlay = true
@@ -62,11 +77,14 @@ resource "odo_deployment" "worker_deployment_1" {
     build_tag = var.artifact_versions[var.worker_artifact_name].version
     type      = var.artifact_versions[var.worker_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.worker_deployment_0]
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = [odo_deployment.worker_deployment_0]
 }
 
 resource "odo_deployment" "worker_deployment_2" {
+  count = length(var.availability_domains) > 2 ? 1 : 0
+
   ad         = var.availability_domains[2]
   alias      = var.odo_worker_application[var.availability_domains[2]].alias
   is_overlay = true
@@ -75,6 +93,7 @@ resource "odo_deployment" "worker_deployment_2" {
     build_tag = var.artifact_versions[var.worker_artifact_name].version
     type      = var.artifact_versions[var.worker_artifact_name].type
   }
-  flags      = ["SKIP_UP_TO_DATE_NODES"]
-  depends_on = [odo_deployment.worker_deployment_1]
+  deploy_on_every_release = true
+  flags                   = local.deployment_flags
+  depends_on              = [odo_deployment.worker_deployment_1]
 }

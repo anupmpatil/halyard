@@ -1,19 +1,24 @@
+locals {
+  availability_domain_names = [for ad in var.availability_domains : ad.name]
+  //ad_name_to_number_name_map = { for ad in var.availability_domains : ad.name => ad.ad_number_name }
+}
+
 data "oci_core_instance_pool_instances" "api_instance_pools" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   compartment_id   = var.deployment_api_compartment_id
   instance_pool_id = var.api_instance_pools[each.key].id
 }
 
 data "oci_core_instance_pool_instances" "worker_instance_pools" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   compartment_id   = var.deployment_worker_compartment_id
   instance_pool_id = var.worker_instance_pools[each.key].id
 }
 
 resource "odo_pool" "api" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   ad                       = each.key
   alias                    = "${var.name_prefix}-api-${var.release_name}"
@@ -25,7 +30,7 @@ resource "odo_pool" "api" {
 }
 
 resource "odo_pool" "worker" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   ad                       = each.key
   alias                    = "${var.name_prefix}-worker-${var.release_name}"
@@ -37,7 +42,7 @@ resource "odo_pool" "worker" {
 }
 
 resource "odo_application" "odo_application_api" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   ad                      = each.key
   alias                   = "${var.name_prefix}-api-${var.stage}"
@@ -138,11 +143,30 @@ resource "odo_application" "odo_application_api" {
       name  = "DEPLOY_DP_KIEV_STORE_NAME"
       value = var.data_plane_kiev_store_name
     }
+
+    environment_variables {
+      name = "WFAAS_ENDPOINT"
+      //value = "https://wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "https://wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
+
+    environment_variables {
+      name = "CP_WORKFLOW_DOMAIN_ID"
+      //value = "${var.cp_wfaas_name}.wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "${var.cp_wfaas_name}.wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
+
+    environment_variables {
+      name = "DP_WORKFLOW_DOMAIN_ID"
+      //value = "${var.dp_wfaas_name}.wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "${var.dp_wfaas_name}.wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
+
   }
 }
 
 resource "odo_application" "odo_application_worker" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   ad                      = each.key
   alias                   = "${var.name_prefix_worker}-worker-${var.stage}"
@@ -244,11 +268,29 @@ resource "odo_application" "odo_application_worker" {
       name  = "DEPLOY_DP_KIEV_STORE_NAME"
       value = var.data_plane_kiev_store_name
     }
+
+    environment_variables {
+      name = "WFAAS_ENDPOINT"
+      //value = "https://wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "https://wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
+
+    environment_variables {
+      name = "CP_WORKFLOW_DOMAIN_ID"
+      //value = "${var.cp_wfaas_name}.wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "${var.cp_wfaas_name}.wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
+
+    environment_variables {
+      name = "DP_WORKFLOW_DOMAIN_ID"
+      //value = "${var.dp_wfaas_name}.wfaas-overlay.${local.ad_name_to_number_name_map[each.key]}.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+      value = "${var.dp_wfaas_name}.wfaas-overlay.ad1.${var.region_internal_name}.${var.oci_service_internal_domain_name}"
+    }
   }
 }
 
 resource "odo_application" "os_updater" {
-  for_each = toset(var.availability_domains)
+  for_each = toset(local.availability_domain_names)
 
   ad                      = each.key
   alias                   = "${var.name_prefix}-os-updater-${var.stage}"

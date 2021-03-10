@@ -1,7 +1,9 @@
 variable "realm" {
-  type = string
+  type        = string
+  description = "The OCI realm name"
 }
 
 variable "environment" {
-  type = string
+  type        = string
+  description = "The Deployment Service environment name"
 }

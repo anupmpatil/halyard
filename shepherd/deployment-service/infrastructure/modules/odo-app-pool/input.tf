@@ -9,8 +9,8 @@ variable "deployment_worker_compartment_id" {
 }
 
 variable "availability_domains" {
-  type        = list(string)
-  description = "List of availability domains to deploy to."
+  type        = list(any)
+  description = "A list of availability domain object"
 }
 
 variable "name_prefix" {
@@ -101,5 +101,25 @@ variable "control_plane_kiev_store_name" {
 variable "data_plane_kiev_store_name" {
   type        = string
   description = "Data-plane kiev store name"
+}
+
+variable "cp_wfaas_name" {
+  type        = string
+  description = "Control-plane WFaaS instance name"
+}
+
+variable "dp_wfaas_name" {
+  type        = string
+  description = "Data-plane WFaaS instance name"
+}
+
+variable "region_internal_name" {
+  type        = string
+  description = "The OCI Region internal name"
+}
+
+variable "oci_service_internal_domain_name" {
+  type        = string
+  description = "The OCI service internal domain name"
 }
 
