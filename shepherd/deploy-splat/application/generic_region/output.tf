@@ -7,9 +7,9 @@ output "control_plane_splat_operational_spec" {
 }
 
 output "data_plane_splat_downstream_spec" {
-  value = module.splat_data_plane.downstream_spec
+  value = module.splat_management_plane.downstream_spec
 }
 
 output "data_plane_splat_operational_spec" {
-  value = module.splat_data_plane.operational_spec
+  value = module.splat_management_plane.operational_spec
 }

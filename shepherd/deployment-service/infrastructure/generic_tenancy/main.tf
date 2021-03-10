@@ -44,7 +44,7 @@ module "network_config" {
 module "certificate" {
   source                          = "./certificate"
   tenancy_ocid                    = local.execution_target.tenancy_ocid
-  environment                     = local.environment
+  environment                     = local.environment == "prod" ? "" : "-${local.environment}"
   control_plane_compartment_id    = module.identity.deployment_service_control_plane_api.id
   management_plane_compartment_id = module.identity.deployment_service_management_plane_api.id
   phonebook_name                  = "dlcdep"

@@ -45,21 +45,24 @@ locals {
 
   //https://confluence.oci.oraclecorp.com/pages/viewpage.action?spaceKey=PLAT&title=2.+Splat+Onboarding
   splat_host_headers = local.environment == "prod" ? (
-    local.is_onsr ? ["cloud-deploy.{OCI-PUB-ONSR-DOMAIN-NAME}"] : ["cloud-deploy.{OCI-PUB-DOMAIN-NAME}"]
+    local.is_onsr ? ["devops.{OCI-PUB-ONSR-DOMAIN-NAME}"] : ["devops.{OCI-PUB-DOMAIN-NAME}"]
     ) : (
 
     local.environment == "preprod" ? (
-      ["cloud-deploy-preprod.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}"]
+      ["devops-preprod.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}"]
       ) : (
 
       ["cloud-deploy.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}",
-      "deployment.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}"]
+        "deployment.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}",
+      "devops-beta.{REGION}.${module.dnsdomain.deployment_service_internal_endpoint_domain}"]
 
   ))
   splat_service_name_suffix = local.environment == "prod" ? "" : "-${local.environment}"
 
-  cp_endpoint = local.is_onsr ? "https://${local.environment}.control.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
-  mp_endpoint = local.is_onsr ? "https://${local.environment}.management.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}"
+  cp_endpoint = (local.is_onsr ? "https://downstream.deploy-cp-api${local.splat_service_name_suffix}.devops-deploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
+  "https://downstream.deploy-cp-api${local.splat_service_name_suffix}.devops-deploy.{OCI-IAAS-DOMAIN-NAME}")
+  mp_endpoint = (local.is_onsr ? "https://downstream.deploy-mgmt-api${local.splat_service_name_suffix}.devops-deploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
+  "https://downstream.deploy-mgmt-api${local.splat_service_name_suffix}.devops-deploy.{OCI-IAAS-DOMAIN-NAME}")
 
   spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"
   api_yaml         = file(format("%s/%s", path.module, "api-specs/${local.spec_release_dir}/api.yaml"))
