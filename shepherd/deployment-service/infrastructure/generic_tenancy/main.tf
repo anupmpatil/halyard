@@ -1,7 +1,8 @@
 locals {
-  environment         = lookup(module.environment_config.environment_name_map, local.execution_target.phase_name, "beta")
-  canary_tenancy_ocid = lookup(module.environment_config.canary_tenancy_ocid_map, local.execution_target.phase_name, "beta")
-  team_queue          = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
+  environment              = lookup(module.environment_config.environment_name_map, local.execution_target.phase_name, "beta")
+  canary_test_tenancy_ocid = lookup(module.environment_config.canary_test_tenancy_ocid_map, local.execution_target.phase_name, "beta")
+  integ_test_tenancy_ocid  = lookup(module.environment_config.integ_test_tenancy_ocid_map, local.execution_target.phase_name, "beta")
+  team_queue               = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
 }
 
 # identity module
@@ -51,8 +52,9 @@ module "certificate" {
 }
 
 module "operations_tenancy" {
-  source              = "./operations"
-  canary_tenancy_ocid = local.canary_tenancy_ocid
-  environment         = local.environment
-  api_public_key_path = "keys/api_public_key.pem"
+  source                   = "./operations"
+  canary_test_tenancy_ocid = local.canary_test_tenancy_ocid
+  integ_test_tenancy_ocid  = local.integ_test_tenancy_ocid
+  environment              = local.environment
+  api_public_key_path      = "keys/api_public_key.pem"
 }

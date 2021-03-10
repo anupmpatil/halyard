@@ -11,11 +11,18 @@ locals {
     "oc1"     = "devopsdeployprod"
   }
 
-  canary_tenancy_ocid_map = {
+  canary_test_tenancy_ocid_map = {
     "beta"       = "ocid1.tenancy.oc1..aaaaaaaavhpcp5czywf2djkxv3mcswbdobuvpwk24mbcll72tkuskw7qhw5q" /* dlctest tenancy (will update once Raj update the tenancy) */
     "preprod"    = "ocid1.tenancy.oc1..aaaaaaaaes5ujidrlz2t2ry56rltbi5jxifr7eresraa2ukbygfw6aocd7aq" /* devopsdeploypreprodcanary tenancy */
     "oc1-groupA" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
     "oc1-groupB" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
+  }
+
+  integ_test_tenancy_ocid_map = {
+    "beta"       = "ocid1.tenancy.oc1..aaaaaaaavhpcp5czywf2djkxv3mcswbdobuvpwk24mbcll72tkuskw7qhw5q" /* dlctest tenancy (will update once Raj update the tenancy) */
+    "preprod"    = "ocid1.tenancy.oc1..aaaaaaaa7rtxdhu6g5ytlkbtrl74vfkbtygcahfgdrzqsrum3fmsqwv336dq" /* devopsdeploypreprodtest tenancy */
+    "oc1-groupA" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
+    "oc1-groupB" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
   }
 }
 
@@ -27,6 +34,10 @@ output "tenancy_name_map" {
   value = local.tenancy_name_map
 }
 
-output "canary_tenancy_ocid_map" {
-  value = local.canary_tenancy_ocid_map
+output "canary_test_tenancy_ocid_map" {
+  value = local.canary_test_tenancy_ocid_map
+}
+
+output "integ_test_tenancy_ocid_map" {
+  value = local.integ_test_tenancy_ocid_map
 }

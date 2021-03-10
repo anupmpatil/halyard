@@ -1,6 +1,11 @@
-variable "canary_tenancy_ocid" {
+variable "canary_test_tenancy_ocid" {
   type        = string
-  description = "Canary Tenancy ID"
+  description = "Canary Test Tenancy ID"
+}
+
+variable "integ_test_tenancy_ocid" {
+  type        = string
+  description = "Integ Test Tenancy ID"
 }
 
 variable "environment" {
