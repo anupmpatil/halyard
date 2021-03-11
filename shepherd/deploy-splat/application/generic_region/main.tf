@@ -25,8 +25,10 @@ locals {
 }
 
 module "identity" {
-  source           = "./shared_modules/identity"
-  execution_target = local.execution_target
+  source                        = "./shared_modules/identity"
+  canary_tenancy_ocid           = lookup(module.tenancies.canary_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
+  tenancy_ocid                  = local.execution_target.tenancy_ocid
+  integration_test_tenancy_ocid = lookup(module.tenancies.integ_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
 }
 
 module "dnsdomain" {

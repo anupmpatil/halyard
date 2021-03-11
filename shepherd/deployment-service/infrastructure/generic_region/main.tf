@@ -40,10 +40,15 @@ locals {
   data_plane_kiev_store_name     = "${local.service_short_name}-data-plane-${local.environment}"
 }
 
-module "identity" {
-  source = "./shared_modules/identity"
+module "tenancies" {
+  source = "./shared_modules/common_files"
+}
 
-  execution_target = local.execution_target
+module "identity" {
+  source                        = "./shared_modules/identity"
+  canary_tenancy_ocid           = lookup(module.tenancies.canary_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
+  tenancy_ocid                  = local.execution_target.tenancy_ocid
+  integration_test_tenancy_ocid = lookup(module.tenancies.integ_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
 }
 
 module "project_service" {
@@ -281,6 +286,10 @@ module "ob3_jump" {
   stage                                 = local.environment
 }
 
+# DNS Management is only available using the API systems such as CLI, REST, SDK and Terraform.
+# DNS Management via Console is prohibited and Shepherd DNS creation is not currently available.
+# Reference: https://confluence.oci.oraclecorp.com/display/DNS/Self-Service+Internet+DNS%3A+FAQs#SelfServiceInternetDNS:FAQs-CanIuseShepherdtomanagemyinternetDNS?
+# For now, use the Terraform configs in 'dns-records' directory to manage records
 module "dns" {
   source                                              = "./modules/dns"
   environment                                         = local.environment

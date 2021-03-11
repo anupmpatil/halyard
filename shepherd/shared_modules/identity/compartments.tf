@@ -1,7 +1,13 @@
-variable "execution_target" {}
+variable "tenancy_ocid" {
+  description = "OCID of tenancy for which to get all compartment information"
+}
 
-module "tenancies_config" {
-  source = "../common_files"
+variable "canary_tenancy_ocid" {
+  description = "OCID of canary tenancy for which to get related compartment information"
+}
+
+variable "integration_test_tenancy_ocid" {
+  description = "OCID of integration test tenancy for which to get related compartment information"
 }
 
 locals {
@@ -12,22 +18,22 @@ locals {
   bastion_compartment_name                                 = "deployment_bastion"
   limits_compartment_name                                  = "deployment_limits"
   splat_compartment_name                                   = "deployment_splat"
-  canary_tenancy_ocid                                      = lookup(module.tenancies_config.canary_test_tenancy_ocid_map, var.execution_target.phase_name, "not_defined")
   canary_test_compartment_name                             = "canary_tests"
-  integration_test_tenancy_ocid                            = lookup(module.tenancies_config.integ_test_tenancy_ocid_map, var.execution_target.phase_name, "not_defined")
   integration_test_compartment_name                        = "integration_tests"
 }
 
 data "oci_identity_compartments" "all_compartments" {
-  compartment_id = var.execution_target.tenancy_ocid
+  compartment_id = var.tenancy_ocid
 }
 
 data "oci_identity_compartments" "all_canary_compartments" {
-  compartment_id = local.canary_tenancy_ocid
+  count          = var.canary_tenancy_ocid == "" ? 0 : 1
+  compartment_id = var.canary_tenancy_ocid
 }
 
 data "oci_identity_compartments" "all_integration_test_compartments" {
-  compartment_id = local.integration_test_tenancy_ocid
+  count          = var.integration_test_tenancy_ocid == "" ? 0 : 1
+  compartment_id = var.integration_test_tenancy_ocid
 }
 
 //Fetching identity resources(compartments) created in another execution target by means of their names
@@ -60,10 +66,9 @@ output "splat_compartment" {
 }
 
 output "canary_test_compartment" {
-  value = [for c in data.oci_identity_compartments.all_canary_compartments.compartments : c if c.name == local.canary_test_compartment_name][0]
+  value = var.canary_tenancy_ocid == "" ? null : [for c in data.oci_identity_compartments.all_canary_compartments.0.compartments : c if c.name == local.canary_test_compartment_name][0]
 }
 
 output "integration_test_compartment" {
-  value = [for c in data.oci_identity_compartments.all_integration_test_compartments.compartments : c if c.name == local.integration_test_compartment_name][0]
+  value = var.integration_test_tenancy_ocid == "" ? null : [for c in data.oci_identity_compartments.all_integration_test_compartments.0.compartments : c if c.name == local.integration_test_compartment_name][0]
 }
-
