@@ -27,7 +27,7 @@ resource "certificate" "tls_server_cert_deployment_service_control_plane_api" {
   #   TOPLEVELDOMAIN (oracleiaas.com, oraclegoviaas.com)
 
   x509_properties {
-    common_name = "downstream.deploy-cp-api${var.environment}.devops-deploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
+    common_name = "${var.environment}.control.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
   }
 }
 
@@ -51,6 +51,6 @@ resource "certificate" "tls_server_cert_deployment_service_management_plane_api"
   }
 
   x509_properties {
-    common_name = "downstream.deploy-mgmt-api${var.environment}.devops-deploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
+    common_name = "${var.environment}.management.plane.api.clouddeploy.$LONGREGIONNAME.oci.$TOPLEVELDOMAIN"
   }
 }

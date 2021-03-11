@@ -59,10 +59,10 @@ locals {
   ))
   splat_service_name_suffix = local.environment == "prod" ? "" : "-${local.environment}"
 
-  cp_endpoint = (local.is_onsr ? "https://downstream.deploy-cp-api${local.splat_service_name_suffix}.devops-deploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
-  "https://downstream.deploy-cp-api${local.splat_service_name_suffix}.devops-deploy.{OCI-IAAS-DOMAIN-NAME}")
-  mp_endpoint = (local.is_onsr ? "https://downstream.deploy-mgmt-api${local.splat_service_name_suffix}.devops-deploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
-  "https://downstream.deploy-mgmt-api${local.splat_service_name_suffix}.devops-deploy.{OCI-IAAS-DOMAIN-NAME}")
+  cp_endpoint = (local.is_onsr ? "https://${local.environment}.control.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
+  "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
+  mp_endpoint = (local.is_onsr ? "https://${local.environment}.management.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
+  "https://${local.environment}.management.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
 
   spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"
   api_yaml         = file(format("%s/%s", path.module, "api-specs/${local.spec_release_dir}/api.yaml"))

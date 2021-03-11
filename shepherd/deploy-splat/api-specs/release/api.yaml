@@ -1,4 +1,4 @@
-# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.17 - DO NOT EDIT
+# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.46 - DO NOT EDIT
 # This is the DeploymentService API spec in YAML
 # Clients and documentation will be auto-generated from this file.
 # Review the API checklist:
@@ -18,6 +18,11 @@ x-obmcs-splat:
         # verification: can be used for verification. Random percentage(< 1%) of requests will be audited by Splat
         # automated: means Splat will perform audit and add "oci-splat-audited" header to requests proxied downstream
         defaultMode: automated
+
+        # Setting the eventGroupingId to opc-work-request-id to tie the async begin and end events to each other.
+        # See examples: https://confluence.oci.oraclecorp.com/display/PLAT/How+to+enable+audit+automation
+        eventGroupIdExpression: response.headers['opc-work-request-id']
+
         eventSource: deployment-service-control-plane-api
         requestParameterRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
         requestHeaderRules:    [ { resources: ".*", actions: ".*", values: ".*" } ]
@@ -29,6 +34,11 @@ x-obmcs-splat:
         # verification: can be used for verification. Random percentage(< 1%) of requests will be audited by Splat
         # automated: means Splat will perform audit and add "oci-splat-audited" header to requests proxied downstream
         defaultMode: automated
+
+        # Setting the eventGroupingId to opc-work-request-id to tie the async begin and end events to each other.
+        # See examples: https://confluence.oci.oraclecorp.com/display/PLAT/How+to+enable+audit+automation
+        eventGroupIdExpression: response.headers['opc-work-request-id']
+
         eventSource: deployment-service-management-plane-api
         requestParameterRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
         requestHeaderRules:    [ { resources: ".*", actions: ".*", values: ".*" } ]
@@ -51,6 +61,21 @@ x-obmcs-splat:
       serviceOverrides:
         deployment-service-management-plane-api: deployment-service-management-plane-api-preprod
         deployment-service-control-plane-api: deployment-service-control-plane-api-preprod
+    dlc-project-service-control-plane-api:
+      audit:
+        defaultMode: automated
+        eventSource: dlc-project-service-control-plane-api
+        requestParameterRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
+        requestHeaderRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
+        responseHeaderRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
+    dlc-project-service-control-plane-api-beta:
+      prototype: dlc-project-service-control-plane-api
+      serviceOverrides:
+        dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-beta
+    dlc-project-service-control-plane-api-preprod:
+      prototype: dlc-project-service-control-plane-api
+      serviceOverrides:
+        dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-preprod
 info:
   title: DeploymentService API
   description: A description of the DeploymentService API
@@ -317,6 +342,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_APPLICATION_CREATE"]
         authorization:
           mode: automated
@@ -436,7 +462,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_APPLICATION_UPDATE"]
         authorization:
           mode: automated
@@ -689,6 +715,7 @@ paths:
     post:
       tags: ['environment']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         serviceList: ['deployment-service-control-plane-api']
@@ -700,6 +727,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_ENVIRONMENT_CREATE"]
         authorization:
           mode: automated
@@ -824,7 +852,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_ENVIRONMENT_UPDATE"]
         authorization:
           mode: automated
@@ -1020,6 +1048,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_ARTIFACT_CREATE"]
         authorization:
           mode: automated
@@ -1144,7 +1173,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_ARTIFACT_UPDATE"]
         authorization:
           mode: automated
@@ -1326,6 +1355,7 @@ paths:
     post:
       tags: ['pipeline']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         serviceList: ['deployment-service-control-plane-api']
@@ -1337,6 +1367,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_PIPELINE_CREATE"]
         authorization:
           mode: automated
@@ -1437,6 +1468,7 @@ paths:
     put:
       tags: ['pipeline']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         # Splat supports throttling, appropriate for PUT/POST operations
@@ -1456,7 +1488,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_PIPELINE_UPDATE"]
         authorization:
           mode: automated
@@ -1509,6 +1541,7 @@ paths:
     delete:
       tags: ['pipeline']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         serviceList: ['deployment-service-control-plane-api']
@@ -1645,6 +1678,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_STAGE_CREATE"]
         authorization:
           mode: automated
@@ -1769,7 +1803,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_STAGE_UPDATE"]
         authorization:
           mode: automated
@@ -1964,6 +1998,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_DEPLOYMENT_CREATE"]
         authorization:
           mode: automated
@@ -2081,7 +2116,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            systemTags: request.body.systemTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ["CLOUD_DEPLOY_DEPLOYMENT_UPDATE"]
         authorization:
           mode: automated
@@ -2129,6 +2164,7 @@ paths:
         default:
           $ref: '#/responses/default'
 
+
   /deployments/{deploymentId}/actions/approve:
     post:
       tags: ['deployment']
@@ -2151,6 +2187,7 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
             permissions: ['CLOUD_DEPLOY_DEPLOYMENT_APPROVE']
         authorization:
           mode: automated
@@ -2181,6 +2218,450 @@ paths:
             $ref: '#/definitions/Deployment'
           headers:
             etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        412:
+          $ref: '#/responses/412'
+        500:
+          $ref: '#/responses/500'
+
+  /deployments/{deploymentId}/actions/cancel:
+    post:
+      tags: [ 'deployment' ]
+      x-obmcs-splat:
+        routing:
+          strategy: route-to-any-ad
+        serviceList: [ 'deployment-service-management-plane-api' ]
+        resources:
+          deployment:
+            serviceResourceName: Deployment
+            targetCompartmentId: downstream.getOr404('deployment-service-management-plane-api', 'GetDeployment', request.resourceId).compartmentId
+            actionKind: other
+            reconciliationCanStartAfterSecs: 60
+            freeformTags: request.body.freeformTags
+            definedTags: request.body.definedTags
+            permissions: [ "CLOUD_DEPLOY_DEPLOYMENT_CANCEL" ]
+        authorization:
+          mode: automated
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_CANCEL')
+        tagStore:
+          mode: automated
+          behavior: authorizationOnly
+        maximumAttemptCount: 3
+      operationId: CancelDeployment
+      summary: Cancel a provisioned Deployment
+      description: Cancels a Deployment resource by identifier
+      parameters:
+        - $ref: '#/parameters/DeploymentIdentifierPathParam'
+        - name: CancelDeploymentDetails
+          in: body
+          description: The information regarding the deployment to be canceled.
+          required: true
+          schema:
+            $ref: '#/definitions/CancelDeploymentDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/Deployment'
+      responses:
+        200:
+          description: Accepted the request. The Deployment will be canceled.
+          schema:
+            $ref: '#/definitions/Deployment'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+# ------------------- Project API -------------------
+  /projects:
+    get:
+      tags: ['project']
+      x-obmcs-splat:
+        # specify the routing strategy
+        # strategy: route-to-any-ad OR route-to-inferred-ad
+        # route-to-any-ad: Splat will route to any AD, appropriate for regional services
+        # route-to-inferred-ad: Splat supports routing based on request (body, path, query params)
+        # E.g. how to infer AD from the request body https://bitbucket.oci.oraclecorp.com/projects/CIM/repos/instance-agent-service/browse/instance-agent-service-spec/specs/service-api.yaml#63
+        routing:
+          strategy: route-to-any-ad
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: request.parameter.compartmentId
+            actionKind: read
+            permissions: ["CLOUD_PROJECT_INSPECT"]
+        authorization:
+          mode: automated
+          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_INSPECT')
+        tagStore:
+          mode: automated
+        # Maximum number of invocation attempts that should be made to the downstream service.
+        # Any non-5xx response ends the attempts.
+        maximumAttemptCount: 3
+        operationType: LIST
+        listingEnhancements: false # opt-out splat in house listing enhancements
+      operationId: ListProjects
+      summary: Gets a list of all Projects in a compartment
+      description: |
+        Returns a list of Projects.
+      parameters:
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
+        - $ref: '#/parameters/CompartmentIdQueryParam'
+        - name: lifecycleState
+          in: query
+          required: false
+          type: string
+          x-obmcs-enumref: "#/definitions/Project/lifecycleState"
+          description: A filter to return only Projects that matches the given lifecycleState.
+        - $ref: '#/parameters/NameQueryParam'
+        - $ref: '#/parameters/PaginationLimitQueryParam'
+        - $ref: '#/parameters/PaginationTokenQueryParam'
+        - $ref: '#/parameters/SortOrderQueryParam'
+        - $ref: '#/parameters/SortByQueryParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/ProjectSummary'
+      responses:
+        200:
+          description: A page of ProjectSummary objects.
+          schema:
+            $ref: '#/definitions/ProjectCollection'
+          headers:
+            opc-request-id: *ref-opc-request-id
+            opc-next-page: *ref-opc-next-page
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    post:
+      tags: ['project']
+      x-obmcs-splat:
+        apiType: Asynchronous
+        routing:
+          strategy: route-to-any-ad
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: request.body.compartmentId
+            actionKind: create
+            reconciliationCanStartAfterSecs: 60
+            freeformTags: request.body.freeformTags
+            definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
+            permissions: ["CLOUD_PROJECT_CREATE"]
+        authorization:
+          mode: automated
+          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_CREATE')
+          allowCrossTenancy: true
+        tagStore:
+          mode: automated
+        search:
+          mode: automated
+          operationResourceName: project
+        maximumAttemptCount: 3
+      operationId: CreateProject
+      summary: Creates a new Project
+      description: |
+        Creates a new Project.
+      parameters:
+        - name: CreateProjectDetails
+          description: Details for the new Project.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CreateProjectDetails'
+        - $ref: '#/parameters/RetryTokenHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Project'
+      responses:
+        201:
+          description: The Project that is created.
+          headers:
+            location: *ref-location
+            etag: *ref-etag
+            opc-work-request-id: *ref-opc-work-request-id
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/Project'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        409:
+          $ref: '#/responses/409'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /projects/{projectId}:
+    get:
+      tags: ['project']
+      # for proxying this operation via Splat
+      x-obmcs-splat:
+        routing:
+          strategy: route-to-any-ad
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          project:
+            serviceResourceName: Project
+            actionKind: read
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
+            permissions: ["CLOUD_PROJECT_READ"]
+        authorization:
+          mode: automated
+          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_READ')
+        tagStore:
+          mode: automated
+        maximumAttemptCount: 3
+      operationId: GetProject
+      summary: Get Project
+      description: Gets a Project by identifier
+      parameters:
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
+        - $ref: '#/parameters/RequestIdHeader'
+      responses:
+        200:
+          description: Retrieves the Project with the given id
+          schema:
+            $ref: '#/definitions/Project'
+          headers:
+            etag: *ref-etag
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    put:
+      tags: ['project']
+      x-obmcs-splat:
+        apiType: Asynchronous
+        routing:
+          strategy: route-to-any-ad
+        # Splat supports throttling, appropriate for PUT/POST operations
+        # Below is example of throttling limits hard coded in the Splat registration.
+        # perUserLimit: limit to apply to this operation for a single user. Null to use the default per-user limit (20 RPS - requests per second)
+        # throttling:
+        #   perUserLimit:
+        #     rpsLimit: 10
+        #     rpmLimit: 50
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
+            actionKind: update
+            resourceOcid: request.resourceId
+            reconciliationCanStartAfterSecs: 60
+            freeformTags: request.body.freeformTags
+            definedTags: request.body.definedTags
+            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
+            permissions: ["CLOUD_PROJECT_UPDATE"]
+        authorization:
+          mode: automated
+          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_UPDATE')
+        tagStore:
+          mode: automated
+        search:
+          mode: automated
+          operationResourceName: project
+        maximumAttemptCount: 3
+      operationId: UpdateProject
+      summary: Update the Project identified by the id
+      description: Updates the Project
+      parameters:
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
+        - name: UpdateProjectDetails
+          description: The information to be updated.
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateProjectDetails'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Project'
+      responses:
+        202:
+          description: Accepted the request. The Project will be updated.
+          headers:
+            location: *ref-location
+            etag: *ref-etag
+            opc-work-request-id: *ref-opc-work-request-id
+            opc-request-id: *ref-opc-request-id
+          schema:
+            $ref: '#/definitions/Project'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+    delete:
+      tags: ['project']
+      x-obmcs-splat:
+        apiType: Asynchronous
+        routing:
+          strategy: route-to-any-ad
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
+            actionKind: delete
+            resourceOcid: request.resourceId
+            reconciliationCanStartAfterSecs: 60
+            permissions: ["CLOUD_PROJECT_DELETE"]
+        authorization:
+          mode: automated
+          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_DELETE')
+        search:
+          mode: automated
+          operationResourceName: project
+        maximumAttemptCount: 3
+      operationId: DeleteProject
+      summary: Delete a provisioned Project
+      description: Deletes a Project resource by identifier
+      parameters:
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
+        - $ref: '#/parameters/IfMatchHeader'
+        - $ref: '#/parameters/RequestIdHeader'
+      x-related-resource: '#/definitions/Project'
+      responses:
+        202:
+          description: Accepted the request. The Project will be deleted.
+          headers:
+            opc-work-request-id: *ref-opc-work-request-id
+            opc-request-id: *ref-opc-request-id
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        412:
+          $ref: '#/responses/412'
+        429:
+          $ref: '#/responses/429'
+        500:
+          $ref: '#/responses/500'
+        default:
+          $ref: '#/responses/default'
+
+  /projects/{projectId}/actions/changeCompartment:
+    post:
+      tags: ['project']
+      x-obmcs-splat:
+        apiType: Asynchronous
+        routing:
+          strategy: route-to-any-ad
+        # Splat supports throttling, appropriate for PUT/POST operations
+        # Below is example of throttling limits hard coded in the Splat registration.
+        # perUserLimit: limit to apply to this operation for a single user. Null to use the default per-user limit (20 RPS - requests per second)
+        # throttling:
+        #   perUserLimit:
+        #     rpsLimit: 10
+        #     rpmLimit: 50
+        serviceList: ['dlc-project-service-control-plane-api']
+        resources:
+          projectBeforeMove:
+            serviceResourceName: Project
+            actionKind: READ
+            resourceOcid: request.resourceId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
+            reconciliationCanStartAfterSecs: 60
+            permissions: ["CLOUD_PROJECT_MOVE"]
+          projectAfterMove:
+            serviceResourceName: Project
+            actionKind: MOVE
+            resourceOcid: request.resourceId
+            targetCompartmentId: request.body.compartmentId
+            reconciliationCanStartAfterSecs: 60
+            permissions: ["CLOUD_PROJECT_MOVE"]
+        authorization:
+          mode: automated
+          check: >-
+            resources['projectBeforeMove'].grantedPermissions.contains('CLOUD_PROJECT_MOVE') &&
+            resources['projectAfterMove'].grantedPermissions.contains('CLOUD_PROJECT_MOVE')
+          # Compartment move does NOT allow the user to move the resource between tenancies.
+          allowCrossTenancy: true
+          sameTenancyResources: ["projectBeforeMove", "projectAfterMove"]
+          crossTenancyAssociations: []
+        tagStore:
+          mode: automated
+        search:
+          mode: automated
+          operationResourceName: projectAfterMove
+        maximumAttemptCount: 3
+      operationId: ChangeProjectCompartment
+      summary: Moves a resource into a different compartment.
+      description: Moves a Project resource from one compartment identifier to another. When provided, If-Match is checked against ETag values of the resource.
+      parameters:
+        - $ref: "#/parameters/ProjectIdentifierPathParam"
+        - name: ChangeProjectCompartmentDetails
+          in: body
+          description: The information to be updated.
+          required: true
+          schema:
+            $ref: '#/definitions/ChangeProjectCompartmentDetails'
+        - $ref: "#/parameters/IfMatchHeader"
+        - $ref: "#/parameters/RequestIdHeader"
+        - $ref: "#/parameters/RetryTokenHeader"
+      x-related-resource: '#/definitions/Project'
+      responses:
+        202:
+          description: Accepted the request. The Project resource will be moved into a different compartment.
+          headers:
+            opc-work-request-id: *ref-opc-work-request-id
             opc-request-id: *ref-opc-request-id
         401:
           $ref: '#/responses/401'
@@ -2414,6 +2895,28 @@ definitions:
         description: A human-readable error string.
         type: string
 
+  StagePredecessor:
+    description: Metadata for defining a stage's predecessor.
+    type: object
+    properties:
+      id:
+        description: The id of the predecessor stage. If a stage is the first stage in the pipeline, then the id is the pipeline's id.
+        type: string
+    required:
+      - id
+
+  StagePredecessorCollection:
+    type: object
+    description: The containing collection for the predecessors of a Stage.
+    properties:
+      items:
+        description: A list of StagePredecessors for a stage.
+        type: array
+        items:
+          $ref: "#/definitions/StagePredecessor"
+    required:
+      - items
+
 # --- Application model definitions
   Application:
     description: Application consists of Environment, Artifacts, Pipelines and Deployments for a group of related services.
@@ -2438,7 +2941,7 @@ definitions:
         description: Unique identifier that is immutable on creation
         type: string
       displayName:
-        description: Application Identifier, can be renamed
+        description: Application identifier which can be renamed and is not necessarily unique.
         type: string
       compartmentId:
         description: Compartment Identifier
@@ -2479,7 +2982,7 @@ definitions:
         description: Unique identifier that is immutable on creation
         type: string
       displayName:
-        description: Application Identifier, can be renamed
+        description: Application identifier which can be renamed and is not necessarily unique.
         type: string
       compartmentId:
         description: Compartment Identifier
@@ -2516,7 +3019,6 @@ definitions:
     description: The information about new Application to be created.
     type: object
     required:
-      - displayName
       - compartmentId
     properties:
       displayName:
@@ -2535,8 +3037,6 @@ definitions:
   UpdateApplicationDetails:
     description: The information to be updated for the given Application.
     type: object
-    required:
-      - displayName
     properties:
       displayName:
         description: Application display name
@@ -2560,7 +3060,7 @@ definitions:
           The [OCID](/Content/General/Concepts/identifiers.htm) of the compartment into which the resource should be moved.
 # --- Artifact model definitions
   Artifact:
-    description: Description of Artifact.
+    description: An artifact in the general artifact service, for example an OKE manifest, a deployment spec, or a file that will be deployed to some target environment.
     type: object
     x-obmcs-splat:
       resourceKind: artifact
@@ -2593,7 +3093,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Artifact Identifier, can be renamed
+        description: Artifact identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -2656,7 +3156,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Artifact Identifier, can be renamed
+        description: Artifact identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -2707,7 +3207,6 @@ definitions:
     description: The information about new Artifact.
     type: object
     required:
-      - displayName
       - artifactType
       - artifactSource
       - projectId
@@ -2717,7 +3216,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Artifact Name
+        description: Artifact display name
         type: string
         minLength: 1
         maxLength: 255
@@ -2746,7 +3245,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Artifact Identifier
+        description: Artifact display name
         type: string
         minLength: 1
         maxLength: 255
@@ -3205,13 +3704,16 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/DeploymentEnvironment'
-      required:
-        - items
+    required:
+      - items
 
   StageExecutionProgress:
     description: The details about the execution progress of a Stage in a Deployment.
     discriminator: stageType
     properties:
+      stageDisplayName:
+        description: Stage display name
+        type: string
       stageType:
         description: Stage sub types.
         type: string
@@ -3237,6 +3739,48 @@ definitions:
           - ROLLBACK_IN_PROGRESS
           - ROLLBACK_SUCCEEDED
           - ROLLBACK_FAILED
+      stagePredecessors:
+        $ref: "#/definitions/StagePredecessorCollection"
+      stageExecutionProgressDetails:
+        description: The details about stage execution for all the target environments.
+        type: array
+        items:
+          $ref: '#/definitions/StageExecutionProgressDetails'
+
+  StageExecutionProgressDetails:
+    description: The details about stage execution for each target environment.
+    properties:
+      targetId:
+        description: The functionId, instanceId or the clusterId. For WaitStage it will be stageId.
+        type: string
+      steps:
+        description: The details about all the steps for one target environment.
+        type: array
+        items:
+          $ref: '#/definitions/StageExecutionStep'
+
+  StageExecutionStep:
+    description: The details about each steps in stage execution for a target environment.
+    properties:
+      name:
+        description: Name of the step.
+        type: string
+      result:
+        description: Result of the step.
+        type: string
+        enum:
+          - WAITING
+          - IN_PROGRESS
+          - FAILED
+          - SUCCEEDED
+      timeStarted:
+        description: Time when the step started.
+        type: string
+        format: date-time
+      timeFinished:
+        description: Time when the step finished.
+        type: string
+        format: date-time
 
   WaitStageExecutionProgress:
     description: Specifies wait stage specific execution details.
@@ -3467,7 +4011,7 @@ definitions:
           $ref: '#/definitions/StageExecutionProgress'
 
   Deployment:
-    description: Description of Deployment.
+    description: A single execution or run of a Pipeline.
     type: object
     discriminator: deploymentType
     x-obmcs-splat:
@@ -3508,7 +4052,7 @@ definitions:
         description: Unique identifier that is immutable on creation
         type: string
       displayName:
-        description: Deployment Identifier, can be renamed
+        description: Deployment identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -3569,7 +4113,7 @@ definitions:
         description: Unique identifier that is immutable on creation
         type: string
       displayName:
-        description: Deployment Identifier, can be renamed
+        description: Deployment identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -3624,15 +4168,20 @@ definitions:
     type: object
     discriminator: deploymentType
     required:
-      - displayName
       - deploymentType
+      - pipelineId
     properties:
+      pipelineId:
+        description: Pipeline Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
       deploymentType:
         description: Specifies sub-type for this Deployment.
         type: string
         x-obmcs-enumref: '#/definitions/Deployment/deploymentType'
       displayName:
-        description: Deployment Name
+        description: Deployment display name
         type: string
         minLength: 1
         maxLength: 255
@@ -3651,7 +4200,7 @@ definitions:
         type: string
         x-obmcs-enumref: '#/definitions/Deployment/deploymentType'
       displayName:
-        description: Deployment Identifier
+        description: Deployment display name
         type: string
         minLength: 1
         maxLength: 255
@@ -3671,23 +4220,26 @@ definitions:
         description: |
           The [OCID](/Content/General/Concepts/identifiers.htm) of the stage which is marked for approval.
 
+  CancelDeploymentDetails:
+    description: The information regarding the deployment to be canceled.
+    type: object
+    required:
+      - reason
+    properties:
+      reason:
+        description: The reason for canceling the deployment.
+        type: string
+
   CreatePipelineDeploymentDetails:
     description: Details of the new Deployment to be created that will run all the stages in the pipeline.
     allOf:
       - $ref: '#/definitions/CreateDeploymentDetails'
       - discriminator: PIPELINE_DEPLOYMENT
         properties:
-          pipelineId:
-            description: Pipeline Identifier
-            type: string
-            minLength: 1
-            maxLength: 255
           deploymentArguments:
             $ref: '#/definitions/DeploymentArgumentCollection'
           artifactOverrideArguments:
             $ref: '#/definitions/ArtifactOverrideArgumentCollection'
-    required:
-      - pipelineId
 
   CreatePipelineRedeploymentDetails:
     description: Details of the new Deployment to be created based on a previously executed Deployment.
@@ -3813,7 +4365,7 @@ definitions:
 # --- Environment model definitions
   Environment:
     discriminator: environmentType
-    description: Description of Environment.
+    description: The target OCI infrastructure resource, such as Compute Instances, OKE, or Function, where artifacts will be deployed.
     type: object
     x-obmcs-splat:
       resourceKind: environment
@@ -3846,7 +4398,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Environment Identifier, can be renamed
+        description: Environment identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -3911,7 +4463,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Environment Identifier, can be renamed
+        description: Environment identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -3965,7 +4517,6 @@ definitions:
     description: The information about new Environment.
     type: object
     required:
-      - displayName
       - environmentType
       - projectId
       - region
@@ -3975,7 +4526,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Environment Identifier
+        description: Environment display name
         type: string
         minLength: 1
         maxLength: 255
@@ -4009,7 +4560,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Environment Identifier
+        description: Environment display name
         type: string
         minLength: 1
         maxLength: 255
@@ -4110,7 +4661,6 @@ definitions:
         type: string
         enum:
           - INSTANCE_IDS
-          - INSTANCE_TAGS
           - INSTANCE_QUERY
     required:
       - selectorType
@@ -4135,31 +4685,12 @@ definitions:
       - $ref: '#/definitions/ComputeInstanceGroupSelector'
       - discriminator: INSTANCE_QUERY
         properties:
-          region:
-            description: The region of the instances in the group.
-              Region identifiers are listed at https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm
-            type: string
           query:
             description: Query expression confirming to the OCI Search Language syntax to select compute instances for the group.
               The language is documented at https://docs.oracle.com/en-us/iaas/Content/Search/Concepts/querysyntax.htm
             type: string
         required:
-          - region
           - query
-
-  ComputeInstanceGroupsByTagsSelector:
-    description: Specifies the Compute Instance Group environment by tags of the compute instances
-    allOf:
-      - $ref: '#/definitions/ComputeInstanceGroupSelector'
-      - discriminator: INSTANCE_TAGS
-        properties:
-          compartmentId:
-            description: The compartment id of the instances in the group.
-            type: string
-          freeformTags: *ref-freeformTags
-          definedTags: *ref-definedTags
-        required:
-          - compartmentId
 
   ComputeInstanceGroupEnvironmentSummary:
     description: Specifies the Compute Instance Group environment.
@@ -4279,8 +4810,70 @@ definitions:
     required:
       - items
 
+  PipelineArtifact:
+    type: object
+    description: Artifact used in pipeline.
+    properties:
+      artifactId:
+        description: Id of artifact
+        type: string
+      displayName:
+        description: display name of artifact
+        type: string
+      stageReferenceCount:
+        description: Amount of stages that use the artifact
+        type: integer
+        format: int32
+        minimum: 1
+    required:
+      - artifactId
+      - stageReferenceCount
+
+  PipelineArtifactCollection:
+    type: object
+    description: List of all artifacts used in pipeline.
+    properties:
+      items:
+        description:  List of all artifacts used in pipeline.
+        type: array
+        items:
+          $ref: '#/definitions/PipelineArtifact'
+    required:
+      - items
+
+  PipelineEnvironment:
+    type: object
+    description: Environment used in pipeline.
+    properties:
+      environmentId:
+        description: Id of Environment
+        type: string
+      displayName:
+        description: display name of artifact
+        type: string
+      stageReferenceCount:
+        description: Amount of stages that use the environment
+        type: integer
+        format: int32
+        minimum: 1
+    required:
+      - environmentId
+      - stageReferenceCount
+
+  PipelineEnvironmentCollection:
+    type: object
+    description: List of all Environments used in pipeline.
+    properties:
+      items:
+        description:  List of all Environments used in pipeline.
+        type: array
+        items:
+          $ref: '#/definitions/PipelineEnvironment'
+    required:
+      - items
+
   Pipeline:
-    description: Pipeline consists of Stages and metadata for Deployments.
+    description: A set of stages whose predecessor relation forms a directed acyclic graph.
     type: object
     x-obmcs-splat:
       resourceKind: pipeline
@@ -4308,7 +4901,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Pipeline Identifier, can be renamed
+        description: Pipeline identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -4316,6 +4909,10 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
+      pipelineArtifacts:
+        $ref: "#/definitions/PipelineArtifactCollection"
+      pipelineEnvironments:
+        $ref: "#/definitions/PipelineEnvironmentCollection"
       timeCreated:
         description: The time the the Pipeline was created. An RFC3339 formatted datetime string
         type: string
@@ -4337,6 +4934,8 @@ definitions:
       lifecycleDetails:
         description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
         type: string
+      loggingConfigs:
+        $ref: '#/definitions/PipelineLoggingConfigCollection'
       pipelineParameters:
         $ref: '#/definitions/PipelineParameterCollection'
       freeformTags: *ref-freeformTags
@@ -4359,7 +4958,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Pipeline Identifier, can be renamed
+        description: Pipeline identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -4367,6 +4966,10 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
+      pipelineArtifacts:
+        $ref: "#/definitions/PipelineArtifactCollection"
+      pipelineEnvironments:
+        $ref: "#/definitions/PipelineEnvironmentCollection"
       timeCreated:
         description: The time the the Pipeline was created. An RFC3339 formatted datetime string
         type: string
@@ -4389,7 +4992,6 @@ definitions:
     description: The information about new Pipeline to be created.
     type: object
     required:
-      - displayName
       - projectId
     properties:
       description:
@@ -4414,8 +5016,6 @@ definitions:
   UpdatePipelineDetails:
     description: The information to be updated for the given Pipeline.
     type: object
-    required:
-      - displayName
     properties:
       description:
         description: Optional description about the Pipeline
@@ -4443,10 +5043,37 @@ definitions:
         items:
           $ref: "#/definitions/PipelineSummary"
 
+  PipelineLoggingConfig:
+    type: object
+    description: Config for the Log resource.
+    required:
+      - logId
+      - category
+    properties:
+      logId:
+        description: Log resource OCID.
+        type: string
+      category:
+        description: Name of the category
+        type: string
+
+  PipelineLoggingConfigCollection:
+    type: object
+    description: The collection of logs for deployment pipeline
+    required:
+      - items
+    properties:
+      items:
+        description: A list of logs for the resource
+        type: array
+        items:
+          $ref: "#/definitions/PipelineLoggingConfig"
+
   # --- Stage model definitions
   Stage:
     discriminator: stageType
-    description: Description of Stage.
+    description: |
+      A single node in a pipeline. It is usually associated with some action on a specific set of OCI infrastructure resources, for example, updating a function/OKE cluster etc.
     type: object
     x-obmcs-splat:
       resourceKind: stage
@@ -4479,7 +5106,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Stage Identifier, can be renamed
+        description: Stage identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -4539,28 +5166,6 @@ definitions:
       definedTags: *ref-definedTags
       systemTags: *ref-systemTags
 
-  StagePredecessor:
-    description: Metadata for defining a stage's predecessor.
-    type: object
-    properties:
-      id:
-        description: The id of the predecessor stage. If a stage is the first stage in the pipeline, then the id is the pipeline's id.
-        type: string
-    required:
-      - id
-
-  StagePredecessorCollection:
-    type: object
-    description: The containing collection for the predecessors of a Stage.
-    properties:
-      items:
-        description: A list of StagePredecessors for a stage.
-        type: array
-        items:
-          $ref: "#/definitions/StagePredecessor"
-    required:
-      - items
-
   StageSummary:
     discriminator: stageType
     description: Summary of the Stage.
@@ -4580,7 +5185,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Stage Identifier, can be renamed
+        description: Stage identifier which can be renamed and is not necessarily unique.
         type: string
       projectId:
         description: Project Identifier
@@ -4633,7 +5238,6 @@ definitions:
     description: The information about new Stage.
     type: object
     required:
-      - displayName
       - stageType
       - pipelineId
       - stagePredecessorCollection
@@ -4643,7 +5247,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Stage Identifier
+        description: Stage identifier which can be renamed and is not necessarily unique.
         type: string
         minLength: 1
         maxLength: 255
@@ -4673,7 +5277,7 @@ definitions:
         type: string
         maxLength: 400
       displayName:
-        description: Stage Identifier
+        description: Stage identifier which can be renamed and is not necessarily unique.
         type: string
         minLength: 1
         maxLength: 255
@@ -4878,9 +5482,7 @@ definitions:
           failurePolicy:
             $ref: "#/definitions/ComputeInstanceGroupFailurePolicy"
           loadBalancerConfig:
-            description: An optional Load Balancer OCID and Load Balancer Listener Name
             $ref: "#/definitions/LoadBalancerConfig"
-
 
   ComputeInstanceGroupRollingDeploymentStageSummary:
     description: Specifies the Instance group rolling Deployment Stage.
@@ -4910,7 +5512,6 @@ definitions:
           failurePolicy:
             $ref: "#/definitions/ComputeInstanceGroupFailurePolicy"
           loadBalancerConfig:
-            description: An optional Load Balancer OCID and Load Balancer Listener Name
             $ref: "#/definitions/LoadBalancerConfig"
 
   CreateComputeInstanceGroupRollingDeploymentStageDetails:
@@ -4941,7 +5542,6 @@ definitions:
           failurePolicy:
             $ref: "#/definitions/ComputeInstanceGroupFailurePolicy"
           loadBalancerConfig:
-            description: An optional Load Balancer OCID and Load Balancer Listener Name
             $ref: "#/definitions/LoadBalancerConfig"
 
   UpdateComputeInstanceGroupRollingDeploymentStageDetails:
@@ -4968,7 +5568,6 @@ definitions:
           failurePolicy:
             $ref: "#/definitions/ComputeInstanceGroupFailurePolicy"
           loadBalancerConfig:
-            description: An optional Load Balancer OCID and Load Balancer Listener Name
             $ref: "#/definitions/LoadBalancerConfig"
 
   ComputeInstanceGroupBlueGreenDeploymentStage:
@@ -5161,7 +5760,7 @@ definitions:
           loadBalancerConfig:
             $ref: "#/definitions/LoadBalancerConfig"
           rolloutPolicy:
-            $ref: "#/definitions/CreateLoadBalancerTrafficShiftRolloutPolicyDetails"
+            $ref: "#/definitions/LoadBalancerTrafficShiftRolloutPolicy"
 
   UpdateComputeInstanceGroupBlueGreenTrafficShiftStageDetails:
     description: Specifies the Instance group blue green deployment load balancer traffic shift stage.
@@ -5175,7 +5774,7 @@ definitions:
           loadBalancerConfig:
             $ref: "#/definitions/LoadBalancerConfig"
           rolloutPolicy:
-            $ref: "#/definitions/UpdateLoadBalancerTrafficShiftRolloutPolicyDetails"
+            $ref: "#/definitions/LoadBalancerTrafficShiftRolloutPolicy"
 
   ComputeInstanceGroupCanaryDeploymentStage:
     description: Specifies the instance group canary deployment stage.
@@ -5408,6 +6007,9 @@ definitions:
     allOf:
       - $ref: "#/definitions/CreateStageDetails"
       - discriminator: COMPUTE_INSTANCE_GROUP_CANARY_APPROVAL
+        required:
+          - approvalPolicy
+          - computeInstanceGroupCanaryTrafficShiftStageId
         properties:
           computeInstanceGroupCanaryTrafficShiftStageId:
             description: A compute instance group canary traffic shift stage OCID for load balancer.
@@ -6017,7 +6619,7 @@ definitions:
               GREEN - Traffic from the existing backends of managed Load Balance Listener to
               blue Backend IPs ser as per rolloutPolicy.
           rolloutPolicy:
-            $ref: "#/definitions/CreateLoadBalancerTrafficShiftRolloutPolicyDetails"
+            $ref: "#/definitions/LoadBalancerTrafficShiftRolloutPolicy"
           loadBalancerConfig:
             $ref: "#/definitions/LoadBalancerConfig"
 
@@ -6041,7 +6643,7 @@ definitions:
               GREEN - Traffic from the existing backends of managed Load Balance Listener to
               blue Backend IPs ser as per rolloutPolicy.
           rolloutPolicy:
-            $ref: "#/definitions/UpdateLoadBalancerTrafficShiftRolloutPolicyDetails"
+            $ref: "#/definitions/LoadBalancerTrafficShiftRolloutPolicy"
           loadBalancerConfig:
             $ref: "#/definitions/LoadBalancerConfig"
 
@@ -6231,48 +6833,6 @@ definitions:
         type: number
         format: float
 
-  CreateLoadBalancerTrafficShiftRolloutPolicyDetails:
-    description: Description of rollout policy for Load Balancer Traffic Shift stage.
-    type: object
-    required:
-      - batchCount
-    properties:
-      batchCount:
-        description: Specifies number of batches for this stage.
-        type: integer
-        format: int32
-      batchDelayInSeconds:
-        description: Specifies delay in seconds between batches.
-        type: integer
-        format: int32
-        default: 5
-        minimum: 0
-        maximum: 3600
-      rampLimitPercent:
-        description: Indicates the stoping criteria.
-        type: number
-        format: float
-
-  UpdateLoadBalancerTrafficShiftRolloutPolicyDetails:
-    description: Description of rollout policy for Load Balancer Traffic Shift stage.
-    type: object
-    properties:
-      batchCount:
-        description: Specifies number of batches for this stage.
-        type: integer
-        format: int32
-      batchDelayInSeconds:
-        description: Specifies delay in seconds between batches.
-        type: integer
-        format: int32
-        default: 5
-        minimum: 0
-        maximum: 3600
-      rampLimitPercent:
-        description: Indicates the stoping criteria.
-        type: number
-        format: float
-
   ComputeInstanceGroupRolloutPolicy:
     description: Specifies rollout policy for Compute Instance group stages.
     type: object
@@ -6380,6 +6940,212 @@ definitions:
             type: integer
             minimum: 1
             maximum: 100
+# --- Project model definitions
+  Project:
+    description: Project will create a default configuration for the project resources such as source code repository, build pipeline, and deploy pipeline
+    type: object
+    x-obmcs-splat:
+      resourceKind: project
+      ocidEntityType: devopsproject
+      adLocality: regional
+      activeLifecycleStates: ['CREATING', 'ACTIVE']
+      deletedLifecycleStates: ['']
+      getOperationId: GetProject
+      listResourcesOperationId: ListProjects
+      searchMetadata:
+        resourceSchemaVersion: 1
+        resourceType: "DevOpsProject"
+        scope: "customer"
+    required:
+      - id
+      - name
+      - compartmentId
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      name:
+        description: Project Identifier
+        type: string
+      description:
+        description: Project description
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      timeCreated:
+        description: The time the the Project was created. An RFC3339 formatted datetime string
+        type: string
+        format: date-time
+      timeUpdated:
+        description: The time the Project was updated. An RFC3339 formatted datetime string
+        type: string
+        format: date-time
+      lifecycleState:
+        description: The current state of the Project.
+        type: string
+        enum:
+          - CREATING
+          - UPDATING
+          - ACTIVE
+          - DELETING
+          - DELETED
+          - FAILED
+      lifecycleDetails:
+        description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
+        type: string
+      artifactIds:
+        description: A list of artifact Ids associated with this project
+        type: array
+        items:
+          type: string
+      environmentIds:
+        description: A list of environment Ids associated with this project
+        type: array
+        items:
+          type: string
+      pipelineIds:
+        description: A list of pipeline Ids associated with this project
+        type: array
+        items:
+          type: string
+
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  ProjectSummary:
+    description: Summary of the Project.
+    type: object
+    required:
+      - id
+      - name
+      - compartmentId
+    properties:
+      id:
+        description: Unique identifier that is immutable on creation
+        type: string
+      name:
+        description: Project Identifier
+        type: string
+      description:
+        description: Project description
+        type: string
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      timeCreated:
+        description: The time the the Project was created. An RFC3339 formatted datetime string
+        type: string
+        format: date-time
+      timeUpdated:
+        description: The time the Project was updated. An RFC3339 formatted datetime string
+        type: string
+        format: date-time
+      lifecycleState:
+        description: The current state of the Deployment.
+        type: string
+        x-obmcs-enumref: "#/definitions/Project/lifecycleState"
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+      systemTags: *ref-systemTags
+
+  ProjectCollection:
+    type: object
+    description: Results of an project search.
+    required:
+      - items
+    properties:
+      items:
+        type: array
+        description: Array of ProjectSummary items.
+        items:
+          $ref: "#/definitions/ProjectSummary"
+
+  CreateProjectDetails:
+    description: The information about new Project to be created.
+    type: object
+    required:
+      - name
+      - compartmentId
+      - loggingConfig
+    properties:
+      name:
+        description: Project name(Case-sensitive).
+        type: string
+        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
+        minLength: 1
+        maxLength: 255
+      description:
+        description: Project description
+        type: string
+        maxLength: 400
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      compartmentId:
+        description: Compartment Identifier
+        type: string
+        minLength: 1
+        maxLength: 255
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  UpdateProjectDetails:
+    description: The information to be updated for the given Project.
+    type: object
+    properties:
+      name:
+        description: Project name
+        type: string
+        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
+        minLength: 1
+        maxLength: 255
+      description:
+        description: Project description
+        type: string
+        maxLength: 400
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      freeformTags: *ref-freeformTags
+      definedTags: *ref-definedTags
+
+  ChangeProjectCompartmentDetails:
+    description: The OCID of the compartment into which the project should be moved.
+    type: object
+    required:
+      - compartmentId
+    properties:
+      compartmentId:
+        type: string
+        minLength: 1
+        maxLength: 255
+        description: |
+          The [OCID](/Content/General/Concepts/identifiers.htm) of the compartment into which the resource should be moved.
+
+  LoggingConfig:
+    description: Logging configuration for the project.
+    type: object
+    properties:
+      logGroupId:
+        description: The ocid of the log group.
+        type: string
+      displayNamePrefix:
+        description: The prefix for the display name.
+        type: string
+      retentionPeriodInDays:
+        description: The number of days the logs should be retained for.
+        type: integer
+        format: int32
+      isArchivingEnabled:
+        description: A field to represent if archiving is enabled.
+        type: boolean
+    required:
+      - logGroupId
+      - retentionPeriodInDays
 # WorkRequst model definitions
 
   ActionType:
@@ -6407,6 +7173,10 @@ definitions:
     type: string
     description: Possible operation types.
     enum: &OPERATIONTYPE
+      - CREATE_PROJECT
+      - UPDATE_PROJECT
+      - DELETE_PROJECT
+      - MOVE_PROJECT
       - CREATE_APPLICATION
       - UPDATE_APPLICATION
       - DELETE_APPLICATION
@@ -6757,6 +7527,30 @@ parameters:
     required: false
     type: string
 
+  NameQueryParam:
+      in: query
+      maxLength: 255
+      minLength: 1
+      name: name
+      type: string
+      x-default-description: 'null'
+      description: A filter to return only resources that match the entire name given.
+
+  ProjectIdentifierPathParam:
+      name: projectId
+      type: string
+      in: path
+      required: true
+      description: unique Project identifier
+
+  ProjectIdentifierQueryParam:
+      name: projectId
+      type: string
+      in: query
+      required: false
+      description: unique Project identifier
+      x-default-description: "null"
+
   ApplicationIdentifierPathParam:
     name: applicationId
     type: string
@@ -6863,6 +7657,5 @@ parameters:
     required: true
     type: string
     description: The ID of the asynchronous request.
-
 
 # Preprocessed by spec-conditionals-preprocessor-plugin version 1.0.17
