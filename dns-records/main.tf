@@ -1,19 +1,32 @@
 variable "environment" {
   # Defaults should never be checked-in; so as to avoid accidentally using unintended values
-  #default = "prod"
   description = "Environment to get DNS records for: e.g. prod, beta, preprod"
 }
 
 variable "realm" {
   # Defaults should never be checked-in; so as to avoid accidentally using unintended values
-  #default = "oc1"
   description = "Realm to get DNS records for: e.g. oc1, oc2, etc..."
 }
 
 variable "region" {
   # Defaults should never be checked-in; so as to avoid accidentally using unintended values
-  #default = "us-ashburn-1"
   description = "Region to get DNS records for: e.g. us-ashburn-1"
+}
+
+variable "boat_tenancy_ocid" {
+  description = "BOAT tenancy OCID for your realm"
+}
+
+variable "boat_user_ocid" {
+  description = "BOAT user OCID for your realm"
+}
+
+variable "boat_fingerprint" {
+  description = "BOAT user's fingerprint"
+}
+
+variable "boat_private_key_path" {
+  description = "BOAT user's API key"
 }
 
 locals {
@@ -56,7 +69,7 @@ locals {
 
   my_dns_record_map = {
     # CP downstream name
-    "${var.environment}.control.plane.api.project-service.${var.region}.${local.internal_domain}_A" = {
+    "${var.environment}.control.plane.api.clouddeploy.${var.region}.${local.internal_domain}_A" = {
       zone_name   = "${var.region}.${local.internal_domain}"
       domain_name = "${var.environment}.control.plane.api.clouddeploy.${var.region}.${local.internal_domain}"
       rtype       = "A"
@@ -64,7 +77,7 @@ locals {
       rdata       = module.ctrl_plane_lbinfo.deploy_lb_ip
     }
     # Old Mgmt Plane downstream name
-    "${var.environment}.management.plane.api.project-service.${var.region}.${local.internal_domain}_A" = {
+    "${var.environment}.management.plane.api.clouddeploy.${var.region}.${local.internal_domain}_A" = {
       zone_name   = "${var.region}.${local.internal_domain}"
       domain_name = "${var.environment}.management.plane.api.clouddeploy.${var.region}.${local.internal_domain}"
       rtype       = "A"
@@ -103,4 +116,29 @@ resource "oci_dns_rrset" "deploy_service_dns_rrset" {
     ttl    = each.value.ttl
     rdata  = each.value.rdata
   }
+
+  lifecycle {
+    # Do not allow destruction of records from Terraform
+    prevent_destroy = true
+  }
+}
+
+# Returns data about current state of DNS records for this region
+data "oci_dns_rrset" "current_state" {
+  for_each        = local.my_dns_record_map
+  domain          = each.value.domain_name
+  rtype           = each.value.rtype
+  zone_name_or_id = each.value.zone_name
+}
+
+output "current_deploy_service_dns_rrset" {
+  value = data.oci_dns_rrset.current_state
+}
+
+provider "oci" {
+  region           = var.region
+  user_ocid        = var.boat_user_ocid
+  fingerprint      = var.boat_fingerprint
+  tenancy_ocid     = var.boat_tenancy_ocid
+  private_key_path = var.boat_private_key_path
 }

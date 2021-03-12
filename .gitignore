@@ -35,4 +35,5 @@ output_ocibuild_dockerize_worker/
 **/.terraform
 **/*.tfstate
 **/*.tfstate.backup
+**/*.tfvars
 /.pre-commit-config.yaml
