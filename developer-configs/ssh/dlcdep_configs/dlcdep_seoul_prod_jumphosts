@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_seoul_prod_hosts
+
+# Jump Hosts
+Host dlcdep-prod-jump.icn
+  HostName 192.168.87.122
+  ProxyJump vcn11.ob.ap-seoul-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-prod-jump.icn
+  PermitLocalCommand yes

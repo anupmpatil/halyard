@@ -22,7 +22,8 @@ prodRegionMap = {
     "ashburn" : "iad",
     "phoenix" : "phx",
     "london" : "lhr",
-    "frankfurt" :"fra"
+    "frankfurt" :"fra",
+    "seoul" : "icn"
 }
 
 def __check_package(pkg, pippkg = None):
@@ -86,7 +87,7 @@ def main(argv):
     parser.add_argument('region', metavar='<region>', help='Region',
             choices=[
                     "ashburn",
-                    "phoenix", "london", "frankfurt",
+                    "phoenix", "london", "frankfurt", "seoul",
 ##REGION_LIST_ADD_ABOVE
             ])
 

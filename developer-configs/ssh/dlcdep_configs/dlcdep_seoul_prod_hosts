@@ -1,0 +1,12 @@
+Host dply-svc-ctrl-plne-api-prod-ad1.icn
+  HostName 10.0.0.2
+  ProxyJump dlcdep-prod-jump.icn
+Host dply-svc-ctrl-plne-wrkr-prod-ad1.icn
+  HostName 10.0.192.2
+  ProxyJump dlcdep-prod-jump.icn
+Host dply-svc-mgmt-plne-api-prod-ad1.icn
+  HostName 10.2.0.2
+  ProxyJump dlcdep-prod-jump.icn
+Host dply-svc-data-plne-wrkr-prod-ad1.icn
+  HostName 10.2.192.2
+  ProxyJump dlcdep-prod-jump.icn
