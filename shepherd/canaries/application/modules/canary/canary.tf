@@ -21,7 +21,7 @@ resource "testservice_canary" "deploy-service-canaries" {
 }
 
 resource "testservice_deployment" "deploy" {
-  # canary id that was created, please use the following format as this ID is required for deployment
+  # canary id that was created, please use the following format as this ID is required for deployment of canary
   count               = length(var.canaries_list)
   canary_id           = testservice_canary.deploy-service-canaries[count.index].id
   canary_name         = "${var.canaries_list[count.index]}-${var.environment}"

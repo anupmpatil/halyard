@@ -99,7 +99,7 @@ resource "shepherd_execution_target" "preprod-region" {
 # Execution targets for PROD(Tenancy)
 resource "shepherd_execution_target" "prod-oc1-groupA" {
   name                      = "oc1-groupA-us-ashburn-1"
-  tenancy_ocid              = local.tenancy_ocid_map["oc1"]
+  tenancy_ocid              = local.tenancy_ocid_map["oc1-groupA"]
   region                    = "us-ashburn-1"
   phase                     = shepherd_release_phase.release_phases["oc1-groupA"].name
   is_home_region_target     = true
@@ -112,7 +112,7 @@ resource "shepherd_execution_target" "prod-oc1-groupA-region" {
   for_each = toset(local.release_phase_config["oc1-groupA"]["regions"])
 
   name         = "oc1-groupA-${each.key}-region"
-  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  tenancy_ocid = local.tenancy_ocid_map["oc1-groupA"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["oc1-groupA"].name
   # After the bellwether succeeds, everything happens in parallel
@@ -123,7 +123,7 @@ resource "shepherd_execution_target" "prod-oc1-groupB-region" {
   for_each = toset(local.release_phase_config["oc1-groupB"]["regions"])
 
   name         = "oc1-groupB-${each.key}-region"
-  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  tenancy_ocid = local.tenancy_ocid_map["oc1-groupB"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["oc1-groupB"].name
 
