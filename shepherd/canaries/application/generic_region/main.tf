@@ -27,6 +27,5 @@ module "canary" {
   canaries_test_method_map = local.canaries_test_method_map
   artifact_versions        = local.artifact_versions
   canaries_compartment_id  = local.canaries_compartment_id
+  execution_target         = local.execution_target.region.public_name
 }
-
-

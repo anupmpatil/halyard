@@ -1,14 +1,14 @@
 variable "canaries_list" {
   type        = list(string)
   description = "The list of canary names"
-  default     = ["deploy-dummy-canary"]
+  default     = ["dlc-deploy-create-delete-application"]
 }
 
 variable "canary_frequency_map" {
   type        = map(any)
   description = "The mapping of canary name to the frequency of the canary"
   default = {
-    "deploy-dummy-canary" = "*/5 * * * *"
+    "dlc-deploy-create-delete-application" = "*/5 * * * *"
   }
 }
 
@@ -16,7 +16,7 @@ variable "canary_maxruntime_map" {
   type        = map(any)
   description = "The mapping of canary name to the maximum runtime of the canary"
   default = {
-    "deploy-dummy-canary" = 10
+    "dlc-deploy-create-delete-application" = 10
   }
 }
 
@@ -24,7 +24,7 @@ variable "canaries_test_method_map" {
   type        = map(any)
   description = "The mapping of canary name to the TEST_METHOD of the canary"
   default = {
-    "deploy-dummy-canary" = "DummyIT.helloWorld"
+    "dlc-deploy-create-delete-application" = "CanaryIT.createDeleteApplicationTest"
   }
 }
 
@@ -32,8 +32,8 @@ variable "canaries_compartment_id_map" {
   type        = map(any)
   description = "The mapping of environment to compartment id for the canaries"
   default = {
-    "beta"    = "ocid1.compartment.oc1..aaaaaaaajhenmkeafdssqt2egxykpbhoswvgjrselml52t3osvknpuq2zjxa"
-    "preprod" = "ocid1.compartment.oc1..aaaaaaaadepgi3okejgy2hcwl4kdymz5lggpqajpacwh3iveuszm3gliraja"
+    "beta"    = "ocid1.compartment.oc1..aaaaaaaaimq2x76s2bc64walkjvwpcuaeegtnwyebk2b5v3ujhgsoctwwjva"
+    "preprod" = "ocid1.compartment.oc1..aaaaaaaawydnxc6dtt77ojxe5yyqhwjyam263giughwepjq6ccmptjfzz6ga"
     "oc1"     = "ocid1.compartment.oc1..aaaaaaaanjlnhtoqtkvzudjdbslifk333xbvi5dckr5fypd5niapdmxw3yja"
   }
 }

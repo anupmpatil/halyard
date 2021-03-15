@@ -18,7 +18,7 @@ module "region_config" {
 }
 
 locals {
-  tenancy_ocid_map     = module.region_config.canary_tenancy_ocid_map
+  tenancy_ocid_map     = module.region_config.canary_test_tenancy_ocid_map
   bellwether_region    = "us-ashburn-1"
   release_phase_config = module.region_config.release_phase_config
 }

@@ -41,3 +41,8 @@ variable "availability_domains" {
   type        = list(string)
   description = "List of availability domains to deploy to."
 }
+
+variable "execution_target" {
+  type        = string
+  description = "The current execution target"
+}

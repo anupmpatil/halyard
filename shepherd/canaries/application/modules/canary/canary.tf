@@ -10,8 +10,9 @@ resource "testservice_canary" "deploy-service-canaries" {
   overlap             = false
   pause_by_failure    = false
   environment = {
-    "TEST_METHOD"        = var.canaries_test_method_map[var.canaries_list[count.index]]
-    "IS_RUNNING_ON_EXEC" = true
+    "TEST_METHOD"             = var.canaries_test_method_map[var.canaries_list[count.index]]
+    "EXECUTION_TARGET_CONFIG" = "${var.execution_target}-${var.environment}"
+    "IS_RUNNING_ON_EXEC"      = true
   }
   run_in_overlay = true
   container_identity_metadata {
