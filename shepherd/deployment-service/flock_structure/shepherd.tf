@@ -30,6 +30,12 @@ resource "shepherd_artifacts" "artifacts" {
     location    = "deployment-service-control-plane-worker"
     description = "The docker container for deployment-service's control plane worker."
   }
+  artifact {
+    name        = "deployment-service-integration-test"
+    type        = "docker"
+    location    = "deployment-service-integration-test"
+    description = "The docker container for deployment service's post deployment tests"
+  }
 }
 
 module "region_config" {

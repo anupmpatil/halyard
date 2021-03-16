@@ -97,3 +97,44 @@ resource "odo_deployment" "worker_deployment_2" {
   flags                   = local.deployment_flags
   depends_on              = [odo_deployment.worker_deployment_1]
 }
+
+resource "exec_execution" "integ_test_dlc_deploy_service" {
+  count                   = var.artifact_versions["deployment-service-integration-test"].version == "skip" ? 0 : 1
+  ad                      = var.availability_domains[0]
+  compartment_id          = var.integration_test_compartment_id
+  max_run_time_ms         = 1800000
+  max_attempts            = 1
+  max_postprocess_time_ms = 300000
+  max_preprocess_time_ms  = 300000
+
+  depends_on = [odo_deployment.worker_deployment_2]
+
+  execution_details {
+    pwd = "/"
+    # Exec service tests to see whether exec service is up!
+    cmd = ["/etc/run.sh"]
+
+    container {
+      docker {
+        uri = var.artifact_versions["deployment-service-integration-test"].uri
+      }
+    }
+
+    environment = {
+      "TEST_CLASS"              = "PostDeploymentTestSuite"
+      "MAX_TEST_THREADS"        = 3
+      "EXECUTION_TARGET_CONFIG" = "${var.execution_target}-${var.environment}"
+      "IS_RUNNING_ON_EXEC"      = true
+    }
+    pool = "kubernetes-pool-overlay"
+  }
+
+  outputs_to_download {
+    filename_in_exec = "user.log"
+    local_filename   = "outputs/user.log"
+  }
+
+  timeouts {
+    create = "1h"
+  }
+}
