@@ -44,6 +44,10 @@ resource "shepherd_execution_target" "beta-region" {
   tenancy_ocid = local.tenancy_ocid_map["beta"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["beta"].name
+  additional_locals = {
+    environment = "beta"
+  }
+
 
   predecessors = []
 }
@@ -56,6 +60,9 @@ resource "shepherd_execution_target" "preprod-region" {
   tenancy_ocid = local.tenancy_ocid_map["preprod"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["preprod"].name
+  additional_locals = {
+    environment = "preprod"
+  }
 
   predecessors = []
 }
@@ -68,6 +75,9 @@ resource "shepherd_execution_target" "oc1-groupA-region" {
   tenancy_ocid = local.tenancy_ocid_map["oc1"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["oc1-groupA"].name
+  additional_locals = {
+    environment = "prod"
+  }
   # After the bellwether succeeds, everything happens in parallel
   predecessors = each.key == local.bellwether_region ? [] : ["oc1-groupA-${local.bellwether_region}-region"]
 }
@@ -79,6 +89,9 @@ resource "shepherd_execution_target" "oc1-groupB-region" {
   tenancy_ocid = local.tenancy_ocid_map["oc1"]
   region       = each.key
   phase        = shepherd_release_phase.release_phases["oc1-groupB"].name
+  additional_locals = {
+    environment = "prod"
+  }
 
   predecessors = []
 }

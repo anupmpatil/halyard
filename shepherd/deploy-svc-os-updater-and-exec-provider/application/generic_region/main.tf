@@ -6,15 +6,8 @@ data "oci_identity_availability_domains" "service_ads" {
 }
 
 locals {
-  environment_name_map = {
-    beta       = "beta"
-    preprod    = "preprod"
-    oc1-groupA = "prod"
-    oc1-groupB = "prod"
-  }
-  et          = local.execution_target
-  ad          = [for ad in local.availability_domains : ad.name]
-  environment = lookup(local.environment_name_map, local.execution_target.phase_name, "beta")
+  ads         = [for ad in local.availability_domains : ad.name]
+  environment = local.execution_target.additional_locals.environment
 
   # Combined map:
   aliases = {
@@ -26,7 +19,7 @@ locals {
 
 module "deployment_service_integration_tests" {
   source               = "./modules/exec-provider-integration-tests"
-  availability_domains = local.ad
+  availability_domains = local.ads
   artifact_versions    = local.artifact_versions
   compartment_id       = local.execution_target.tenancy_ocid
   artifact_name        = "deployment-service-integration-test"
@@ -34,7 +27,7 @@ module "deployment_service_integration_tests" {
 
 module "deployment_service_os_updater" {
   source                = "./modules/os-updater"
-  availability_domains  = local.ad
+  availability_domains  = local.ads
   artifact_versions     = local.artifact_versions
   artifact_name         = "odo-system-updater"
   odo_app_alias_mp      = local.aliases.management_plane

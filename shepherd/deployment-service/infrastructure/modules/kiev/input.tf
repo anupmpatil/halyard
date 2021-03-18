@@ -1,8 +1,3 @@
-variable "service_name" {
-  type        = string
-  description = "Service name, mostly used for naming purposes."
-}
-
 variable "kiev_store_name" {
   type        = string
   description = "The Kiev store name."

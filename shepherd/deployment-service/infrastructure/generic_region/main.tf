@@ -37,7 +37,9 @@ locals {
   project_svc_cp_kiev_endpoint  = module.project_service.project_svc_cp_kiev_endpoint
 
   project_svc_cp_kiev_store_name = module.project_service.project_svc_cp_kiev_store_name
-  data_plane_kiev_store_name     = "${local.service_short_name}-data-plane-${local.environment}"
+
+  data_plane_kiev_store_name_suffix = local.environment == "prod" ? "production" : local.environment
+  data_plane_kiev_store_name        = "${local.service_short_name}-data-plane-${local.data_plane_kiev_store_name_suffix}"
 }
 
 module "tenancies" {
@@ -53,6 +55,7 @@ module "identity" {
 
 module "project_service" {
   source      = "./shared_modules/project_service"
+  realm       = local.execution_target.region.realm
   environment = local.environment
 }
 
@@ -254,7 +257,6 @@ module "secret_service" {
 module "kiev_data_plane" {
   source          = "./modules/kiev"
   compartment_id  = local.management_plane_api_compartment_id
-  service_name    = "${local.service_short_name}-data-plane"
   kiev_store_name = local.data_plane_kiev_store_name
   environment     = local.environment
   phone_book_name = local.phonebook_name

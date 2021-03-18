@@ -5,11 +5,17 @@ locals {
   team_queue               = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
 }
 
+module "project_service" {
+  source      = "./shared_modules/project_service"
+  realm       = local.execution_target.region.realm
+  environment = local.environment
+}
+
 # identity module
 module "identity" {
   source                                                   = "./identity"
   tenancy_ocid                                             = local.execution_target.tenancy_ocid
-  project_tenancy_ocid                                     = module.identity.project_service_tenancy_ocid
+  project_tenancy_ocid                                     = module.project_service.project_svc_cp_tenancy_id
   deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
   deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
   deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
