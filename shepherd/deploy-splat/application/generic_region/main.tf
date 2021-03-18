@@ -61,10 +61,12 @@ locals {
   ))
   splat_service_name_suffix = local.environment == "prod" ? "" : "-${local.environment}"
 
-  cp_endpoint = (local.is_onsr ? "https://${local.environment}.control.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
-  "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
-  mp_endpoint = (local.is_onsr ? "https://${local.environment}.management.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" :
-  "https://${local.environment}.management.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
+  cp_endpoint = local.is_onsr ? "https://${local.environment}.control.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : (
+    local.execution_target.region.public_name == "us-phoenix-1" ?
+  "https://${local.environment}.control.plane.api.clouddeploy.us-phoenix-1.oci.oracleiaas.com" : "https://${local.environment}.control.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
+  mp_endpoint = local.is_onsr ? "https://${local.environment}.management.plane.api.clouddeploy.{OCI-INTERNAL-ONSR-DOMAIN-NAME}" : (
+    local.execution_target.region.public_name == "us-phoenix-1" ?
+  "https://${local.environment}.management.plane.api.clouddeploy.us-phoenix-1.oci.oracleiaas.com" : "https://${local.environment}.management.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
 
   spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"
   api_yaml         = file(format("%s/%s", path.module, "api-specs/${local.spec_release_dir}/api.yaml"))
