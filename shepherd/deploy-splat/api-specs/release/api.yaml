@@ -1,4 +1,4 @@
-# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.46 - DO NOT EDIT
+# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.59 - DO NOT EDIT
 # This is the DeploymentService API spec in YAML
 # Clients and documentation will be auto-generated from this file.
 # Review the API checklist:
@@ -12,6 +12,7 @@ x-obmcs-splat:
   version: '1.0'
   services:
     deployment-service-control-plane-api:
+      allowingUnreviewedEntityType: true
       # Omitting audit implies you don't want Splat to audit operations for this service (deployment-service-control-plane-api)
       audit:
         # defaultMode can be either none/verification/automated.
@@ -28,6 +29,7 @@ x-obmcs-splat:
         requestHeaderRules:    [ { resources: ".*", actions: ".*", values: ".*" } ]
         responseHeaderRules:   [ { resources: ".*", actions: ".*", values: ".*" } ]
     deployment-service-management-plane-api:
+      allowingUnreviewedEntityType: true
       # Omitting audit implies you don't want Splat to audit operations for this service (deployment-service-management-plane-api)
       audit:
         # defaultMode can be either none/verification/automated.
@@ -44,24 +46,29 @@ x-obmcs-splat:
         requestHeaderRules:    [ { resources: ".*", actions: ".*", values: ".*" } ]
         responseHeaderRules:   [ { resources: ".*", actions: ".*", values: ".*" } ]
     deployment-service-control-plane-api-beta:
+      allowingUnreviewedEntityType: true
       prototype: deployment-service-control-plane-api
       serviceOverrides:
         deployment-service-control-plane-api: deployment-service-control-plane-api-beta
     deployment-service-management-plane-api-beta:
+      allowingUnreviewedEntityType: true
       prototype: deployment-service-management-plane-api
       serviceOverrides:
         deployment-service-management-plane-api: deployment-service-management-plane-api-beta
         deployment-service-control-plane-api: deployment-service-control-plane-api-beta
     deployment-service-control-plane-api-preprod:
+      allowingUnreviewedEntityType: true
       prototype: deployment-service-control-plane-api
       serviceOverrides:
         deployment-service-control-plane-api: deployment-service-control-plane-api-preprod
     deployment-service-management-plane-api-preprod:
+      allowingUnreviewedEntityType: true
       prototype: deployment-service-management-plane-api
       serviceOverrides:
         deployment-service-management-plane-api: deployment-service-management-plane-api-preprod
         deployment-service-control-plane-api: deployment-service-control-plane-api-preprod
     dlc-project-service-control-plane-api:
+      allowingUnreviewedEntityType: true
       audit:
         defaultMode: automated
         eventSource: dlc-project-service-control-plane-api
@@ -69,10 +76,12 @@ x-obmcs-splat:
         requestHeaderRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
         responseHeaderRules: [ { resources: ".*", actions: ".*", values: ".*" } ]
     dlc-project-service-control-plane-api-beta:
+      allowingUnreviewedEntityType: true
       prototype: dlc-project-service-control-plane-api
       serviceOverrides:
         dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-beta
     dlc-project-service-control-plane-api-preprod:
+      allowingUnreviewedEntityType: true
       prototype: dlc-project-service-control-plane-api
       serviceOverrides:
         dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-preprod
@@ -258,10 +267,10 @@ responses: &COMMON_HTTP_STATUSES
 #==========[ Paths ]=====================================================================================================
 paths:
 
-# ------------------- Application API -------------------
-  /applications:
+# ------------------- Project API -------------------
+  /projects:
     get:
-      tags: ['application']
+      tags: ['project']
       x-obmcs-splat:
         # specify the routing strategy
         # strategy: route-to-any-ad OR route-to-inferred-ad
@@ -270,16 +279,17 @@ paths:
         # E.g. how to infer AD from the request body https://bitbucket.oci.oraclecorp.com/projects/CIM/repos/instance-agent-service/browse/instance-agent-service-spec/specs/service-api.yaml#63
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          application:
-            serviceResourceName: Application
+          project:
+            serviceResourceName: Project
             targetCompartmentId: request.parameter.compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_APPLICATION_INSPECT"]
+            permissions: ["DEVOPS_PROJECT_INSPECT"]
         authorization:
           mode: automated
-          check: resources['application'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_INSPECT')
+          check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         # Maximum number of invocation attempts that should be made to the downstream service.
@@ -287,31 +297,31 @@ paths:
         maximumAttemptCount: 3
         operationType: LIST
         listingEnhancements: false # opt-out splat in house listing enhancements
-      operationId: ListApplications
-      summary: Gets a list of all Applications in a compartment
+      operationId: ListProjects
+      summary: Gets a list of all Projects in a compartment
       description: |
-        Returns a list of Applications.
+        Returns a list of Projects.
       parameters:
-        - $ref: '#/parameters/ApplicationIdentifierQueryParam'
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
         - $ref: '#/parameters/CompartmentIdQueryParam'
         - name: lifecycleState
           in: query
           required: false
           type: string
-          x-obmcs-enumref: "#/definitions/Application/lifecycleState"
-          description: A filter to return only Applications that matches the given lifecycleState.
-        - $ref: '#/parameters/DisplayNameQueryParam'
+          x-obmcs-enumref: "#/definitions/Project/lifecycleState"
+          description: A filter to return only Projects that matches the given lifecycleState.
+        - $ref: '#/parameters/NameQueryParam'
         - $ref: '#/parameters/PaginationLimitQueryParam'
         - $ref: '#/parameters/PaginationTokenQueryParam'
         - $ref: '#/parameters/SortOrderQueryParam'
         - $ref: '#/parameters/SortByQueryParam'
         - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/ApplicationSummary'
+      x-related-resource: '#/definitions/ProjectSummary'
       responses:
         200:
-          description: A page of ApplicationSummary objects.
+          description: A page of ProjectSummary objects.
           schema:
-            $ref: '#/definitions/ApplicationCollection'
+            $ref: '#/definitions/ProjectCollection'
           headers:
             opc-request-id: *ref-opc-request-id
             opc-next-page: *ref-opc-next-page
@@ -329,55 +339,56 @@ paths:
           $ref: '#/responses/default'
 
     post:
-      tags: ['application']
+      tags: ['project']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          application:
-            serviceResourceName: Application
+          project:
+            serviceResourceName: Project
             targetCompartmentId: request.body.compartmentId
             actionKind: create
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_APPLICATION_CREATE"]
+            permissions: ["DEVOPS_PROJECT_CREATE"]
         authorization:
           mode: automated
-          check: resources['application'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_CREATE')
+          check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
         search:
           mode: automated
-          operationResourceName: application
+          operationResourceName: project
         maximumAttemptCount: 3
-      operationId: CreateApplication
-      summary: Creates a new Application
+      operationId: CreateProject
+      summary: Creates a new Project
       description: |
-        Creates a new Application.
+        Creates a new Project.
       parameters:
-        - name: CreateApplicationDetails
-          description: Details for the new Application.
+        - name: CreateProjectDetails
+          description: Details for the new Project.
           required: true
           in: body
           schema:
-            $ref: '#/definitions/CreateApplicationDetails'
+            $ref: '#/definitions/CreateProjectDetails'
         - $ref: '#/parameters/RetryTokenHeader'
         - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Application'
+      x-related-resource: '#/definitions/Project'
       responses:
         201:
-          description: The Application that is created.
+          description: The Project that is created.
           headers:
             location: *ref-location
             etag: *ref-etag
             opc-work-request-id: *ref-opc-work-request-id
             opc-request-id: *ref-opc-request-id
           schema:
-            $ref: '#/definitions/Application'
+            $ref: '#/definitions/Project'
         400:
           $ref: '#/responses/400'
         401:
@@ -393,37 +404,38 @@ paths:
         default:
           $ref: '#/responses/default'
 
-  /applications/{applicationId}:
+  /projects/{projectId}:
     get:
-      tags: ['application']
+      tags: ['project']
       # for proxying this operation via Splat
       x-obmcs-splat:
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          application:
-            serviceResourceName: Application
+          project:
+            serviceResourceName: Project
             actionKind: read
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetApplication', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_APPLICATION_READ"]
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
+            permissions: ["DEVOPS_PROJECT_READ"]
         authorization:
           mode: automated
-          check: resources['application'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_READ')
+          check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         maximumAttemptCount: 3
-      operationId: GetApplication
-      summary: Get Application
-      description: Gets a Application by identifier
+      operationId: GetProject
+      summary: Get Project
+      description: Gets a Project by identifier
       parameters:
-        - $ref: '#/parameters/ApplicationIdentifierPathParam'
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
         - $ref: '#/parameters/RequestIdHeader'
       responses:
         200:
-          description: Retrieves the Application with the given id
+          description: Retrieves the Project with the given id
           schema:
-            $ref: '#/definitions/Application'
+            $ref: '#/definitions/Project'
           headers:
             etag: *ref-etag
             opc-request-id: *ref-opc-request-id
@@ -441,8 +453,9 @@ paths:
           $ref: '#/responses/default'
 
     put:
-      tags: ['application']
+      tags: ['project']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         # Splat supports throttling, appropriate for PUT/POST operations
@@ -452,51 +465,52 @@ paths:
         #   perUserLimit:
         #     rpsLimit: 10
         #     rpmLimit: 50
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          application:
-            serviceResourceName: Application
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetApplication', request.resourceId).compartmentId
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
             actionKind: update
             resourceOcid: request.resourceId
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_APPLICATION_UPDATE"]
+            permissions: ["DEVOPS_PROJECT_UPDATE"]
         authorization:
           mode: automated
-          check: resources['application'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_UPDATE')
+          check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         search:
           mode: automated
-          operationResourceName: application
+          operationResourceName: project
         maximumAttemptCount: 3
-      operationId: UpdateApplication
-      summary: Update the Application identified by the id
-      description: Updates the Application
+      operationId: UpdateProject
+      summary: Update the Project identified by the id
+      description: Updates the Project
       parameters:
-        - $ref: '#/parameters/ApplicationIdentifierPathParam'
-        - name: UpdateApplicationDetails
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
+        - name: UpdateProjectDetails
           description: The information to be updated.
           required: true
           in: body
           schema:
-            $ref: '#/definitions/UpdateApplicationDetails'
+            $ref: '#/definitions/UpdateProjectDetails'
         - $ref: '#/parameters/IfMatchHeader'
         - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Application'
+      x-related-resource: '#/definitions/Project'
       responses:
         202:
-          description: Accepted the request. The Application will be updated.
+          description: Accepted the request. The Project will be updated.
           headers:
             location: *ref-location
             etag: *ref-etag
             opc-work-request-id: *ref-opc-work-request-id
             opc-request-id: *ref-opc-request-id
           schema:
-            $ref: '#/definitions/Application'
+            $ref: '#/definitions/Project'
         400:
           $ref: '#/responses/400'
         401:
@@ -513,37 +527,39 @@ paths:
           $ref: '#/responses/default'
 
     delete:
-      tags: ['application']
+      tags: ['project']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          application:
-            serviceResourceName: Application
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetApplication', request.resourceId).compartmentId
+          project:
+            serviceResourceName: Project
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
             actionKind: delete
             resourceOcid: request.resourceId
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_APPLICATION_DELETE"]
+            permissions: ["DEVOPS_PROJECT_DELETE"]
         authorization:
           mode: automated
-          check: resources['application'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_DELETE')
+          check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_DELETE')
+          allowCrossTenancy: true
         search:
           mode: automated
-          operationResourceName: application
+          operationResourceName: project
         maximumAttemptCount: 3
-      operationId: DeleteApplication
-      summary: Delete a provisioned Application
-      description: Deletes a Application resource by identifier
+      operationId: DeleteProject
+      summary: Delete a provisioned Project
+      description: Deletes a Project resource by identifier
       parameters:
-        - $ref: '#/parameters/ApplicationIdentifierPathParam'
+        - $ref: '#/parameters/ProjectIdentifierPathParam'
         - $ref: '#/parameters/IfMatchHeader'
         - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Application'
+      x-related-resource: '#/definitions/Project'
       responses:
         202:
-          description: Accepted the request. The Application will be deleted.
+          description: Accepted the request. The Project will be deleted.
           headers:
             opc-work-request-id: *ref-opc-work-request-id
             opc-request-id: *ref-opc-request-id
@@ -562,10 +578,11 @@ paths:
         default:
           $ref: '#/responses/default'
 
-  /applications/{applicationId}/actions/changeCompartment:
+  /projects/{projectId}/actions/changeCompartment:
     post:
-      tags: ['application']
+      tags: ['project']
       x-obmcs-splat:
+        apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
         # Splat supports throttling, appropriate for PUT/POST operations
@@ -575,55 +592,55 @@ paths:
         #   perUserLimit:
         #     rpsLimit: 10
         #     rpmLimit: 50
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
-          applicationBeforeMove:
-            serviceResourceName: Application
+          projectBeforeMove:
+            serviceResourceName: Project
             actionKind: READ
             resourceOcid: request.resourceId
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetApplication', request.resourceId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_APPLICATION_MOVE"]
-          applicationAfterMove:
-            serviceResourceName: Application
+            permissions: ["DEVOPS_PROJECT_MOVE"]
+          projectAfterMove:
+            serviceResourceName: Project
             actionKind: MOVE
             resourceOcid: request.resourceId
             targetCompartmentId: request.body.compartmentId
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_APPLICATION_MOVE"]
+            permissions: ["DEVOPS_PROJECT_MOVE"]
         authorization:
           mode: automated
           check: >-
-            resources['applicationBeforeMove'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_MOVE') &&
-            resources['applicationAfterMove'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_MOVE')
+            resources['projectBeforeMove'].grantedPermissions.contains('DEVOPS_PROJECT_MOVE') &&
+            resources['projectAfterMove'].grantedPermissions.contains('DEVOPS_PROJECT_MOVE')
           # Compartment move does NOT allow the user to move the resource between tenancies.
           allowCrossTenancy: true
-          sameTenancyResources: ["applicationBeforeMove", "applicationAfterMove"]
+          sameTenancyResources: ["projectBeforeMove", "projectAfterMove"]
           crossTenancyAssociations: []
         tagStore:
           mode: automated
         search:
           mode: automated
-          operationResourceName: applicationAfterMove
+          operationResourceName: projectAfterMove
         maximumAttemptCount: 3
-      operationId: ChangeApplicationCompartment
+      operationId: ChangeProjectCompartment
       summary: Moves a resource into a different compartment.
-      description: Moves a Application resource from one compartment identifier to another. When provided, If-Match is checked against ETag values of the resource.
+      description: Moves a Project resource from one compartment identifier to another. When provided, If-Match is checked against ETag values of the resource.
       parameters:
-        - $ref: "#/parameters/ApplicationIdentifierPathParam"
-        - name: ChangeApplicationCompartmentDetails
+        - $ref: "#/parameters/ProjectIdentifierPathParam"
+        - name: ChangeProjectCompartmentDetails
           in: body
           description: The information to be updated.
           required: true
           schema:
-            $ref: '#/definitions/ChangeApplicationCompartmentDetails'
+            $ref: '#/definitions/ChangeProjectCompartmentDetails'
         - $ref: "#/parameters/IfMatchHeader"
         - $ref: "#/parameters/RequestIdHeader"
         - $ref: "#/parameters/RetryTokenHeader"
-      x-related-resource: '#/definitions/Application'
+      x-related-resource: '#/definitions/Project'
       responses:
         202:
-          description: Accepted the request. The Application resource will be moved into a different compartment.
+          description: Accepted the request. The Project resource will be moved into a different compartment.
           headers:
             opc-work-request-id: *ref-opc-work-request-id
             opc-request-id: *ref-opc-request-id
@@ -655,12 +672,13 @@ paths:
             serviceResourceName: Environment
             targetCompartmentId: >-
               request.parameter.compartmentId ? request.parameter.compartmentId :
-              downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.parameter.applicationId).compartmentId
+              downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.parameter.projectId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_ENVIRONMENT_INSPECT"]
+            permissions: ["DEVOPS_DEPLOY_ENVIRONMENT_INSPECT"]
         authorization:
           mode: automated
-          check: resources['environment'].grantedPermissions.contains('CLOUD_DEPLOY_ENVIRONMENT_INSPECT')
+          check: resources['environment'].grantedPermissions.contains('DEVOPS_DEPLOY_ENVIRONMENT_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -675,7 +693,7 @@ paths:
       description: |
         Returns a list of Environments.
       parameters:
-        - $ref: '#/parameters/ApplicationIdQueryParam'
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
         - $ref: '#/parameters/CompartmentIdOptionalQueryParam'
         - $ref: '#/parameters/EnvironmentIdQueryParam'
         - name: lifecycleState
@@ -722,16 +740,16 @@ paths:
         resources:
           environment:
             serviceResourceName: Environment
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.body.applicationId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.body.projectId).compartmentId
             actionKind: create
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_ENVIRONMENT_CREATE"]
+            permissions: ["DEVOPS_DEPLOY_ENVIRONMENT_CREATE"]
         authorization:
           mode: automated
-          check: resources['environment'].grantedPermissions.contains('CLOUD_DEPLOY_ENVIRONMENT_CREATE')
+          check: resources['environment'].grantedPermissions.contains('DEVOPS_DEPLOY_ENVIRONMENT_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
@@ -793,10 +811,11 @@ paths:
             serviceResourceName: Environment
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetEnvironment', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_ENVIRONMENT_READ"]
+            permissions: ["DEVOPS_DEPLOY_ENVIRONMENT_READ"]
         authorization:
           mode: automated
-          check: resources['environment'].grantedPermissions.contains('CLOUD_DEPLOY_ENVIRONMENT_READ')
+          check: resources['environment'].grantedPermissions.contains('DEVOPS_DEPLOY_ENVIRONMENT_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -853,10 +872,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_ENVIRONMENT_UPDATE"]
+            permissions: ["DEVOPS_DEPLOY_ENVIRONMENT_UPDATE"]
         authorization:
           mode: automated
-          check: resources['environment'].grantedPermissions.contains('CLOUD_DEPLOY_ENVIRONMENT_UPDATE')
+          check: resources['environment'].grantedPermissions.contains('DEVOPS_DEPLOY_ENVIRONMENT_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -918,10 +938,11 @@ paths:
             resourceOcid: request.resourceId
             actionKind: delete
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_ENVIRONMENT_DELETE"]
+            permissions: ["DEVOPS_DEPLOY_ENVIRONMENT_DELETE"]
         authorization:
           mode: automated
-          check: resources['environment'].grantedPermissions.contains('CLOUD_DEPLOY_ENVIRONMENT_DELETE')
+          check: resources['environment'].grantedPermissions.contains('DEVOPS_DEPLOY_ENVIRONMENT_DELETE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -976,12 +997,13 @@ paths:
             serviceResourceName: Artifact
             targetCompartmentId: >-
               request.parameter.compartmentId ? request.parameter.compartmentId :
-              downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.parameter.applicationId).compartmentId
+              downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.parameter.projectId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_ARTIFACT_INSPECT"]
+            permissions: ["DEVOPS_DEPLOY_ARTIFACT_INSPECT"]
         authorization:
           mode: automated
-          check: resources['artifact'].grantedPermissions.contains('CLOUD_DEPLOY_ARTIFACT_INSPECT')
+          check: resources['artifact'].grantedPermissions.contains('DEVOPS_DEPLOY_ARTIFACT_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -997,7 +1019,7 @@ paths:
         Returns a list of Artifacts.
       parameters:
         - $ref: '#/parameters/ArtifactIdQueryParam'
-        - $ref: '#/parameters/ApplicationIdQueryParam'
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
         - $ref: '#/parameters/CompartmentIdOptionalQueryParam'
         - name: lifecycleState
           in: query
@@ -1043,16 +1065,16 @@ paths:
         resources:
           artifact:
             serviceResourceName: Artifact
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.body.applicationId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.body.projectId).compartmentId
             actionKind: create
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_ARTIFACT_CREATE"]
+            permissions: ["DEVOPS_DEPLOY_ARTIFACT_CREATE"]
         authorization:
           mode: automated
-          check: resources['artifact'].grantedPermissions.contains('CLOUD_DEPLOY_ARTIFACT_CREATE')
+          check: resources['artifact'].grantedPermissions.contains('DEVOPS_DEPLOY_ARTIFACT_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
@@ -1114,10 +1136,11 @@ paths:
             serviceResourceName: Artifact
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetArtifact', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_ARTIFACT_READ"]
+            permissions: ["DEVOPS_DEPLOY_ARTIFACT_READ"]
         authorization:
           mode: automated
-          check: resources['artifact'].grantedPermissions.contains('CLOUD_DEPLOY_ARTIFACT_READ')
+          check: resources['artifact'].grantedPermissions.contains('DEVOPS_DEPLOY_ARTIFACT_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1174,10 +1197,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_ARTIFACT_UPDATE"]
+            permissions: ["DEVOPS_DEPLOY_ARTIFACT_UPDATE"]
         authorization:
           mode: automated
-          check: resources['artifact'].grantedPermissions.contains('CLOUD_DEPLOY_ARTIFACT_UPDATE')
+          check: resources['artifact'].grantedPermissions.contains('DEVOPS_DEPLOY_ARTIFACT_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1239,10 +1263,11 @@ paths:
             resourceOcid: request.resourceId
             actionKind: delete
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_ARTIFACT_DELETE"]
+            permissions: ["DEVOPS_DEPLOY_ARTIFACT_DELETE"]
         authorization:
           mode: automated
-          check: resources['artifact'].grantedPermissions.contains('CLOUD_DEPLOY_ARTIFACT_DELETE')
+          check: resources['artifact'].grantedPermissions.contains('DEVOPS_DEPLOY_ARTIFACT_DELETE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1297,12 +1322,13 @@ paths:
             serviceResourceName: Pipeline
             targetCompartmentId: >-
               request.parameter.compartmentId ? request.parameter.compartmentId :
-              downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.parameter.applicationId).compartmentId
+              downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.parameter.projectId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_PIPELINE_INSPECT"]
+            permissions: ["DEVOPS_DEPLOY_PIPELINE_INSPECT"]
         authorization:
           mode: automated
-          check: resources['pipeline'].grantedPermissions.contains('CLOUD_DEPLOY_PIPELINE_INSPECT')
+          check: resources['pipeline'].grantedPermissions.contains('DEVOPS_DEPLOY_PIPELINE_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         # Maximum number of invocation attempts that should be made to the downstream service.
@@ -1316,7 +1342,7 @@ paths:
         Returns a list of Pipelines.
       parameters:
         - $ref: '#/parameters/PipelineIdQueryParam'
-        - $ref: '#/parameters/ApplicationIdQueryParam'
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
         - $ref: '#/parameters/CompartmentIdOptionalQueryParam'
         - name: lifecycleState
           in: query
@@ -1362,16 +1388,16 @@ paths:
         resources:
           pipeline:
             serviceResourceName: Pipeline
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.body.applicationId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.body.projectId).compartmentId
             actionKind: create
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_PIPELINE_CREATE"]
+            permissions: ["DEVOPS_DEPLOY_PIPELINE_CREATE"]
         authorization:
           mode: automated
-          check: resources['pipeline'].grantedPermissions.contains('CLOUD_DEPLOY_PIPELINE_CREATE')
+          check: resources['pipeline'].grantedPermissions.contains('DEVOPS_DEPLOY_PIPELINE_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
@@ -1431,10 +1457,11 @@ paths:
             serviceResourceName: Pipeline
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetPipeline', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_PIPELINE_READ"]
+            permissions: ["DEVOPS_DEPLOY_PIPELINE_READ"]
         authorization:
           mode: automated
-          check: resources['pipeline'].grantedPermissions.contains('CLOUD_DEPLOY_PIPELINE_READ')
+          check: resources['pipeline'].grantedPermissions.contains('DEVOPS_DEPLOY_PIPELINE_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         maximumAttemptCount: 3
@@ -1489,10 +1516,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_PIPELINE_UPDATE"]
+            permissions: ["DEVOPS_DEPLOY_PIPELINE_UPDATE"]
         authorization:
           mode: automated
-          check: resources['pipeline'].grantedPermissions.contains('CLOUD_DEPLOY_PIPELINE_UPDATE')
+          check: resources['pipeline'].grantedPermissions.contains('DEVOPS_DEPLOY_PIPELINE_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         search:
@@ -1552,10 +1580,11 @@ paths:
             actionKind: delete
             resourceOcid: request.resourceId
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_PIPELINE_DELETE"]
+            permissions: ["DEVOPS_DEPLOY_PIPELINE_DELETE"]
         authorization:
           mode: automated
-          check: resources['pipeline'].grantedPermissions.contains('CLOUD_DEPLOY_PIPELINE_DELETE')
+          check: resources['pipeline'].grantedPermissions.contains('DEVOPS_DEPLOY_PIPELINE_DELETE')
+          allowCrossTenancy: true
         search:
           mode: automated
           operationResourceName: pipeline
@@ -1608,10 +1637,11 @@ paths:
               request.parameter.compartmentId ? request.parameter.compartmentId :
               downstream.getOr404('deployment-service-control-plane-api','GetPipeline',request.parameter.pipelineId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_STAGE_INSPECT"]
+            permissions: ["DEVOPS_DEPLOY_STAGE_INSPECT"]
         authorization:
           mode: automated
-          check: resources['stage'].grantedPermissions.contains('CLOUD_DEPLOY_STAGE_INSPECT')
+          check: resources['stage'].grantedPermissions.contains('DEVOPS_DEPLOY_STAGE_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1679,10 +1709,10 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_STAGE_CREATE"]
+            permissions: ["DEVOPS_DEPLOY_STAGE_CREATE"]
         authorization:
           mode: automated
-          check: resources['stage'].grantedPermissions.contains('CLOUD_DEPLOY_STAGE_CREATE')
+          check: resources['stage'].grantedPermissions.contains('DEVOPS_DEPLOY_STAGE_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
@@ -1744,10 +1774,11 @@ paths:
             serviceResourceName: Stage
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetStage', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_STAGE_READ"]
+            permissions: ["DEVOPS_DEPLOY_STAGE_READ"]
         authorization:
           mode: automated
-          check: resources['stage'].grantedPermissions.contains('CLOUD_DEPLOY_STAGE_READ')
+          check: resources['stage'].grantedPermissions.contains('DEVOPS_DEPLOY_STAGE_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1804,10 +1835,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_STAGE_UPDATE"]
+            permissions: ["DEVOPS_DEPLOY_STAGE_UPDATE"]
         authorization:
           mode: automated
-          check: resources['stage'].grantedPermissions.contains('CLOUD_DEPLOY_STAGE_UPDATE')
+          check: resources['stage'].grantedPermissions.contains('DEVOPS_DEPLOY_STAGE_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1869,10 +1901,11 @@ paths:
             resourceOcid: request.resourceId
             actionKind: delete
             reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_DEPLOY_STAGE_DELETE"]
+            permissions: ["DEVOPS_DEPLOY_STAGE_DELETE"]
         authorization:
           mode: automated
-          check: resources['stage'].grantedPermissions.contains('CLOUD_DEPLOY_STAGE_DELETE')
+          check: resources['stage'].grantedPermissions.contains('DEVOPS_DEPLOY_STAGE_DELETE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         audit:
@@ -1927,13 +1960,14 @@ paths:
             serviceResourceName: Deployment
             targetCompartmentId: >-
               request.parameter.compartmentId ? request.parameter.compartmentId :
-              request.parameter.applicationId ? downstream.getOr404('deployment-service-control-plane-api','GetApplication',request.parameter.applicationId).compartmentId :
+              request.parameter.projectId ? downstream.getOr404('dlc-project-service-control-plane-api','GetProject',request.parameter.projectId).compartmentId :
               downstream.getOr404('deployment-service-control-plane-api','GetPipeline',request.parameter.pipelineId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_DEPLOYMENT_INSPECT"]
+            permissions: ["DEVOPS_DEPLOYMENT_INSPECT"]
         authorization:
           mode: automated
-          check: resources['deployment'].grantedPermissions.contains('CLOUD_DEPLOY_DEPLOYMENT_INSPECT')
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_INSPECT')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         # Maximum number of invocation attempts that should be made to the downstream service.
@@ -1949,7 +1983,7 @@ paths:
         - $ref: '#/parameters/DeploymentIdentifierQueryParam'
         - $ref: '#/parameters/PipelineIdQueryParam'
         - $ref: '#/parameters/CompartmentIdOptionalQueryParam'
-        - $ref: '#/parameters/ApplicationIdQueryParam'
+        - $ref: '#/parameters/ProjectIdentifierQueryParam'
         - name: lifecycleState
           in: query
           required: false
@@ -1999,10 +2033,10 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_DEPLOYMENT_CREATE"]
+            permissions: ["DEVOPS_DEPLOYMENT_CREATE"]
         authorization:
           mode: automated
-          check: resources['deployment'].grantedPermissions.contains('CLOUD_DEPLOY_DEPLOYMENT_CREATE')
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_CREATE')
           allowCrossTenancy: true
         tagStore:
           mode: automated
@@ -2060,10 +2094,11 @@ paths:
             serviceResourceName: Deployment
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-management-plane-api', 'GetDeployment', request.resourceId).compartmentId
-            permissions: ["CLOUD_DEPLOY_DEPLOYMENT_READ"]
+            permissions: ["DEVOPS_DEPLOYMENT_READ"]
         authorization:
           mode: automated
-          check: resources['deployment'].grantedPermissions.contains('CLOUD_DEPLOY_DEPLOYMENT_READ')
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_READ')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         maximumAttemptCount: 3
@@ -2117,10 +2152,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_DEPLOY_DEPLOYMENT_UPDATE"]
+            permissions: ["DEVOPS_DEPLOYMENT_UPDATE"]
         authorization:
           mode: automated
-          check: resources['deployment'].grantedPermissions.contains('CLOUD_DEPLOY_DEPLOYMENT_UPDATE')
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_UPDATE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
         search:
@@ -2188,10 +2224,11 @@ paths:
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
             systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ['CLOUD_DEPLOY_DEPLOYMENT_APPROVE']
+            permissions: ['DEVOPS_DEPLOYMENT_APPROVE']
         authorization:
           mode: automated
-          check: resources['deployment'].grantedPermissions.contains('CLOUD_DEPLOY_DEPLOYMENT_APPROVE')
+          check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_APPROVE')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
           behavior: authorizationOnly
@@ -2245,10 +2282,11 @@ paths:
             reconciliationCanStartAfterSecs: 60
             freeformTags: request.body.freeformTags
             definedTags: request.body.definedTags
-            permissions: [ "CLOUD_DEPLOY_DEPLOYMENT_CANCEL" ]
+            permissions: [ "DEVOPS_DEPLOYMENT_CANCEL" ]
         authorization:
           mode: automated
           check: resources['deployment'].grantedPermissions.contains('DEVOPS_DEPLOYMENT_CANCEL')
+          allowCrossTenancy: true
         tagStore:
           mode: automated
           behavior: authorizationOnly
@@ -2290,389 +2328,6 @@ paths:
           $ref: '#/responses/500'
         default:
           $ref: '#/responses/default'
-# ------------------- Project API -------------------
-  /projects:
-    get:
-      tags: ['project']
-      x-obmcs-splat:
-        # specify the routing strategy
-        # strategy: route-to-any-ad OR route-to-inferred-ad
-        # route-to-any-ad: Splat will route to any AD, appropriate for regional services
-        # route-to-inferred-ad: Splat supports routing based on request (body, path, query params)
-        # E.g. how to infer AD from the request body https://bitbucket.oci.oraclecorp.com/projects/CIM/repos/instance-agent-service/browse/instance-agent-service-spec/specs/service-api.yaml#63
-        routing:
-          strategy: route-to-any-ad
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          project:
-            serviceResourceName: Project
-            targetCompartmentId: request.parameter.compartmentId
-            actionKind: read
-            permissions: ["CLOUD_PROJECT_INSPECT"]
-        authorization:
-          mode: automated
-          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_INSPECT')
-        tagStore:
-          mode: automated
-        # Maximum number of invocation attempts that should be made to the downstream service.
-        # Any non-5xx response ends the attempts.
-        maximumAttemptCount: 3
-        operationType: LIST
-        listingEnhancements: false # opt-out splat in house listing enhancements
-      operationId: ListProjects
-      summary: Gets a list of all Projects in a compartment
-      description: |
-        Returns a list of Projects.
-      parameters:
-        - $ref: '#/parameters/ProjectIdentifierQueryParam'
-        - $ref: '#/parameters/CompartmentIdQueryParam'
-        - name: lifecycleState
-          in: query
-          required: false
-          type: string
-          x-obmcs-enumref: "#/definitions/Project/lifecycleState"
-          description: A filter to return only Projects that matches the given lifecycleState.
-        - $ref: '#/parameters/NameQueryParam'
-        - $ref: '#/parameters/PaginationLimitQueryParam'
-        - $ref: '#/parameters/PaginationTokenQueryParam'
-        - $ref: '#/parameters/SortOrderQueryParam'
-        - $ref: '#/parameters/SortByQueryParam'
-        - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/ProjectSummary'
-      responses:
-        200:
-          description: A page of ProjectSummary objects.
-          schema:
-            $ref: '#/definitions/ProjectCollection'
-          headers:
-            opc-request-id: *ref-opc-request-id
-            opc-next-page: *ref-opc-next-page
-        400:
-          $ref: '#/responses/400'
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        429:
-          $ref: '#/responses/429'
-        500:
-          $ref: '#/responses/500'
-        default:
-          $ref: '#/responses/default'
-
-    post:
-      tags: ['project']
-      x-obmcs-splat:
-        apiType: Asynchronous
-        routing:
-          strategy: route-to-any-ad
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          project:
-            serviceResourceName: Project
-            targetCompartmentId: request.body.compartmentId
-            actionKind: create
-            reconciliationCanStartAfterSecs: 60
-            freeformTags: request.body.freeformTags
-            definedTags: request.body.definedTags
-            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_PROJECT_CREATE"]
-        authorization:
-          mode: automated
-          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_CREATE')
-          allowCrossTenancy: true
-        tagStore:
-          mode: automated
-        search:
-          mode: automated
-          operationResourceName: project
-        maximumAttemptCount: 3
-      operationId: CreateProject
-      summary: Creates a new Project
-      description: |
-        Creates a new Project.
-      parameters:
-        - name: CreateProjectDetails
-          description: Details for the new Project.
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/CreateProjectDetails'
-        - $ref: '#/parameters/RetryTokenHeader'
-        - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Project'
-      responses:
-        201:
-          description: The Project that is created.
-          headers:
-            location: *ref-location
-            etag: *ref-etag
-            opc-work-request-id: *ref-opc-work-request-id
-            opc-request-id: *ref-opc-request-id
-          schema:
-            $ref: '#/definitions/Project'
-        400:
-          $ref: '#/responses/400'
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        409:
-          $ref: '#/responses/409'
-        429:
-          $ref: '#/responses/429'
-        500:
-          $ref: '#/responses/500'
-        default:
-          $ref: '#/responses/default'
-
-  /projects/{projectId}:
-    get:
-      tags: ['project']
-      # for proxying this operation via Splat
-      x-obmcs-splat:
-        routing:
-          strategy: route-to-any-ad
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          project:
-            serviceResourceName: Project
-            actionKind: read
-            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
-            permissions: ["CLOUD_PROJECT_READ"]
-        authorization:
-          mode: automated
-          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_READ')
-        tagStore:
-          mode: automated
-        maximumAttemptCount: 3
-      operationId: GetProject
-      summary: Get Project
-      description: Gets a Project by identifier
-      parameters:
-        - $ref: '#/parameters/ProjectIdentifierPathParam'
-        - $ref: '#/parameters/RequestIdHeader'
-      responses:
-        200:
-          description: Retrieves the Project with the given id
-          schema:
-            $ref: '#/definitions/Project'
-          headers:
-            etag: *ref-etag
-            opc-request-id: *ref-opc-request-id
-        400:
-          $ref: '#/responses/400'
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        429:
-          $ref: '#/responses/429'
-        500:
-          $ref: '#/responses/500'
-        default:
-          $ref: '#/responses/default'
-
-    put:
-      tags: ['project']
-      x-obmcs-splat:
-        apiType: Asynchronous
-        routing:
-          strategy: route-to-any-ad
-        # Splat supports throttling, appropriate for PUT/POST operations
-        # Below is example of throttling limits hard coded in the Splat registration.
-        # perUserLimit: limit to apply to this operation for a single user. Null to use the default per-user limit (20 RPS - requests per second)
-        # throttling:
-        #   perUserLimit:
-        #     rpsLimit: 10
-        #     rpmLimit: 50
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          project:
-            serviceResourceName: Project
-            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
-            actionKind: update
-            resourceOcid: request.resourceId
-            reconciliationCanStartAfterSecs: 60
-            freeformTags: request.body.freeformTags
-            definedTags: request.body.definedTags
-            systemTags: '["orcl-cloud": ["free-tier-retained": "true"]]'
-            permissions: ["CLOUD_PROJECT_UPDATE"]
-        authorization:
-          mode: automated
-          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_UPDATE')
-        tagStore:
-          mode: automated
-        search:
-          mode: automated
-          operationResourceName: project
-        maximumAttemptCount: 3
-      operationId: UpdateProject
-      summary: Update the Project identified by the id
-      description: Updates the Project
-      parameters:
-        - $ref: '#/parameters/ProjectIdentifierPathParam'
-        - name: UpdateProjectDetails
-          description: The information to be updated.
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/UpdateProjectDetails'
-        - $ref: '#/parameters/IfMatchHeader'
-        - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Project'
-      responses:
-        202:
-          description: Accepted the request. The Project will be updated.
-          headers:
-            location: *ref-location
-            etag: *ref-etag
-            opc-work-request-id: *ref-opc-work-request-id
-            opc-request-id: *ref-opc-request-id
-          schema:
-            $ref: '#/definitions/Project'
-        400:
-          $ref: '#/responses/400'
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        412:
-          $ref: '#/responses/412'
-        429:
-          $ref: '#/responses/429'
-        500:
-          $ref: '#/responses/500'
-        default:
-          $ref: '#/responses/default'
-
-    delete:
-      tags: ['project']
-      x-obmcs-splat:
-        apiType: Asynchronous
-        routing:
-          strategy: route-to-any-ad
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          project:
-            serviceResourceName: Project
-            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
-            actionKind: delete
-            resourceOcid: request.resourceId
-            reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_PROJECT_DELETE"]
-        authorization:
-          mode: automated
-          check: resources['project'].grantedPermissions.contains('CLOUD_PROJECT_DELETE')
-        search:
-          mode: automated
-          operationResourceName: project
-        maximumAttemptCount: 3
-      operationId: DeleteProject
-      summary: Delete a provisioned Project
-      description: Deletes a Project resource by identifier
-      parameters:
-        - $ref: '#/parameters/ProjectIdentifierPathParam'
-        - $ref: '#/parameters/IfMatchHeader'
-        - $ref: '#/parameters/RequestIdHeader'
-      x-related-resource: '#/definitions/Project'
-      responses:
-        202:
-          description: Accepted the request. The Project will be deleted.
-          headers:
-            opc-work-request-id: *ref-opc-work-request-id
-            opc-request-id: *ref-opc-request-id
-        400:
-          $ref: '#/responses/400'
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        412:
-          $ref: '#/responses/412'
-        429:
-          $ref: '#/responses/429'
-        500:
-          $ref: '#/responses/500'
-        default:
-          $ref: '#/responses/default'
-
-  /projects/{projectId}/actions/changeCompartment:
-    post:
-      tags: ['project']
-      x-obmcs-splat:
-        apiType: Asynchronous
-        routing:
-          strategy: route-to-any-ad
-        # Splat supports throttling, appropriate for PUT/POST operations
-        # Below is example of throttling limits hard coded in the Splat registration.
-        # perUserLimit: limit to apply to this operation for a single user. Null to use the default per-user limit (20 RPS - requests per second)
-        # throttling:
-        #   perUserLimit:
-        #     rpsLimit: 10
-        #     rpmLimit: 50
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          projectBeforeMove:
-            serviceResourceName: Project
-            actionKind: READ
-            resourceOcid: request.resourceId
-            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
-            reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_PROJECT_MOVE"]
-          projectAfterMove:
-            serviceResourceName: Project
-            actionKind: MOVE
-            resourceOcid: request.resourceId
-            targetCompartmentId: request.body.compartmentId
-            reconciliationCanStartAfterSecs: 60
-            permissions: ["CLOUD_PROJECT_MOVE"]
-        authorization:
-          mode: automated
-          check: >-
-            resources['projectBeforeMove'].grantedPermissions.contains('CLOUD_PROJECT_MOVE') &&
-            resources['projectAfterMove'].grantedPermissions.contains('CLOUD_PROJECT_MOVE')
-          # Compartment move does NOT allow the user to move the resource between tenancies.
-          allowCrossTenancy: true
-          sameTenancyResources: ["projectBeforeMove", "projectAfterMove"]
-          crossTenancyAssociations: []
-        tagStore:
-          mode: automated
-        search:
-          mode: automated
-          operationResourceName: projectAfterMove
-        maximumAttemptCount: 3
-      operationId: ChangeProjectCompartment
-      summary: Moves a resource into a different compartment.
-      description: Moves a Project resource from one compartment identifier to another. When provided, If-Match is checked against ETag values of the resource.
-      parameters:
-        - $ref: "#/parameters/ProjectIdentifierPathParam"
-        - name: ChangeProjectCompartmentDetails
-          in: body
-          description: The information to be updated.
-          required: true
-          schema:
-            $ref: '#/definitions/ChangeProjectCompartmentDetails'
-        - $ref: "#/parameters/IfMatchHeader"
-        - $ref: "#/parameters/RequestIdHeader"
-        - $ref: "#/parameters/RetryTokenHeader"
-      x-related-resource: '#/definitions/Project'
-      responses:
-        202:
-          description: Accepted the request. The Project resource will be moved into a different compartment.
-          headers:
-            opc-work-request-id: *ref-opc-work-request-id
-            opc-request-id: *ref-opc-request-id
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        409:
-          $ref: '#/responses/409'
-        412:
-          $ref: '#/responses/412'
-        500:
-          $ref: '#/responses/500'
   # ------------------- Work Requests for control plane api ------------------------------
   /workRequests/{workRequestId}:
 
@@ -2687,10 +2342,11 @@ paths:
             serviceResourceName: WorkRequest
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_APPLICATION_READ"]
+            permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
           mode: automated
-          check: resources['workRequest'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_READ')
+          check: resources['workRequest'].grantedPermissions.contains('DEVOPS_WORK_REQUEST_READ')
+          allowCrossTenancy: true
         maximumAttemptCount: 3
       operationId: GetWorkRequest
       summary: GET Work Request Status
@@ -2732,10 +2388,11 @@ paths:
             serviceResourceName: WorkRequest
             targetCompartmentId: request.parameter.compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_APPLICATION_INSPECT"]
+            permissions: ["DEVOPS_WORK_REQUEST_INSPECT"]
         authorization:
           mode: automated
-          check: resources['workRequest'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_INSPECT')
+          check: resources['workRequest'].grantedPermissions.contains('DEVOPS_WORK_REQUEST_INSPECT')
+          allowCrossTenancy: true
         maximumAttemptCount: 3
         operationType: LIST
         listingEnhancements: false # opt-out splat in house listing enhancements
@@ -2782,10 +2439,11 @@ paths:
             serviceResourceName: WorkRequest
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_APPLICATION_INSPECT"]
+            permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
           mode: automated
-          check: resources['workRequest'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_INSPECT')
+          check: resources['workRequest'].grantedPermissions.contains('DEVOPS_WORK_REQUEST_READ')
+          allowCrossTenancy: true
         maximumAttemptCount: 3
         operationType: LIST
         listingEnhancements: false # opt-out splat in house listing enhancements
@@ -2832,10 +2490,11 @@ paths:
             serviceResourceName: WorkRequest
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
-            permissions: ["CLOUD_DEPLOY_APPLICATION_INSPECT"]
+            permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
           mode: automated
-          check: resources['workRequest'].grantedPermissions.contains('CLOUD_DEPLOY_APPLICATION_INSPECT')
+          check: resources['workRequest'].grantedPermissions.contains('DEVOPS_WORK_REQUEST_READ')
+          allowCrossTenancy: true
         maximumAttemptCount: 3
         operationType: LIST
         listingEnhancements: false # opt-out splat in house listing enhancements
@@ -2917,45 +2576,54 @@ definitions:
     required:
       - items
 
-# --- Application model definitions
-  Application:
-    description: Application consists of Environment, Artifacts, Pipelines and Deployments for a group of related services.
+# --- Project model definitions
+  Project:
+    description: Project will create a default configuration for the project resources such as source code repository, build pipeline, and deploy pipeline
     type: object
     x-obmcs-splat:
-      resourceKind: application
-      ocidEntityType: clouddeployapplication
+      resourceKind: project
+      ocidEntityType: devopsproject
       adLocality: regional
       activeLifecycleStates: ['CREATING', 'ACTIVE']
       deletedLifecycleStates: ['']
-      getOperationId: GetApplication
-      listResourcesOperationId: ListApplications
+      getOperationId: GetProject
+      listResourcesOperationId: ListProjects
       searchMetadata:
         resourceSchemaVersion: 1
-        resourceType: "CloudDeployApplication"
+        resourceType: "DevOpsProject"
         scope: "customer"
     required:
       - id
+      - name
       - compartmentId
+      - notificationConfig
     properties:
       id:
         description: Unique identifier that is immutable on creation
         type: string
-      displayName:
-        description: Application identifier which can be renamed and is not necessarily unique.
+      name:
+        description: Project Identifier
+        type: string
+      description:
+        description: Project description
         type: string
       compartmentId:
         description: Compartment Identifier
         type: string
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      notificationConfig:
+        $ref: "#/definitions/NotificationConfig"
       timeCreated:
-        description: The time the the Application was created. An RFC3339 formatted datetime string
+        description: The time the the Project was created. An RFC3339 formatted datetime string
         type: string
         format: date-time
       timeUpdated:
-        description: The time the Application was updated. An RFC3339 formatted datetime string
+        description: The time the Project was updated. An RFC3339 formatted datetime string
         type: string
         format: date-time
       lifecycleState:
-        description: The current state of the Application.
+        description: The current state of the Project.
         type: string
         enum:
           - CREATING
@@ -2967,65 +2635,100 @@ definitions:
       lifecycleDetails:
         description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
         type: string
+      artifactIds:
+        description: A list of artifact Ids associated with this project
+        type: array
+        items:
+          type: string
+      environmentIds:
+        description: A list of environment Ids associated with this project
+        type: array
+        items:
+          type: string
+      pipelineIds:
+        description: A list of pipeline Ids associated with this project
+        type: array
+        items:
+          type: string
       freeformTags: *ref-freeformTags
       definedTags: *ref-definedTags
       systemTags: *ref-systemTags
 
-  ApplicationSummary:
-    description: Summary of the Application.
+  ProjectSummary:
+    description: Summary of the Project.
     type: object
     required:
       - id
+      - name
       - compartmentId
     properties:
       id:
         description: Unique identifier that is immutable on creation
         type: string
-      displayName:
-        description: Application identifier which can be renamed and is not necessarily unique.
+      name:
+        description: Project Identifier
+        type: string
+      description:
+        description: Project description
         type: string
       compartmentId:
         description: Compartment Identifier
         type: string
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      notificationConfig:
+        $ref: "#/definitions/NotificationConfig"
       timeCreated:
-        description: The time the the Application was created. An RFC3339 formatted datetime string
+        description: The time the the Project was created. An RFC3339 formatted datetime string
         type: string
         format: date-time
       timeUpdated:
-        description: The time the Application was updated. An RFC3339 formatted datetime string
+        description: The time the Project was updated. An RFC3339 formatted datetime string
         type: string
         format: date-time
       lifecycleState:
         description: The current state of the Deployment.
         type: string
-        x-obmcs-enumref: "#/definitions/Application/lifecycleState"
+        x-obmcs-enumref: "#/definitions/Project/lifecycleState"
       freeformTags: *ref-freeformTags
       definedTags: *ref-definedTags
       systemTags: *ref-systemTags
 
-  ApplicationCollection:
+  ProjectCollection:
     type: object
-    description: Results of an application search.
+    description: Results of an project search.
     required:
       - items
     properties:
       items:
         type: array
-        description: Array of ApplicationSummary items.
+        description: Array of ProjectSummary items.
         items:
-          $ref: "#/definitions/ApplicationSummary"
+          $ref: "#/definitions/ProjectSummary"
 
-  CreateApplicationDetails:
-    description: The information about new Application to be created.
+  CreateProjectDetails:
+    description: The information about new Project to be created.
     type: object
     required:
+      - name
       - compartmentId
+      - loggingConfig
+      - notificationConfig
     properties:
-      displayName:
-        description: Application display name
+      name:
+        description: Project name(Case-sensitive).
         type: string
+        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
         minLength: 1
         maxLength: 255
+      description:
+        description: Project description
+        type: string
+        maxLength: 400
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      notificationConfig:
+        $ref: "#/definitions/NotificationConfig"
       compartmentId:
         description: Compartment Identifier
         type: string
@@ -3034,20 +2737,29 @@ definitions:
       freeformTags: *ref-freeformTags
       definedTags: *ref-definedTags
 
-  UpdateApplicationDetails:
-    description: The information to be updated for the given Application.
+  UpdateProjectDetails:
+    description: The information to be updated for the given Project.
     type: object
     properties:
-      displayName:
-        description: Application display name
+      name:
+        description: Project name
         type: string
+        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
         minLength: 1
         maxLength: 255
+      description:
+        description: Project description
+        type: string
+        maxLength: 400
+      loggingConfig:
+        $ref: "#/definitions/LoggingConfig"
+      notificationConfig:
+        $ref: "#/definitions/NotificationConfig"
       freeformTags: *ref-freeformTags
       definedTags: *ref-definedTags
 
-  ChangeApplicationCompartmentDetails:
-    description: The OCID of the compartment into which the application should be moved.
+  ChangeProjectCompartmentDetails:
+    description: The OCID of the compartment into which the project should be moved.
     type: object
     required:
       - compartmentId
@@ -3058,6 +2770,37 @@ definitions:
         maxLength: 255
         description: |
           The [OCID](/Content/General/Concepts/identifiers.htm) of the compartment into which the resource should be moved.
+
+  LoggingConfig:
+    description: Logging configuration for the project.
+    type: object
+    properties:
+      logGroupId:
+        description: The ocid of the log group.
+        type: string
+      displayNamePrefix:
+        description: The prefix for the display name.
+        type: string
+      retentionPeriodInDays:
+        description: The number of days the logs should be retained for.
+        type: integer
+        format: int32
+      isArchivingEnabled:
+        description: A field to represent if archiving is enabled.
+        type: boolean
+    required:
+      - logGroupId
+      - retentionPeriodInDays
+
+  NotificationConfig:
+    description: Notification configuration for the project.
+    type: object
+    properties:
+      topicId:
+        description: The topic id for notifications.
+        type: string
+    required:
+      - topicId
 # --- Artifact model definitions
   Artifact:
     description: An artifact in the general artifact service, for example an OKE manifest, a deployment spec, or a file that will be deployed to some target environment.
@@ -3752,6 +3495,9 @@ definitions:
     properties:
       targetId:
         description: The functionId, instanceId or the clusterId. For WaitStage it will be stageId.
+        type: string
+      targetGroup:
+        description: The group for the target for example, the batch number for an InstanceGroup deployment.
         type: string
       steps:
         description: The details about all the steps for one target environment.
@@ -4928,14 +4674,13 @@ definitions:
           - CREATING
           - UPDATING
           - ACTIVE
+          - INACTIVE
           - DELETING
           - DELETED
           - FAILED
       lifecycleDetails:
         description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
         type: string
-      loggingConfigs:
-        $ref: '#/definitions/PipelineLoggingConfigCollection'
       pipelineParameters:
         $ref: '#/definitions/PipelineParameterCollection'
       freeformTags: *ref-freeformTags
@@ -5042,33 +4787,7 @@ definitions:
         description: Array of PipelineSummary items.
         items:
           $ref: "#/definitions/PipelineSummary"
-
-  PipelineLoggingConfig:
-    type: object
-    description: Config for the Log resource.
-    required:
-      - logId
-      - category
-    properties:
-      logId:
-        description: Log resource OCID.
-        type: string
-      category:
-        description: Name of the category
-        type: string
-
-  PipelineLoggingConfigCollection:
-    type: object
-    description: The collection of logs for deployment pipeline
-    required:
-      - items
-    properties:
-      items:
-        description: A list of logs for the resource
-        type: array
-        items:
-          $ref: "#/definitions/PipelineLoggingConfig"
-
+          
   # --- Stage model definitions
   Stage:
     discriminator: stageType
@@ -6940,212 +6659,6 @@ definitions:
             type: integer
             minimum: 1
             maximum: 100
-# --- Project model definitions
-  Project:
-    description: Project will create a default configuration for the project resources such as source code repository, build pipeline, and deploy pipeline
-    type: object
-    x-obmcs-splat:
-      resourceKind: project
-      ocidEntityType: devopsproject
-      adLocality: regional
-      activeLifecycleStates: ['CREATING', 'ACTIVE']
-      deletedLifecycleStates: ['']
-      getOperationId: GetProject
-      listResourcesOperationId: ListProjects
-      searchMetadata:
-        resourceSchemaVersion: 1
-        resourceType: "DevOpsProject"
-        scope: "customer"
-    required:
-      - id
-      - name
-      - compartmentId
-    properties:
-      id:
-        description: Unique identifier that is immutable on creation
-        type: string
-      name:
-        description: Project Identifier
-        type: string
-      description:
-        description: Project description
-        type: string
-      compartmentId:
-        description: Compartment Identifier
-        type: string
-      loggingConfig:
-        $ref: "#/definitions/LoggingConfig"
-      timeCreated:
-        description: The time the the Project was created. An RFC3339 formatted datetime string
-        type: string
-        format: date-time
-      timeUpdated:
-        description: The time the Project was updated. An RFC3339 formatted datetime string
-        type: string
-        format: date-time
-      lifecycleState:
-        description: The current state of the Project.
-        type: string
-        enum:
-          - CREATING
-          - UPDATING
-          - ACTIVE
-          - DELETING
-          - DELETED
-          - FAILED
-      lifecycleDetails:
-        description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
-        type: string
-      artifactIds:
-        description: A list of artifact Ids associated with this project
-        type: array
-        items:
-          type: string
-      environmentIds:
-        description: A list of environment Ids associated with this project
-        type: array
-        items:
-          type: string
-      pipelineIds:
-        description: A list of pipeline Ids associated with this project
-        type: array
-        items:
-          type: string
-
-      freeformTags: *ref-freeformTags
-      definedTags: *ref-definedTags
-      systemTags: *ref-systemTags
-
-  ProjectSummary:
-    description: Summary of the Project.
-    type: object
-    required:
-      - id
-      - name
-      - compartmentId
-    properties:
-      id:
-        description: Unique identifier that is immutable on creation
-        type: string
-      name:
-        description: Project Identifier
-        type: string
-      description:
-        description: Project description
-        type: string
-      compartmentId:
-        description: Compartment Identifier
-        type: string
-      loggingConfig:
-        $ref: "#/definitions/LoggingConfig"
-      timeCreated:
-        description: The time the the Project was created. An RFC3339 formatted datetime string
-        type: string
-        format: date-time
-      timeUpdated:
-        description: The time the Project was updated. An RFC3339 formatted datetime string
-        type: string
-        format: date-time
-      lifecycleState:
-        description: The current state of the Deployment.
-        type: string
-        x-obmcs-enumref: "#/definitions/Project/lifecycleState"
-      freeformTags: *ref-freeformTags
-      definedTags: *ref-definedTags
-      systemTags: *ref-systemTags
-
-  ProjectCollection:
-    type: object
-    description: Results of an project search.
-    required:
-      - items
-    properties:
-      items:
-        type: array
-        description: Array of ProjectSummary items.
-        items:
-          $ref: "#/definitions/ProjectSummary"
-
-  CreateProjectDetails:
-    description: The information about new Project to be created.
-    type: object
-    required:
-      - name
-      - compartmentId
-      - loggingConfig
-    properties:
-      name:
-        description: Project name(Case-sensitive).
-        type: string
-        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
-        minLength: 1
-        maxLength: 255
-      description:
-        description: Project description
-        type: string
-        maxLength: 400
-      loggingConfig:
-        $ref: "#/definitions/LoggingConfig"
-      compartmentId:
-        description: Compartment Identifier
-        type: string
-        minLength: 1
-        maxLength: 255
-      freeformTags: *ref-freeformTags
-      definedTags: *ref-definedTags
-
-  UpdateProjectDetails:
-    description: The information to be updated for the given Project.
-    type: object
-    properties:
-      name:
-        description: Project name
-        type: string
-        pattern: '^[a-zA-Z][a-zA-Z_0-9]*$'
-        minLength: 1
-        maxLength: 255
-      description:
-        description: Project description
-        type: string
-        maxLength: 400
-      loggingConfig:
-        $ref: "#/definitions/LoggingConfig"
-      freeformTags: *ref-freeformTags
-      definedTags: *ref-definedTags
-
-  ChangeProjectCompartmentDetails:
-    description: The OCID of the compartment into which the project should be moved.
-    type: object
-    required:
-      - compartmentId
-    properties:
-      compartmentId:
-        type: string
-        minLength: 1
-        maxLength: 255
-        description: |
-          The [OCID](/Content/General/Concepts/identifiers.htm) of the compartment into which the resource should be moved.
-
-  LoggingConfig:
-    description: Logging configuration for the project.
-    type: object
-    properties:
-      logGroupId:
-        description: The ocid of the log group.
-        type: string
-      displayNamePrefix:
-        description: The prefix for the display name.
-        type: string
-      retentionPeriodInDays:
-        description: The number of days the logs should be retained for.
-        type: integer
-        format: int32
-      isArchivingEnabled:
-        description: A field to represent if archiving is enabled.
-        type: boolean
-    required:
-      - logGroupId
-      - retentionPeriodInDays
 # WorkRequst model definitions
 
   ActionType:
@@ -7177,9 +6690,6 @@ definitions:
       - UPDATE_PROJECT
       - DELETE_PROJECT
       - MOVE_PROJECT
-      - CREATE_APPLICATION
-      - UPDATE_APPLICATION
-      - DELETE_APPLICATION
       - CREATE_PIPELINE
       - UPDATE_PIPELINE
       - DELETE_PIPELINE
@@ -7207,7 +6717,7 @@ definitions:
       # Please, pick up value that corresponds to your service after cloning DeploymentService reference service.
       # This value is used by SPLAT to run authz checks.
       # See also https://bitbucket.oci.oraclecorp.com/projects/COMMONS/repos/core/browse/core-resources/src/main/java/com/oracle/pic/commons/util/EntityType.java
-      ocidEntityType: clouddeployworkrequest
+      ocidEntityType: devopsworkrequest
       adLocality: regional
     properties:
       operationType:
@@ -7436,7 +6946,7 @@ parameters:
     required: false
     type: string
     description: The ID of the compartment in which to list resources.
-    x-default-description: Empty only if the parent applicationId or pipelineId query param is not specified.
+    x-default-description: Empty only if the parent projectId or pipelineId query param is not specified.
 
   CompartmentIdQueryParam:
     name: compartmentId
@@ -7550,29 +7060,6 @@ parameters:
       required: false
       description: unique Project identifier
       x-default-description: "null"
-
-  ApplicationIdentifierPathParam:
-    name: applicationId
-    type: string
-    in: path
-    required: true
-    description: unique Application identifier
-
-  ApplicationIdentifierQueryParam:
-    name: applicationId
-    type: string
-    in: query
-    required: false
-    description: unique Application identifier
-    x-default-description: "null"
-
-  ApplicationIdQueryParam:
-    name: applicationId
-    in: query
-    required: false
-    type: string
-    description: The ID of the parent Application.
-    x-default-description: ID of the parent Application for filtering.
 
   EnvironmentIdentifierPathParam:
     name: environmentId
