@@ -74,9 +74,16 @@ module "network_config" {
   realm        = local.execution_target.region.realm
 }
 
+module "image_type" {
+  source = "./shared_modules/image"
+  realm  = local.execution_target.region.realm
+  region = local.execution_target.region.public_name
+}
+
 module "image" {
   source         = "./modules/image"
   compartment_id = local.control_plane_api_compartment_id
+  image_type     = module.image_type.image_type
 }
 
 module "scanplatform" {
