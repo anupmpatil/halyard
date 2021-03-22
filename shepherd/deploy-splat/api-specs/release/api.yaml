@@ -1,4 +1,4 @@
-# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.59 - DO NOT EDIT
+# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.62 - DO NOT EDIT
 # This is the DeploymentService API spec in YAML
 # Clients and documentation will be auto-generated from this file.
 # Review the API checklist:
@@ -50,6 +50,7 @@ x-obmcs-splat:
       prototype: deployment-service-control-plane-api
       serviceOverrides:
         deployment-service-control-plane-api: deployment-service-control-plane-api-beta
+        dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-beta
     deployment-service-management-plane-api-beta:
       allowingUnreviewedEntityType: true
       prototype: deployment-service-management-plane-api
@@ -61,6 +62,7 @@ x-obmcs-splat:
       prototype: deployment-service-control-plane-api
       serviceOverrides:
         deployment-service-control-plane-api: deployment-service-control-plane-api-preprod
+        dlc-project-service-control-plane-api: dlc-project-service-control-plane-api-preprod
     deployment-service-management-plane-api-preprod:
       allowingUnreviewedEntityType: true
       prototype: deployment-service-management-plane-api
@@ -362,7 +364,7 @@ paths:
         tagStore:
           mode: automated
         search:
-          mode: automated
+          mode: none
           operationResourceName: project
         maximumAttemptCount: 3
       operationId: CreateProject
@@ -484,7 +486,7 @@ paths:
         tagStore:
           mode: automated
         search:
-          mode: automated
+          mode: none
           operationResourceName: project
         maximumAttemptCount: 3
       operationId: UpdateProject
@@ -546,7 +548,7 @@ paths:
           check: resources['project'].grantedPermissions.contains('DEVOPS_PROJECT_DELETE')
           allowCrossTenancy: true
         search:
-          mode: automated
+          mode: none
           operationResourceName: project
         maximumAttemptCount: 3
       operationId: DeleteProject
@@ -620,7 +622,7 @@ paths:
         tagStore:
           mode: automated
         search:
-          mode: automated
+          mode: none
           operationResourceName: projectAfterMove
         maximumAttemptCount: 3
       operationId: ChangeProjectCompartment
@@ -2336,11 +2338,11 @@ paths:
       x-obmcs-splat:
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
           workRequest:
             serviceResourceName: WorkRequest
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
             permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
@@ -2382,7 +2384,7 @@ paths:
       x-obmcs-splat:
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
           workRequest:
             serviceResourceName: WorkRequest
@@ -2433,11 +2435,11 @@ paths:
       x-obmcs-splat:
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
           workRequest:
             serviceResourceName: WorkRequest
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
             permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
@@ -2484,11 +2486,11 @@ paths:
       x-obmcs-splat:
         routing:
           strategy: route-to-any-ad
-        serviceList: ['deployment-service-control-plane-api']
+        serviceList: ['dlc-project-service-control-plane-api']
         resources:
           workRequest:
             serviceResourceName: WorkRequest
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
+            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetWorkRequest', request.resourceId).compartmentId
             actionKind: read
             permissions: ["DEVOPS_WORK_REQUEST_READ"]
         authorization:
