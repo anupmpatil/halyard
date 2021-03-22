@@ -92,6 +92,7 @@ resource "odo_application" "odo_application_api" {
 
     runtime_config {
       root_fs_access_level = "READ_WRITE"
+      run_as_user          = "odosvc"
     }
 
     environment_variables {
@@ -217,6 +218,7 @@ resource "odo_application" "odo_application_worker" {
 
     runtime_config {
       root_fs_access_level = "READ_WRITE"
+      run_as_user          = "odosvc"
     }
 
     environment_variables {
