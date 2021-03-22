@@ -252,6 +252,14 @@ module "lumberjack_management_plane" {
   environment           = local.environment
 }
 
+module "lumberjack_data_plane_customer_log" {
+  source                = "./modules/lumberjack-customer"
+  worker_compartment_id = local.data_plane_worker_compartment_id
+  availability_domains  = local.service_availability_domains
+  log_namespace_worker  = "deployment-service-data-plane"
+  environment           = local.environment
+}
+
 module "secret_service" {
   source                              = "./modules/secret-service"
   control_plane_api_compartment_id    = local.control_plane_api_compartment_id
