@@ -38,3 +38,15 @@ output "bastion_os_updater_application" {
   description = "Bastion Os Updater ODO App"
 }
 
+output "secedge_data_jump_vcn_cidr" {
+  value = local.ob3_jump_vcn_cidr
+}
+
+output "secedge_data_vcn" {
+  value = module.bastion_config.ob3_jump_vcn
+}
+
+output "secedge_data_jump_vcn_lpg_ocid" {
+  value = module.ob3_jump.ob3_jump_vcn_lpt
+}
+

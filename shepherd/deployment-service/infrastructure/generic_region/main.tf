@@ -23,15 +23,15 @@ locals {
   region_short_name                   = lookup(module.environment_config.region_short_name_map, local.execution_target.region.name, "phx")
   t2_project_name                     = module.t2_config.t2_project_name
   //Instructions to create your own host class: https://confluence.oci.oraclecorp.com/display/ICM/Creating+New+Hostclasses
-  host_classes            = local.environment != "prod" ? module.network_config.oci_host_classes_dev_map : module.network_config.oci_host_classes_prod_map
+  host_classes            = local.environment != "prod" ? module.hostclass_config.oci_host_classes_dev_map : module.hostclass_config.oci_host_classes_prod_map
   jira_sd_queue           = "DLCDEP"
   lb_listening_port       = 443
   api_host_listening_port = 24443
 
   // OverlayBastion3 Configs, for details check: https://confluence.oci.oraclecorp.com/display/OCIID/Security+Edge+Overlay+Bastion+3.0+Onboarding
   // https://jira.oci.oraclecorp.com/browse/DLCDEP-79
-  ob3_bastion_cidr  = module.network_config.ob3_bastion_cidr
-  ob3_jump_vcn_cidr = module.network_config.ob3_jump_vcn_cidr
+  ob3_bastion_cidr  = module.bastion_config.ob3_bastion_cidr
+  ob3_jump_vcn_cidr = module.bastion_config.ob3_jump_vcn_cidr
 
   project_svc_cp_compartment_id = module.project_service.project_svc_cp_compartment_id
   project_svc_cp_kiev_endpoint  = module.project_service.project_svc_cp_kiev_endpoint
@@ -67,11 +67,15 @@ module "t2_config" {
   source = "./shared_modules/common_files"
 }
 
-module "network_config" {
-  source       = "./shared_locals/network"
+module "bastion_config" {
+  source       = "./shared_modules/bastion_service"
   region_short = local.region_short_name
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm
+}
+
+module "hostclass_config" {
+  source = "./shared_modules/common_files"
 }
 
 module "image_type" {
@@ -299,7 +303,7 @@ module "ob3_jump" {
   phone_book_id                         = local.phonebook_name
   name_prefix                           = "${local.service_name}-bastion"
   release_name                          = local.execution_target.phase_name
-  odo_application_type                  = "NON_PRODUCTION"
+  odo_application_type                  = local.environment == "prod" ? "PRODUCTION" : "NON_PRODUCTION"
   stage                                 = local.environment
 }
 
