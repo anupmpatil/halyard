@@ -3,10 +3,10 @@
 ##############################
 
 resource "telemetry_alarm" "DeploymentService_Worker_AvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-AvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "ServiceHostReporter.heartbeat[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -29,10 +29,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_Chainsaw2AvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-Chainsaw2AvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "chainsaw2.standard.application_log.monitoring[1m].grouping().absent()"
   severity         = 3
   is_enabled       = true
@@ -54,10 +54,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateDeploymentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -80,10 +80,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateDeploymentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateDeploymentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "createDeployment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -106,10 +106,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteDeploymentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "deleteDeployment.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -132,10 +132,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteDeploymentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteDeploymentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "deleteDeployment.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -158,10 +158,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateDeploymentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateDeploymentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "updateDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -184,10 +184,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateDeploymentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateDeploymentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "updateDeployment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -209,10 +209,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_WF_HeapUsageAfterGCAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-WF-HeapUsageAfterGCAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "G1GC.Heap.After[1m].grouping().mean() > 921.0"
   severity         = 3
   is_enabled       = true
@@ -234,10 +234,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_WF_JettyThreadPoolUtilizationAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-WF-JettyThreadPoolUtilizationAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "service.org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max[1m].grouping().mean() > 0.9"
   severity         = 3
   is_enabled       = true
@@ -259,10 +259,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_WorkflowMessageQueuePollFaultRateAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-WorkflowMessageQueuePollFaultRateAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "ReadWorkflowRequestQueue.Fault[1m].grouping().mean() > 0.01"
   severity         = 3
   is_enabled       = true
@@ -284,10 +284,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_WorkflowMessageQueuePollLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.data_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-WorkflowMessageQueuePollLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.data_plane_worker_fleet_name
   query            = "ReadWorkflowRequestQueue.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -309,174 +309,15 @@ EOT
 }
 
 ##############################
-### Application Resource #####
-##############################
-
-resource "telemetry_alarm" "DeploymentService_Worker_CreateApplicationWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-CreateApplicationWorkflowAvailabilityAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): MEAN of createApplication.1.0.PROVISION.Fault is GT 0.001 (5 times over 300s)
-
-Create Application Workflow Fault Rate
-
-createApplication.1.0.PROVISION.Fault description: Create Application Workflow Fault Rate
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-  labels = ["shepherd-monitor"]
-}
-
-resource "telemetry_alarm" "DeploymentService_Worker_CreateApplicationWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-CreateApplicationWorkflowLatencyAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createApplication.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): P99 of createApplication.1.0.PROVISION.Time is GT 1000 (5 times over 300s)
-
-CreateApplication Workflow Latency
-
-createApplication.1.0.PROVISION.Time description: CreateApplication Workflow Latency
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-  labels = ["shepherd-monitor"]
-}
-
-resource "telemetry_alarm" "DeploymentService_Worker_DeleteApplicationWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-DeleteApplicationWorkflowAvailabilityAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "deleteApplication.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): MEAN of deleteApplication.2.3.PROVISION.Fault is GT 0.001 (5 times over 300s)
-
-Delete Application Workflow Fault Rate
-
-deleteApplication.2.3.PROVISION.Fault description: Delete Application Workflow Fault Rate
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-  labels = ["shepherd-monitor"]
-}
-
-resource "telemetry_alarm" "DeploymentService_Worker_DeleteApplicationWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-DeleteApplicationWorkflowLatencyAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "deleteApplication.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): P99 of deleteApplication.2.3.PROVISION.Time is GT 1000 (5 times over 300s)
-
-DeleteApplication Workflow Latency
-
-deleteApplication.2.3.PROVISION.Time description: DeleteApplication Workflow Latency
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-  labels = ["shepherd-monitor"]
-}
-
-resource "telemetry_alarm" "DeploymentService_Worker_UpdateApplicationWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-UpdateApplicationWorkflowAvailabilityAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "updateApplication.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): MEAN of updateApplication.1.0.PROVISION.Fault is GT 0.001 (5 times over 300s)
-
-Update Application Workflow Fault Rate
-
-updateApplication.1.0.PROVISION.Fault description: Update Application Workflow Fault Rate
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-  labels = ["shepherd-monitor"]
-}
-
-resource "telemetry_alarm" "DeploymentService_Worker_UpdateApplicationWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
-  display_name     = "DeploymentService-Worker-UpdateApplicationWorkflowLatencyAlarm"
-  project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "updateApplication.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
-  severity         = 3
-  is_enabled       = true
-  pending_duration = "PT5M"
-  body             = <<EOT
-SEV3:DeploymentService:deployment-service-worker: >=1 host(s): P99 of updateApplication.1.0.PROVISION.Time is GT 1000 (5 times over 300s)
-
-UpdateApplication Workflow Latency
-
-updateApplication.1.0.PROVISION.Time description: UpdateApplication Workflow Latency
-EOT
-  destinations {
-    jira {
-      project   = var.jira_sd_queue
-      component = "None"
-      item      = "None"
-    }
-  }
-}
-
-##############################
 ### Stage Resource ###########
 ##############################
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateStageWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateStageWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
+  fleet            = var.control_plane_worker_fleet_name
+  query            = "createStage.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
   pending_duration = "PT5M"
@@ -498,10 +339,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateStageWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateStageWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "createStage.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -524,10 +365,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteStageWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteStageWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteStage.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -550,10 +391,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteStageWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteStageWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteStage.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -576,10 +417,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateStageWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateStageWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateStage.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -602,10 +443,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateStageWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateStageWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateStage.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -631,11 +472,11 @@ EOT
 ##############################
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateArtifactWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateArtifactWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
+  fleet            = var.control_plane_worker_fleet_name
+  query            = "createArtifact.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
   pending_duration = "PT5M"
@@ -657,10 +498,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateArtifactWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateArtifactWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "createArtifact.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -683,10 +524,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteArtifactWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteArtifactWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteArtifact.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -709,10 +550,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteArtifactWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteArtifactWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteArtifact.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -735,10 +576,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateArtifactWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateArtifactWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateArtifact.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -761,10 +602,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateArtifactWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateArtifactWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateArtifact.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -790,11 +631,11 @@ EOT
 ##############################
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateEnvironmentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateEnvironmentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
+  fleet            = var.control_plane_worker_fleet_name
+  query            = "createEnvironment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
   pending_duration = "PT5M"
@@ -816,10 +657,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateEnvironmentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateEnvironmentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "createEnvironment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -842,10 +683,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteEnvironmentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteEnvironmentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteEnvironment.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -868,10 +709,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteEnvironmentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteEnvironmentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteEnvironment.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -894,10 +735,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateEnvironmentWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateEnvironmentWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateEnvironment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -920,10 +761,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateEnvironmentWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateEnvironmentWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateEnvironment.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -949,11 +790,11 @@ EOT
 ##############################
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateWorkRequestWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateWorkRequestWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
-  query            = "createDeployment.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
+  fleet            = var.control_plane_worker_fleet_name
+  query            = "createWorkRequest.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
   pending_duration = "PT5M"
@@ -975,10 +816,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_CreateWorkRequestWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-CreateWorkRequestWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "createWorkRequest.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -1001,10 +842,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteWorkRequestWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteWorkRequestWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteWorkRequest.2.3.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -1027,10 +868,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_DeleteWorkRequestWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-DeleteWorkRequestWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "deleteWorkRequest.2.3.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true
@@ -1053,10 +894,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateWorkRequestWorkflowAvailabilityAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateWorkRequestWorkflowAvailabilityAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateWorkRequest.1.0.PROVISION.Fault[1m].grouping().mean() > 0.001"
   severity         = 3
   is_enabled       = true
@@ -1079,10 +920,10 @@ EOT
 }
 
 resource "telemetry_alarm" "DeploymentService_Worker_UpdateWorkRequestWorkflowLatencyAlarm" {
-  compartment_id   = var.deployment_worker_compartment_id
+  compartment_id   = var.control_plane_worker_compartment_id
   display_name     = "DeploymentService-Worker-UpdateWorkRequestWorkflowLatencyAlarm"
   project          = var.t2_project_name
-  fleet            = var.fleet_name_worker
+  fleet            = var.control_plane_worker_fleet_name
   query            = "updateWorkRequest.1.0.PROVISION.Time[1m].grouping().percentile(0.99) > 1000.0"
   severity         = 3
   is_enabled       = true

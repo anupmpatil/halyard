@@ -40,6 +40,9 @@ locals {
 
   data_plane_kiev_store_name_suffix = local.environment == "prod" ? "production" : local.environment
   data_plane_kiev_store_name        = "${local.service_short_name}-data-plane-${local.data_plane_kiev_store_name_suffix}"
+
+  tenancy_lookup_key = local.environment == "prod" ? local.execution_target.region.realm : local.environment
+  tenancy_name       = module.tenancies.tenancy_name_map[local.tenancy_lookup_key]
 }
 
 module "tenancies" {
@@ -354,14 +357,18 @@ module "odo_application_control_plane" {
   oci_service_internal_domain_name    = module.dnsdomain.oci_service_internal_endpoint_domain
 }
 
-module "alarms_control_plane" {
-  source                           = "./modules/alarms"
-  deployment_api_compartment_id    = local.control_plane_api_compartment_id
-  deployment_worker_compartment_id = local.control_plane_worker_compartment_id
-  jira_sd_queue                    = local.jira_sd_queue
-  fleet_name_api                   = "${local.service_name}-control-plane-api"
-  fleet_name_worker                = "${local.service_name}-control-plane-worker"
-  t2_project_name                  = local.t2_project_name
+module "alarms" {
+  source                              = "./modules/alarms"
+  control_plane_api_compartment_id    = local.control_plane_api_compartment_id
+  control_plane_worker_compartment_id = local.control_plane_worker_compartment_id
+  management_plane_api_compartment_id = local.management_plane_api_compartment_id
+  data_plane_worker_compartment_id    = local.data_plane_worker_compartment_id
+  jira_sd_queue                       = local.jira_sd_queue
+  control_plane_api_fleet_name        = "${local.tenancy_name}.${local.service_name}-control-plane-api"
+  control_plane_worker_fleet_name     = "${local.tenancy_name}.${local.service_name}-control-plane-worker"
+  management_plane_api_fleet_name     = "${local.tenancy_name}.${local.service_name}-management-plane-api"
+  data_plane_worker_fleet_name        = "${local.tenancy_name}.${local.service_name}-data-plane-worker"
+  t2_project_name                     = local.t2_project_name
 }
 
 module "odo_application_management_plane" {
@@ -392,16 +399,6 @@ module "odo_application_management_plane" {
   dp_wfaas_name                       = module.wfaasconfig.dp_wfaas_name
   region_internal_name                = local.execution_target.region.internal_name
   oci_service_internal_domain_name    = module.dnsdomain.oci_service_internal_endpoint_domain
-}
-
-module "alarms_management_plane" {
-  source                           = "./modules/alarms"
-  deployment_api_compartment_id    = local.management_plane_api_compartment_id
-  deployment_worker_compartment_id = local.data_plane_worker_compartment_id
-  jira_sd_queue                    = local.jira_sd_queue
-  fleet_name_api                   = "${local.service_name}-management-plane-api"
-  fleet_name_worker                = "${local.service_name}-management-plane-worker"
-  t2_project_name                  = local.t2_project_name
 }
 
 module "wfaas_control_plane" {
