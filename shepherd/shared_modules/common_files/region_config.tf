@@ -30,10 +30,26 @@ locals {
     "oc1-groupB" = {
       "production"   = true
       "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1", "uk-london-1", "ap-seoul-1"]
+      "regions"      = ["us-phoenix-1", "uk-london-1", "ap-seoul-1", "ap-sydney-1", "ca-montreal-1"]
       "home_region"  = "us-ashburn-1"
       "auto_approve" = false
       "predecessors" = ["oc1-groupA"]
+    }
+    "oc1-groupC" = {
+      "production"   = true
+      "realm"        = "oc1"
+      "regions"      = ["us-sanjose-1", "me-dubai-1", "uk-cardiff-1", "eu-zurich-1", "sa-saopaulo-1", "ap-hyderabad-1"]
+      "home_region"  = "us-ashburn-1"
+      "auto_approve" = false
+      "predecessors" = ["oc1-groupB"]
+    }
+    "oc1-groupD" = {
+      "production"   = true
+      "realm"        = "oc1"
+      "regions"      = ["ap-melbourne-1", "ap-osaka-1", "me-jeddah-1", "sa-santiago-1", "ca-toronto-1", "ap-mumbai-1", "ap-chuncheon-1"]
+      "home_region"  = "us-ashburn-1"
+      "auto_approve" = false
+      "predecessors" = ["oc1-groupC"]
     }
   }
 }

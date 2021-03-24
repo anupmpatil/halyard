@@ -129,3 +129,25 @@ resource "shepherd_execution_target" "prod-oc1-groupB-region" {
 
   predecessors = []
 }
+
+resource "shepherd_execution_target" "prod-oc1-groupC-region" {
+  for_each = toset(local.release_phase_config["oc1-groupC"]["regions"])
+
+  name         = "oc1-groupC-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["oc1-groupC"].name
+
+  predecessors = []
+}
+
+resource "shepherd_execution_target" "prod-oc1-groupD-region" {
+  for_each = toset(local.release_phase_config["oc1-groupD"]["regions"])
+
+  name         = "oc1-groupD-${each.key}-region"
+  tenancy_ocid = local.tenancy_ocid_map["oc1"]
+  region       = each.key
+  phase        = shepherd_release_phase.release_phases["oc1-groupD"].name
+
+  predecessors = []
+}
