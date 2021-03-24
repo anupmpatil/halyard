@@ -33,10 +33,10 @@ locals {
   ob3_bastion_cidr  = module.bastion_config.ob3_bastion_cidr
   ob3_jump_vcn_cidr = module.bastion_config.ob3_jump_vcn_cidr
 
-  project_svc_cp_compartment_id = module.project_service.project_svc_cp_compartment_id
-  project_svc_cp_kiev_endpoint  = module.project_service.project_svc_cp_kiev_endpoint
+  project_svc_cp_compartment_id = module.project_service_tenancy.project_svc_cp_compartment_id
+  project_svc_cp_kiev_endpoint  = module.project_service_kiev.project_svc_cp_kiev_endpoint
 
-  project_svc_cp_kiev_store_name = module.project_service.project_svc_cp_kiev_store_name
+  project_svc_cp_kiev_store_name = module.project_service_kiev.project_svc_cp_kiev_store_name
 
   data_plane_kiev_store_name_suffix = local.environment == "prod" ? "production" : local.environment
   data_plane_kiev_store_name        = "${local.service_short_name}-data-plane-${local.data_plane_kiev_store_name_suffix}"
@@ -56,8 +56,14 @@ module "identity" {
   integration_test_tenancy_ocid = lookup(module.tenancies.integ_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
 }
 
-module "project_service" {
-  source      = "./shared_modules/project_service"
+module "project_service_tenancy" {
+  source      = "./shared_modules/project_service/tenancy"
+  realm       = local.execution_target.region.realm
+  environment = local.environment
+}
+
+module "project_service_kiev" {
+  source      = "./shared_modules/project_service/kiev_store"
   realm       = local.execution_target.region.realm
   environment = local.environment
 }

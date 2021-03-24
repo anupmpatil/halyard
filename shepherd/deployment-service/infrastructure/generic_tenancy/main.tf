@@ -5,8 +5,8 @@ locals {
   team_queue               = "https://jira-sd.mc1.oracleiaas.com/projects/DLCDEP"
 }
 
-module "project_service" {
-  source      = "./shared_modules/project_service"
+module "project_service_tenancy" {
+  source      = "./shared_modules/project_service/tenancy"
   realm       = local.execution_target.region.realm
   environment = local.environment
 }
@@ -15,7 +15,7 @@ module "project_service" {
 module "identity" {
   source                                                   = "./identity"
   tenancy_ocid                                             = local.execution_target.tenancy_ocid
-  project_tenancy_ocid                                     = module.project_service.project_svc_cp_tenancy_id
+  project_tenancy_ocid                                     = module.project_service_tenancy.project_svc_cp_tenancy_id
   deployment_service_control_plane_api_compartment_name    = "deployment_service_control_plane_api"
   deployment_service_management_plane_api_compartment_name = "deployment_service_management_plane_api"
   deployment_service_control_plane_worker_compartment_name = "deployment_service_control_plane_worker"
@@ -33,16 +33,16 @@ module "identity" {
   realm                                                    = local.execution_target.region.realm
   environment                                              = local.environment
   bastion_compartment_id                                   = module.identity.deployment_bastion.id
-  bastion_lpg_requestor_tenancy_ocid                       = module.network_config.bastion_lpg_requestor_tenancy_ocid
-  bastion_lpg_requestor_group_ocid                         = module.network_config.bastion_lpg_requestor_group_ocid
+  bastion_lpg_requestor_tenancy_ocid                       = module.bastion_config.bastion_lpg_requestor_tenancy_ocid
+  bastion_lpg_requestor_group_ocid                         = module.bastion_config.bastion_lpg_requestor_group_ocid
 }
 
 module "environment_config" {
   source = "./shared_modules/common_files"
 }
 
-module "network_config" {
-  source       = "./shared_locals/network"
+module "bastion_config" {
+  source       = "./shared_modules/bastion_service"
   region_short = lookup(module.environment_config.region_short_name_map, local.execution_target.region.name, "iad")
   environment  = local.execution_target.phase_name
   realm        = local.execution_target.region.realm

@@ -6,8 +6,14 @@ locals {
   }
 }
 
+module "project_svc_tenancy" {
+  source      = "../tenancy"
+  realm       = var.realm
+  environment = var.environment
+}
+
 data "kaas_regional_instance" "project_svc_kaas" {
-  compartment_id = local.project_svc_cp_compartment_id
+  compartment_id = module.project_svc_tenancy.project_svc_cp_compartment_id
   kiev_name      = lookup(local.project_svc_cp_kiev_store_name_map, var.environment, "not_defined")
 }
 
