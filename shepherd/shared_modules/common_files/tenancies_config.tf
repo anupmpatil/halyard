@@ -16,6 +16,8 @@ locals {
     "preprod"    = "ocid1.tenancy.oc1..aaaaaaaaes5ujidrlz2t2ry56rltbi5jxifr7eresraa2ukbygfw6aocd7aq" /* devopsdeploypreprodcanary tenancy */
     "oc1-groupA" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
     "oc1-groupB" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
+    "oc1-groupC" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deploymentservicecanary tenancy */
+    "oc1-groupD" = "ocid1.tenancy.oc1..aaaaaaaaovj5jeahe56kfhof4b2gmnwkqc6wfz5hnkkvesafzmeh5g3pppda" /* deployment servicecanary tenancy */
   }
 
   integ_test_tenancy_ocid_map = {
@@ -23,6 +25,8 @@ locals {
     "preprod"    = "ocid1.tenancy.oc1..aaaaaaaa7rtxdhu6g5ytlkbtrl74vfkbtygcahfgdrzqsrum3fmsqwv336dq" /* devopsdeploypreprodtest tenancy */
     "oc1-groupA" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
     "oc1-groupB" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
+    "oc1-groupC" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
+    "oc1-groupD" = "ocid1.tenancy.oc1..aaaaaaaaxenqwglrtzhjupenylgkm4hpwepracpqcffbmyk3cqy4slcfz7ba" /* devopsdeployprodtest tenancy */
   }
 }
 
