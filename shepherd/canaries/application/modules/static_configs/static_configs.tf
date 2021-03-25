@@ -1,14 +1,14 @@
 variable "canaries_list" {
   type        = list(string)
   description = "The list of canary names"
-  default     = ["dlc-deploy-create-delete-application"]
+  default     = ["dlc-deploy-create-delete-artifact"]
 }
 
 variable "canary_frequency_map" {
   type        = map(any)
   description = "The mapping of canary name to the frequency of the canary"
   default = {
-    "dlc-deploy-create-delete-application" = "*/5 * * * *"
+    "dlc-deploy-create-delete-artifact" = "*/5 * * * *"
   }
 }
 
@@ -16,7 +16,7 @@ variable "canary_maxruntime_map" {
   type        = map(any)
   description = "The mapping of canary name to the maximum runtime of the canary"
   default = {
-    "dlc-deploy-create-delete-application" = 10
+    "dlc-deploy-create-delete-artifact" = 10
   }
 }
 
@@ -24,7 +24,7 @@ variable "canaries_test_method_map" {
   type        = map(any)
   description = "The mapping of canary name to the TEST_METHOD of the canary"
   default = {
-    "dlc-deploy-create-delete-application" = "CanaryIT.createDeleteApplicationTest"
+    "dlc-deploy-create-delete-artifact" = "CanaryIT.testCreateDeleteArtifact"
   }
 }
 
