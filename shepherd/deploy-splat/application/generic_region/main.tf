@@ -68,7 +68,8 @@ locals {
     local.execution_target.region.public_name == "us-phoenix-1" ?
   "https://${local.environment}.management.plane.api.clouddeploy.us-phoenix-1.oci.oracleiaas.com" : "https://${local.environment}.management.plane.api.clouddeploy.{OCI-IAAS-DOMAIN-NAME}")
 
-  spec_release_dir = local.environment == "prod" || local.environment == "preprod" ? "release" : "internal"
+  // We wil use internal in each environment so that internal logging endpoint is available
+  spec_release_dir = "internal"
   api_yaml         = file(format("%s/%s", path.module, "api-specs/${local.spec_release_dir}/api.yaml"))
 
 }
