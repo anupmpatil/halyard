@@ -21,10 +21,7 @@ resource "oci_identity_policy" "authorization-test-policy" {
   description    = "Policies to test authorization"
   name           = "authorization-test-policy-${var.environment}"
   statements = [
-    "Allow group ${oci_identity_group.integ-test-user-2-group.name} to $${CLOUD_DEPLOY_APPLICATION_CREATE} in compartment ${oci_identity_compartment.integration_test_compartment.name}",
-    "Allow group ${oci_identity_group.integ-test-user-2-group.name} to $${CLOUD_DEPLOY_APPLICATION_DELETE} in compartment ${oci_identity_compartment.integration_test_compartment.name}",
-    "Allow group ${oci_identity_group.integ-test-user-2-group.name} to $${CLOUD_DEPLOY_APPLICATION_READ} in compartment ${oci_identity_compartment.integration_test_compartment.name}",
-    "Allow group ${oci_identity_group.integ-test-user-2-group.name} to $${CLOUD_DEPLOY_APPLICATION_INSPECT} in compartment ${oci_identity_compartment.integration_test_compartment.name}",
-    "Allow group ${oci_identity_group.integ-test-user-3-group.name} to $${CLOUD_DEPLOY_APPLICATION_INSPECT} in compartment ${oci_identity_compartment.integration_test_compartment.name}"
+    "Allow group ${oci_identity_group.integ-test-user-2-group.name} to manage devops-project in in compartment ${oci_identity_compartment.integration_test_compartment.name}",
+    "Allow group ${oci_identity_group.integ-test-user-3-group.name} to inspect devops-project in compartment ${oci_identity_compartment.integration_test_compartment.name}"
   ]
 }
