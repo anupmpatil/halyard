@@ -72,6 +72,12 @@ locals {
       "bastion_cidr" : "192.168.10.0/26"
       "bastion" : "vcn12.ob.ap-tokyo-1.oci.oraclecloud.com"
     }
+    oc1-groupC_zrh : {
+      "jump_vcn_cidr" : "192.168.134.96/29"
+      "vcn" : "VCN-ZRH-Bastion-AD1-06"
+      "bastion_cidr" : "172.16.114.128/26"
+      "bastion" : "vcn6.ob.eu-zurich-1.oci.oraclecloud.com"
+    }
 
   }
 
