@@ -1,0 +1,12 @@
+Include dlcdep_configs/dlcdep_amsterdam_prod_hosts
+
+# Jump Hosts
+Host dlcdep-prod-jump.ams
+  HostName 192.168.246.82
+  ProxyJump vcn6.ob.eu-amsterdam-1.oci.oraclecloud.com
+
+# Service Hosts
+
+Host 10.*
+  ProxyJump dlcdep-prod-jump.ams
+  PermitLocalCommand yes
