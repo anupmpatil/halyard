@@ -437,5 +437,6 @@ module "operations" {
   source                          = "./modules/operations"
   canary_test_compartment_id      = local.canary_test_compartment_id
   integration_test_compartment_id = local.integration_test_compartment_id
+  log_group_display_name          = "${local.region_short_name}_log_group"
 }
 
