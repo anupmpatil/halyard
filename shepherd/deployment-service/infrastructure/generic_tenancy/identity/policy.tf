@@ -181,3 +181,12 @@ resource "oci_identity_policy" "cross_tenancy_kiev_policy" {
     "Endorse dynamic-group odo-dynamic-group to manage kiev-data-stores in tenancy projectTenancy"
   ]
 }
+
+resource "oci_identity_policy" "logging_access_policy" {
+  compartment_id = var.tenancy_ocid
+  description    = "This policy allows logging team to do get log request to our service"
+  name           = "logging-access-policy"
+  statements = [
+    "allow service logging to read all-resources in compartment ${var.deployment_service_control_plane_api_compartment_name}"
+  ]
+}
