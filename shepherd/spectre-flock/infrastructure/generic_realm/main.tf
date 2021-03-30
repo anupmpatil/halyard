@@ -70,6 +70,19 @@ resource "property_value" "numeric_values" {
   max = each.value.default_max
 }
 
+resource "property_definition" "string_definitions" {
+  for_each = { for prop in local.all_string_properties : prop.name => prop }
+
+  depends_on = [limit_group.group]
+
+  group         = limit_group.group.name
+  name          = each.key
+  description   = each.value.description
+  type          = "ENUM"
+  options       = each.value.options
+  default_value = each.value.default_value
+}
+
 /*
  * Limits - Requires limit group to be created first
  */

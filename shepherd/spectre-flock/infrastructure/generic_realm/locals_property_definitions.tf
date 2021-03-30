@@ -11,4 +11,14 @@ locals {
     },
     */
   ]
+
+  all_string_properties = [
+    {
+      name : "devops_deploy_service_ga"
+      description : "Property for whitelisting GA features"
+      type : "ENUM"
+      options : ["true", "false"]
+      default_value : "false"
+    }
+  ]
 }
