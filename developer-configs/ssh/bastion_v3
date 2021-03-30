@@ -6,3 +6,4 @@ Include dlcdep_configs/dlcdep_phoenix_prod_jumphosts
 Include dlcdep_configs/dlcdep_frankfurt_prod_jumphosts
 Include dlcdep_configs/dlcdep_london_prod_jumphosts
 Include dlcdep_configs/dlcdep_seoul_prod_jumphosts
+Include dlcdep_configs/dlcdep_amsterdam_prod_jumphosts
