@@ -375,6 +375,8 @@ module "alarms" {
   management_plane_api_fleet_name     = "${local.tenancy_name}.${local.service_name}-management-plane-api"
   data_plane_worker_fleet_name        = "${local.tenancy_name}.${local.service_name}-data-plane-worker"
   t2_project_name                     = local.t2_project_name
+  environment                         = local.environment
+  region                              = local.execution_target.region.name
 }
 
 module "odo_application_management_plane" {

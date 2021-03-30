@@ -47,3 +47,13 @@ variable "t2_project_name" {
   type        = string
   description = "T2 project name"
 }
+
+variable "environment" {
+  type        = string
+  description = "The environment of execution target"
+}
+
+variable "region" {
+  type        = string
+  description = "The current execution target name"
+}

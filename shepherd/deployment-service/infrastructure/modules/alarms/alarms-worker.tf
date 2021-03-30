@@ -943,3 +943,26 @@ EOT
     }
   }
 }
+
+############################
+### Deployment Failure #####
+############################
+
+resource "telemetry_alarm" "DeploymentService_Worker_Deployment_Failure" {
+  compartment_id   = var.control_plane_worker_compartment_id
+  display_name     = "DeploymentService-Worker-DeploymentFailureAlarm"
+  project          = "odo"
+  fleet            = "odo-workflow-workers"
+  query            = "reporting.deployment-service-control-plane-worker-${var.environment}.deployment.completed.failure[1m].grouping().sum() >= 1"
+  severity         = 3
+  is_enabled       = true
+  pending_duration = "PT1M"
+  body             = "Control plane Worker deployment failed in ${var.region}."
+  destinations {
+    jira {
+      project   = var.jira_sd_queue
+      component = "None"
+      item      = "None"
+    }
+  }
+}

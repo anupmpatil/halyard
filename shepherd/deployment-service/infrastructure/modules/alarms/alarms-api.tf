@@ -1682,3 +1682,26 @@ EOT
   }
   labels = ["shepherd-monitor"]
 }
+
+############################
+### Deployment Failure #####
+############################
+
+resource "telemetry_alarm" "DeploymentService_Api_Deployment_Failure" {
+  compartment_id   = var.control_plane_api_compartment_id
+  display_name     = "DeploymentService-Api-DeploymentFailureAlarm"
+  project          = "odo"
+  fleet            = "odo-workflow-workers"
+  query            = "reporting.deployment-service-control-plane-api-${var.environment}.deployment.completed.failure[1m].grouping().sum() >= 1"
+  severity         = 3
+  is_enabled       = true
+  pending_duration = "PT1M"
+  body             = "Control plane API deployment failed in ${var.region}."
+  destinations {
+    jira {
+      project   = var.jira_sd_queue
+      component = "None"
+      item      = "None"
+    }
+  }
+}
