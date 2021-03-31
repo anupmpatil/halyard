@@ -34,7 +34,7 @@ variable "canaries_compartment_id_map" {
   default = {
     "beta"    = "ocid1.compartment.oc1..aaaaaaaaimq2x76s2bc64walkjvwpcuaeegtnwyebk2b5v3ujhgsoctwwjva"
     "preprod" = "ocid1.compartment.oc1..aaaaaaaawydnxc6dtt77ojxe5yyqhwjyam263giughwepjq6ccmptjfzz6ga"
-    "oc1"     = "ocid1.compartment.oc1..aaaaaaaanjlnhtoqtkvzudjdbslifk333xbvi5dckr5fypd5niapdmxw3yja"
+    "prod"    = "ocid1.compartment.oc1..aaaaaaaanjlnhtoqtkvzudjdbslifk333xbvi5dckr5fypd5niapdmxw3yja"
   }
 }
 
