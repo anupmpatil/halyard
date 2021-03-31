@@ -1,21 +1,30 @@
 locals {
-  compartment_id_map = {
-    "dlctest_test_resources" = "ocid1.compartment.oc1..aaaaaaaay5gb3fgvz7jmftxetks7r7mbusqhylw6hsbzkkthzwwsymmhu4ha"
-  }
-  service_availability_domains = [for ad in local.availability_domains : ad.name]
-  service_vcn_cidr             = "10.0.0.0/16"
-  k8s_cluster_version          = "v1.18.10"
+  integration_test_compartment_id = module.identity.integration_test_compartment.id
+  service_availability_domains    = [for ad in local.availability_domains : ad.name]
+  service_vcn_cidr                = "10.0.0.0/16"
+  k8s_cluster_version             = "v1.18.10"
 }
 
 module "image" {
   source         = "./modules/image"
-  compartment_id = local.compartment_id_map["dlctest_test_resources"]
+  compartment_id = local.integration_test_compartment_id
+}
+
+module "identity" {
+  source                        = "./shared_modules/identity"
+  canary_tenancy_ocid           = lookup(module.tenancies.canary_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
+  tenancy_ocid                  = local.execution_target.tenancy_ocid
+  integration_test_tenancy_ocid = lookup(module.tenancies.integ_test_tenancy_ocid_map, local.execution_target.phase_name, "not_defined")
+}
+
+module "tenancies" {
+  source = "./shared_modules/common_files"
 }
 
 module "network_setup" {
   source           = "./modules/network"
   region           = local.execution_target.region
-  compartment_id   = local.compartment_id_map["dlctest_test_resources"]
+  compartment_id   = local.integration_test_compartment_id
   service_vcn_cidr = local.service_vcn_cidr
   service_name     = "test-tenancy-network-infra"
   dns_label        = "testnet"
@@ -25,7 +34,7 @@ module "insance_group_deployment_instances" {
   source                                = "./modules/instances"
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
-  compartment_id                        = local.compartment_id_map["dlctest_test_resources"]
+  compartment_id                        = local.integration_test_compartment_id
   service_instance_shape                = "VM.Standard2.1"
   service_instance_name_prefix          = "instance-group-deployment-test"
   service_instance_image_id             = module.image.overlay_image.id
@@ -37,7 +46,7 @@ module "insance_group_deployment_instances" {
 
 module "oke_cluster_deployment" {
   source               = "./modules/oke-cluster"
-  compartment_id       = local.compartment_id_map["dlctest_test_resources"]
+  compartment_id       = local.integration_test_compartment_id
   vcn_id               = module.network_setup.ig_test_vcn_id
   k8s_cluster_version  = local.k8s_cluster_version
   availability_domains = local.service_availability_domains
