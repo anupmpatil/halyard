@@ -1,4 +1,4 @@
-# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.81 - DO NOT EDIT
+# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.93 - DO NOT EDIT
 # This is the DeploymentService API spec in YAML
 # Clients and documentation will be auto-generated from this file.
 # Review the API checklist:
@@ -351,6 +351,15 @@ paths:
         apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
+        quotas:
+          mode: automated
+          quotaDefinitions:
+            project-count-quota:
+              operationResourceName: project
+              quotaName: "'project-count'"
+              familyName: devops-project
+              usage: 1
+              quotaHandlingMode: Enforce
         serviceList: ['dlc-project-service-control-plane-api']
         resources:
           project:
@@ -539,6 +548,9 @@ paths:
         apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
+        quotas:
+          mode: automated
+          operationResourceName: project
         serviceList: ['dlc-project-service-control-plane-api']
         resources:
           project:
@@ -1460,7 +1472,7 @@ paths:
           strategy: route-to-any-ad
         serviceList: ['deployment-service-control-plane-api']
         resources:
-          deplopyPipeline:
+          deployPipeline:
             serviceResourceName: DeployPipeline
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetDeployPipeline', request.resourceId).compartmentId
@@ -2704,7 +2716,10 @@ paths:
         resources:
           deployPipeline:
             serviceResourceName: DeployPipeline
-            targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetDeployPipeline', downstream.getOr404('deployment-service-control-plane-api', 'GetLogging', request.resourceId).resource).compartmentId
+            targetCompartmentId: >
+              [
+                oc1:"ocid1.compartment.oc1..aaaaaaaajg4p7xvr7cv2drq37xsgoblx6e64g5segkwth3e6jt2bekn26npa"
+              ][splat.realm]
             actionKind: read
             resourceOcid: downstream.getOr404('deployment-service-control-plane-api', 'GetLogging', request.resourceId).resource
             permissions: ["DEVOPS_DEPLOY_PIPELINE_READ"]
@@ -3416,11 +3431,6 @@ definitions:
             minLength: 1
             maxLength: 255
             example: ${appVersion}
-          httpBaseUrl:
-            description: HTTP base url - artifact service endpoint
-            type: string
-            minLength: 1
-            maxLength: 1024
         required:
           - repositoryId
           - deployArtifactPath
@@ -3561,15 +3571,12 @@ definitions:
           - COMPUTE_INSTANCE_GROUP_BLUE_GREEN_TRAFFIC_SHIFT
           - COMPUTE_INSTANCE_GROUP_CANARY_DEPLOYMENT
           - COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
+          - COMPUTE_INSTANCE_GROUP_CANARY_APPROVAL
           - OKE_DEPLOYMENT
           - DEPLOY_FUNCTION
-          - UPDATE_FUNCTION_APPLICATION
-          - RUN_JOB_ON_COMPUTE_INSTANCE_GROUP
-          - RUN_JOB_ON_COMPUTE_INSTANCE
           - RUN_OKE_JOB
           - INVOKE_FUNCTION
           - RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-          - RUN_VALIDATION_TEST_ON_FUNCTION
           - LOAD_BALANCER_TRAFFIC_SHIFT
           - MANUAL_APPROVAL
           - RUN_DEPLOYMENT_PIPELINE
@@ -3631,8 +3638,8 @@ definitions:
       name:
         description: Name of the step.
         type: string
-      result:
-        description: Result of the step.
+      state:
+        description: State of the step.
         type: string
         enum:
           - WAITING
@@ -3782,10 +3789,6 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
-      deploymentArtifactCollection:
-        $ref: "#/definitions/DeploymentArtifactCollection"
-      deploymentEnvironmentCollection:
-        $ref: "#/definitions/DeploymentEnvironmentCollection"
       timeCreated:
         description: The time the the Deployment was created. An RFC3339 formatted datetime string
         type: string
@@ -4871,15 +4874,12 @@ definitions:
           - COMPUTE_INSTANCE_GROUP_BLUE_GREEN_TRAFFIC_SHIFT
           - COMPUTE_INSTANCE_GROUP_CANARY_DEPLOYMENT
           - COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
+          - COMPUTE_INSTANCE_GROUP_CANARY_APPROVAL
           - OKE_DEPLOYMENT
           - DEPLOY_FUNCTION
-          - UPDATE_FUNCTION_APPLICATION
-          - RUN_JOB_ON_COMPUTE_INSTANCE_GROUP
-          - RUN_JOB_ON_COMPUTE_INSTANCE
           - RUN_OKE_JOB
           - INVOKE_FUNCTION
           - RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-          - RUN_VALIDATION_TEST_ON_FUNCTION
           - LOAD_BALANCER_TRAFFIC_SHIFT
           - MANUAL_APPROVAL
           - RUN_DEPLOYMENT_PIPELINE
@@ -5074,8 +5074,6 @@ definitions:
     allOf:
       - $ref: '#/definitions/UpdateDeployStageDetails'
       - discriminator: WAIT
-        required:
-          - waitCriteria
         properties:
           waitCriteria:
             $ref: '#/definitions/WaitCriteria'
@@ -5209,6 +5207,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -5239,6 +5238,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -5269,6 +5269,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -5678,10 +5679,6 @@ definitions:
     allOf:
       - $ref: "#/definitions/UpdateDeployStageDetails"
       - discriminator: COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
-        required:
-          - loadBalancerConfig
-          - computeInstanceGroupCanaryDeploymentDeployStageId
-          - rolloutPolicy
         properties:
           computeInstanceGroupCanaryDeploymentDeployStageId:
             description: A compute instance group canary stage OCID for load balancer.
@@ -6252,9 +6249,6 @@ definitions:
     allOf:
       - $ref: "#/definitions/UpdateDeployStageDetails"
       - discriminator: RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-        required:
-          - computeInstanceId
-          - deployArtifactIds
         properties:
           computeInstanceId:
             description: Instance OCID on which this stage runs validation.
@@ -6549,7 +6543,7 @@ definitions:
         type: integer
         format: int32
       batchDelayInSeconds:
-        description: Specifies delay in seconds between batches.
+        description: Specifies delay in seconds between batches. The default delay is 1 minute.
         type: integer
         format: int32
         default: 60

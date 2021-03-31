@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-devops_service_spec_version=0.1.81
+devops_service_spec_version=0.1.93
 
 # DO NOT CHANGE THIS:
 spec_dir="../shepherd/deploy-splat/api-specs"

@@ -1,4 +1,4 @@
-# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.81 - DO NOT EDIT
+# GENERATED from com.oracle.pic.dlc:devops-service-java-client:0.1.93 - DO NOT EDIT
 # This is the DeploymentService API spec in YAML
 # Clients and documentation will be auto-generated from this file.
 # Review the API checklist:
@@ -351,6 +351,15 @@ paths:
         apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
+        quotas:
+          mode: automated
+          quotaDefinitions:
+            project-count-quota:
+              operationResourceName: project
+              quotaName: "'project-count'"
+              familyName: devops-project
+              usage: 1
+              quotaHandlingMode: Enforce
         serviceList: ['dlc-project-service-control-plane-api']
         resources:
           project:
@@ -539,6 +548,9 @@ paths:
         apiType: Asynchronous
         routing:
           strategy: route-to-any-ad
+        quotas:
+          mode: automated
+          operationResourceName: project
         serviceList: ['dlc-project-service-control-plane-api']
         resources:
           project:
@@ -585,82 +597,6 @@ paths:
         default:
           $ref: '#/responses/default'
 
-  /projects/{projectId}/actions/changeCompartment:
-    post:
-      tags: ['project']
-      x-obmcs-splat:
-        apiType: Asynchronous
-        routing:
-          strategy: route-to-any-ad
-        # Splat supports throttling, appropriate for PUT/POST operations
-        # Below is example of throttling limits hard coded in the Splat registration.
-        # perUserLimit: limit to apply to this operation for a single user. Null to use the default per-user limit (20 RPS - requests per second)
-        # throttling:
-        #   perUserLimit:
-        #     rpsLimit: 10
-        #     rpmLimit: 50
-        serviceList: ['dlc-project-service-control-plane-api']
-        resources:
-          projectBeforeMove:
-            serviceResourceName: Project
-            actionKind: READ
-            resourceOcid: request.resourceId
-            targetCompartmentId: downstream.getOr404('dlc-project-service-control-plane-api', 'GetProject', request.resourceId).compartmentId
-            reconciliationCanStartAfterSecs: 60
-            permissions: ["DEVOPS_PROJECT_MOVE"]
-          projectAfterMove:
-            serviceResourceName: Project
-            actionKind: MOVE
-            resourceOcid: request.resourceId
-            targetCompartmentId: request.body.compartmentId
-            reconciliationCanStartAfterSecs: 60
-            permissions: ["DEVOPS_PROJECT_MOVE"]
-        authorization:
-          mode: automated
-          check: >-
-            resources['projectBeforeMove'].grantedPermissions.contains('DEVOPS_PROJECT_MOVE') &&
-            resources['projectAfterMove'].grantedPermissions.contains('DEVOPS_PROJECT_MOVE')
-          # Compartment move does NOT allow the user to move the resource between tenancies.
-          allowCrossTenancy: true
-          sameTenancyResources: ["projectBeforeMove", "projectAfterMove"]
-          crossTenancyAssociations: []
-        tagStore:
-          mode: automated
-        search:
-          mode: none
-          operationResourceName: projectAfterMove
-        maximumAttemptCount: 3
-      operationId: ChangeProjectCompartment
-      summary: Moves a resource into a different compartment.
-      description: Moves a Project resource from one compartment identifier to another. When provided, If-Match is checked against ETag values of the resource.
-      parameters:
-        - $ref: "#/parameters/ProjectIdentifierPathParam"
-        - name: ChangeProjectCompartmentDetails
-          in: body
-          description: The information to be updated.
-          required: true
-          schema:
-            $ref: '#/definitions/ChangeProjectCompartmentDetails'
-        - $ref: "#/parameters/IfMatchHeader"
-        - $ref: "#/parameters/RequestIdHeader"
-        - $ref: "#/parameters/RetryTokenHeader"
-      x-related-resource: '#/definitions/Project'
-      responses:
-        202:
-          description: Accepted the request. The Project resource will be moved into a different compartment.
-          headers:
-            opc-work-request-id: *ref-opc-work-request-id
-            opc-request-id: *ref-opc-request-id
-        401:
-          $ref: '#/responses/401'
-        404:
-          $ref: '#/responses/404'
-        409:
-          $ref: '#/responses/409'
-        412:
-          $ref: '#/responses/412'
-        500:
-          $ref: '#/responses/500'
 # ------------------ Environment API --------------------
   /deployEnvironments:
     get:
@@ -1460,7 +1396,7 @@ paths:
           strategy: route-to-any-ad
         serviceList: ['deployment-service-control-plane-api']
         resources:
-          deplopyPipeline:
+          deployPipeline:
             serviceResourceName: DeployPipeline
             actionKind: read
             targetCompartmentId: downstream.getOr404('deployment-service-control-plane-api', 'GetDeployPipeline', request.resourceId).compartmentId
@@ -2652,21 +2588,6 @@ definitions:
       lifecycleDetails:
         description: A message describing the current state in more detail. For example, can be used to provide actionable information for a resource in Failed state.
         type: string
-      deployArtifactIds:
-        description: A list of artifact Ids associated with this project
-        type: array
-        items:
-          type: string
-      deployEnvironmentIds:
-        description: A list of environment Ids associated with this project
-        type: array
-        items:
-          type: string
-      deployPipelineIds:
-        description: A list of pipeline Ids associated with this project
-        type: array
-        items:
-          type: string
       freeformTags: *ref-freeformTags
       definedTags: *ref-definedTags
       systemTags: *ref-systemTags
@@ -3279,15 +3200,12 @@ definitions:
           - COMPUTE_INSTANCE_GROUP_BLUE_GREEN_TRAFFIC_SHIFT
           - COMPUTE_INSTANCE_GROUP_CANARY_DEPLOYMENT
           - COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
+          - COMPUTE_INSTANCE_GROUP_CANARY_APPROVAL
           - OKE_DEPLOYMENT
           - DEPLOY_FUNCTION
-          - UPDATE_FUNCTION_APPLICATION
-          - RUN_JOB_ON_COMPUTE_INSTANCE_GROUP
-          - RUN_JOB_ON_COMPUTE_INSTANCE
           - RUN_OKE_JOB
           - INVOKE_FUNCTION
           - RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-          - RUN_VALIDATION_TEST_ON_FUNCTION
           - LOAD_BALANCER_TRAFFIC_SHIFT
           - MANUAL_APPROVAL
           - RUN_DEPLOYMENT_PIPELINE
@@ -3349,8 +3267,8 @@ definitions:
       name:
         description: Name of the step.
         type: string
-      result:
-        description: Result of the step.
+      state:
+        description: State of the step.
         type: string
         enum:
           - WAITING
@@ -3499,10 +3417,6 @@ definitions:
       compartmentId:
         description: Compartment Identifier
         type: string
-      deploymentArtifactCollection:
-        $ref: "#/definitions/DeploymentArtifactCollection"
-      deploymentEnvironmentCollection:
-        $ref: "#/definitions/DeploymentEnvironmentCollection"
       timeCreated:
         description: The time the the Deployment was created. An RFC3339 formatted datetime string
         type: string
@@ -4501,15 +4415,12 @@ definitions:
           - COMPUTE_INSTANCE_GROUP_BLUE_GREEN_TRAFFIC_SHIFT
           - COMPUTE_INSTANCE_GROUP_CANARY_DEPLOYMENT
           - COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
+          - COMPUTE_INSTANCE_GROUP_CANARY_APPROVAL
           - OKE_DEPLOYMENT
           - DEPLOY_FUNCTION
-          - UPDATE_FUNCTION_APPLICATION
-          - RUN_JOB_ON_COMPUTE_INSTANCE_GROUP
-          - RUN_JOB_ON_COMPUTE_INSTANCE
           - RUN_OKE_JOB
           - INVOKE_FUNCTION
           - RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-          - RUN_VALIDATION_TEST_ON_FUNCTION
           - LOAD_BALANCER_TRAFFIC_SHIFT
           - MANUAL_APPROVAL
           - RUN_DEPLOYMENT_PIPELINE
@@ -4704,8 +4615,6 @@ definitions:
     allOf:
       - $ref: '#/definitions/UpdateDeployStageDetails'
       - discriminator: WAIT
-        required:
-          - waitCriteria
         properties:
           waitCriteria:
             $ref: '#/definitions/WaitCriteria'
@@ -4778,6 +4687,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -4808,6 +4718,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -4838,6 +4749,7 @@ definitions:
         required:
           - computeInstanceGroupDeployEnvironmentId
           - deploymentSpecDeployArtifactId
+          - deployArtifactIds
           - rolloutPolicy
         properties:
           computeInstanceGroupDeployEnvironmentId:
@@ -5247,10 +5159,6 @@ definitions:
     allOf:
       - $ref: "#/definitions/UpdateDeployStageDetails"
       - discriminator: COMPUTE_INSTANCE_GROUP_CANARY_TRAFFIC_SHIFT
-        required:
-          - loadBalancerConfig
-          - computeInstanceGroupCanaryDeploymentDeployStageId
-          - rolloutPolicy
         properties:
           computeInstanceGroupCanaryDeploymentDeployStageId:
             description: A compute instance group canary stage OCID for load balancer.
@@ -5813,9 +5721,6 @@ definitions:
     allOf:
       - $ref: "#/definitions/UpdateDeployStageDetails"
       - discriminator: RUN_VALIDATION_TEST_ON_COMPUTE_INSTANCE
-        required:
-          - computeInstanceId
-          - deployArtifactIds
         properties:
           computeInstanceId:
             description: Instance OCID on which this stage runs validation.
@@ -6110,7 +6015,7 @@ definitions:
         type: integer
         format: int32
       batchDelayInSeconds:
-        description: Specifies delay in seconds between batches.
+        description: Specifies delay in seconds between batches. The default delay is 1 minute.
         type: integer
         format: int32
         default: 60
