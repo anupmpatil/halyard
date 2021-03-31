@@ -21,7 +21,7 @@ module "tenancies" {
   source = "./shared_modules/common_files"
 }
 
-module "network_setup" {
+module "network_setup_integration_test" {
   source           = "./modules/network"
   region           = local.execution_target.region
   compartment_id   = local.integration_test_compartment_id
@@ -30,7 +30,7 @@ module "network_setup" {
   dns_label        = "testnet"
 }
 
-module "insance_group_deployment_instances" {
+module "instance_group_integration_test" {
   source                                = "./modules/instances"
   region                                = local.execution_target.region.public_name
   tenancy_ocid                          = local.execution_target.tenancy_ocid
@@ -41,18 +41,27 @@ module "insance_group_deployment_instances" {
   service_instances_hostclass_name      = "instance-group-deployment-test-instances"
   service_instance_availability_domains = local.service_availability_domains
   instance_count_per_ad                 = 1
-  service_subnet_id                     = module.network_setup.ig_test_subnet_id
+  service_subnet_id                     = module.network_setup_integration_test.ig_test_subnet_id
 }
 
-module "oke_cluster_deployment" {
+module "oke_cluster_integration_test" {
   source               = "./modules/oke-cluster"
   compartment_id       = local.integration_test_compartment_id
-  vcn_id               = module.network_setup.ig_test_vcn_id
+  vcn_id               = module.network_setup_integration_test.ig_test_vcn_id
   k8s_cluster_version  = local.k8s_cluster_version
   availability_domains = local.service_availability_domains
-  k8s_worker_subnet_id = module.network_setup.ig_test_subnet_id
+  k8s_worker_subnet_id = module.network_setup_integration_test.ig_test_subnet_id
   node_image_id        = module.image.overlay_image.id
   tenancy_ocid         = local.execution_target.tenancy_ocid
   //k8s_worker_subnet_id = module.network_setup.ig_test_subnet_id
   //k8s_worker_subnet_id = module.network_setup.node_pool_test_subnet_id
+}
+
+module "functions_integration_test" {
+  compartment_id = local.integration_test_compartment_id
+  application_subnet_ids = module.network_setup_integration_test.ig_test_subnet_id
+  application_display_name = "Integration_test_func_application"
+  function_display_name = "Integration_test_func"
+  function_memory_in_mbs = 128
+  function_image = ""
 }
