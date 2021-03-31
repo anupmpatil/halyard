@@ -4,7 +4,7 @@ locals {
     "beta" = {
       "production"   = false
       "realm"        = "oc1"
-      "regions"      = ["us-phoenix-1", "us-ashburn-1"]
+      "regions"      = ["us-ashburn-1"]
       "home_region"  = "us-phoenix-1"
       "auto_approve" = true
       "predecessors" = []
