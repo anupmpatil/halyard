@@ -5,9 +5,16 @@ locals {
   k8s_cluster_version             = "v1.18.10"
 }
 
+module "image_type" {
+  source = "./shared_modules/image"
+  realm  = local.execution_target.region.realm
+  region = local.execution_target.region.public_name
+}
+
 module "image" {
   source         = "./modules/image"
   compartment_id = local.integration_test_compartment_id
+  image_type     = module.image_type.image_type
 }
 
 module "identity" {
@@ -58,10 +65,10 @@ module "oke_cluster_integration_test" {
 }
 
 module "functions_integration_test" {
-  compartment_id = local.integration_test_compartment_id
-  application_subnet_ids = module.network_setup_integration_test.ig_test_subnet_id
+  compartment_id           = local.integration_test_compartment_id
+  application_subnet_ids   = module.network_setup_integration_test.ig_test_subnet_id
   application_display_name = "Integration_test_func_application"
-  function_display_name = "Integration_test_func"
-  function_memory_in_mbs = 128
-  function_image = ""
+  function_display_name    = "Integration_test_func"
+  function_memory_in_mbs   = 128
+  function_image           = ""
 }

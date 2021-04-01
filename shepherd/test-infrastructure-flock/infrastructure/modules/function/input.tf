@@ -9,7 +9,7 @@ variable "application_display_name" {
 }
 
 variable "application_subnet_ids" {
-  type = string
+  type        = string
   description = "OCID of subnet where function will be placed."
 }
 
