@@ -28,3 +28,25 @@ variable "dns_label" {
   description = "DNS label for resources within this VCN."
   default     = ""
 }
+
+variable "lb_shape" {
+  type        = string
+  description = "Shape of the load balancer."
+  default     = "10Mbps"
+}
+
+variable "nat_gateway_block_traffic" {
+  type        = string
+  description = "Shape of the load balancer."
+}
+variable "nat_gateway_display_name" {
+  type        = string
+  description = "Shape of the load balancer."
+  default     = "NAT Gateway"
+}
+
+variable "lb_display_name" {
+  type        = string
+  description = "Shape of the load balancer."
+  default     = "OKE load balancer"
+}
